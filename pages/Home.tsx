@@ -15,6 +15,7 @@ const HomePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
   const [allBrands, setAllBrands] = useState<Brand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [usingFallback, setUsingFallback] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,12 +25,14 @@ const HomePage: React.FC = () => {
         const { data, error } = await supabase
           .from('brands')
           .select('*')
-          .eq('status', 'approved');
+          .eq('status', 'approved')
+          .order('created_at', { ascending: false });
 
-        if (error || !data || data.length === 0) {
-          if (error) console.warn('Supabase fetch failed, falling back to static data:', error);
-          setAllBrands(BRANDS);
-        } else {
+        if (error || !data) {
+          throw error;
+        }
+
+        if (data.length > 0) {
           const mappedBrands: Brand[] = data.map((item: any) => ({
             id: item.id,
             name: item.name,
@@ -43,12 +46,16 @@ const HomePage: React.FC = () => {
             descriptionKm: item.description_km,
             imageUrl: item.image_url || 'https://via.placeholder.com/150'
           }));
-          
           setAllBrands(mappedBrands);
+        } else {
+            // DB is connected but empty
+            setAllBrands([]);
         }
+        setUsingFallback(false);
       } catch (err) {
-        console.error('Error in fetchBrands:', err);
+        console.warn('Supabase fetch failed or not configured, using static data.');
         setAllBrands(BRANDS);
+        setUsingFallback(true);
       } finally {
         setIsLoading(false);
       }
@@ -74,11 +81,14 @@ const HomePage: React.FC = () => {
 
   const handleCategoryClick = (category: Category | 'All') => {
     setSelectedCategory(category);
-    setTimeout(() => {
-      if (resultsRef.current) {
-        resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 50);
+    // Smooth scroll to results if searching
+    if (filteredBrands.length > 0 && window.scrollY > 400) {
+        setTimeout(() => {
+            if (resultsRef.current) {
+                resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 50);
+    }
   };
 
   const handleReport = (brand: Brand) => {
@@ -86,45 +96,50 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="animate-in fade-in duration-700">
       {/* Hero Section */}
-      <section className="text-center max-w-4xl mx-auto mb-16 space-y-6 pt-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-red-600 text-sm font-semibold mb-4 backdrop-blur-sm bg-opacity-80">
-           <AlertCircle className="w-4 h-4" /> {t('heroTag')}
+      <section className="text-center max-w-4xl mx-auto mb-16 space-y-6 pt-8 relative">
+        {/* Decorative elements */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="relative">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-100 text-red-700 text-sm font-bold mb-6 shadow-sm hover:shadow-md transition-all cursor-default">
+            <AlertCircle className="w-4 h-4" /> {t('heroTag')}
+            </div>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-6 font-sans">
+            {t('heroTitle1')} <br/> 
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-orange-600">
+                {t('heroTitle2')}
+            </span>
+            </h1>
+            <p className="text-slate-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
+            {t('heroDesc')}
+            </p>
         </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-          {t('heroTitle1')} <br/> 
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">
-            {t('heroTitle2')}
-          </span>
-        </h1>
-        <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-          {t('heroDesc')}
-        </p>
       </section>
 
       {/* Search & Filter Section */}
-      <section className="mb-12 space-y-8">
-        <div className="relative max-w-2xl mx-auto group">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-slate-400 group-focus-within:text-red-500 transition-colors" />
+      <section className="mb-16 space-y-10">
+        <div className="relative max-w-2xl mx-auto group z-10">
+          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+            <Search className="h-6 w-6 text-slate-400 group-focus-within:text-red-500 transition-colors" />
           </div>
           <Input 
             type="text"
             placeholder={t('searchPlaceholder')}
-            className="pl-12 py-7 text-lg shadow-sm rounded-2xl border-slate-200 bg-white/90 backdrop-blur-sm focus-visible:ring-red-500 focus-visible:border-red-500 transition-all"
+            className="pl-14 py-8 text-lg shadow-xl shadow-slate-200/40 rounded-3xl border-slate-200 bg-white/80 backdrop-blur-xl focus-visible:ring-red-500 focus-visible:border-red-500 transition-all hover:shadow-2xl hover:shadow-slate-200/50"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-5xl mx-auto">
           <button
             onClick={() => handleCategoryClick('All')}
-            className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+            className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
               selectedCategory === 'All' 
-                ? 'bg-slate-900 text-white shadow-lg ring-2 ring-slate-900 ring-offset-2' 
-                : 'bg-white/80 backdrop-blur-sm text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20 scale-105' 
+                : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 hover:scale-105'
             }`}
           >
             {t('allListings')}
@@ -133,10 +148,10 @@ const HomePage: React.FC = () => {
             <button
               key={cat}
               onClick={() => handleCategoryClick(cat)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+              className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
                 selectedCategory === cat 
-                  ? 'bg-red-600 text-white shadow-lg ring-2 ring-red-600 ring-offset-2' 
-                  : 'bg-white/80 backdrop-blur-sm text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105' 
+                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 hover:scale-105'
               }`}
             >
               {getCategoryLabel(cat)}
@@ -146,39 +161,46 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Results Info */}
-      <div ref={resultsRef} className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-slate-200/60 pb-4 scroll-mt-24">
-          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+      <div ref={resultsRef} className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200/60 pb-4 scroll-mt-28">
+          <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
               {t('listingResults')}
-              {isLoading && <Loader2 className="w-5 h-5 animate-spin text-slate-400" />}
+              {isLoading && <Loader2 className="w-6 h-6 animate-spin text-slate-400" />}
           </h2>
-          <span className="text-sm font-medium text-slate-500">
-              {t('showingResults', { count: filteredBrands.length })}
-          </span>
+          <div className="flex items-center gap-4">
+            {usingFallback && (
+                <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-md border border-amber-100">
+                    Offline Mode
+                </span>
+            )}
+            <span className="text-sm font-bold text-slate-500">
+                {t('showingResults', { count: filteredBrands.length })}
+            </span>
+          </div>
       </div>
 
       {/* Grid Layout */}
       {filteredBrands.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
           {filteredBrands.map((brand) => (
             <BrandCard key={brand.id} brand={brand} onReport={handleReport} />
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-slate-200">
-          <div className="mx-auto w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-              <Search className="w-8 h-8 text-slate-300" />
+        <div className="text-center py-24 bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-100/50">
+          <div className="mx-auto w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+              <Search className="w-10 h-10 text-slate-300" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">{t('noResultsTitle')}</h3>
-          <p className="text-slate-500 mb-6">{t('noResultsDesc')}</p>
+          <h3 className="text-2xl font-bold text-slate-900 mb-2">{t('noResultsTitle')}</h3>
+          <p className="text-slate-500 mb-8 max-w-sm mx-auto">{t('noResultsDesc')}</p>
           <button 
               onClick={() => {setSearchQuery(''); setSelectedCategory('All');}}
-              className="px-6 py-2 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-colors"
+              className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all hover:shadow-lg hover:-translate-y-0.5"
           >
               {t('clearFilters')}
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

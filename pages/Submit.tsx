@@ -30,7 +30,7 @@ const SubmitPage: React.FC = () => {
       location: formData.get('location') as string,
       website: formData.get('website') as string,
       description: formData.get('description') as string,
-      image_url: (formData.get('logoUrl') as string) || 'https://via.placeholder.com/150',
+      image_url: (formData.get('logoUrl') as string) || '',
       status: 'pending',
       submitted_by: user?.email || 'Anonymous',
       purpose_km: (formData.get('purposeKm') as string) || (formData.get('purpose') as string),

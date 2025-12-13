@@ -71,6 +71,7 @@ const ReportPage: React.FC = () => {
         details: formData.get('details') as string,
         email: formData.get('email') as string || user?.email,
         status: 'pending',
+        submitted_at: new Date().toISOString()
     };
 
     try {

@@ -193,6 +193,7 @@ const AdminPage: React.FC = () => {
       imageUrl: '',
       status: 'approved',
       submittedBy: 'Admin',
+      submissionDate: new Date().toISOString(),
       purposeKm: '',
       locationKm: '',
       descriptionKm: ''

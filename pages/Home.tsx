@@ -99,8 +99,8 @@ const HomePage: React.FC = () => {
     <div className="animate-in fade-in duration-700">
       {/* Hero Section */}
       <section className="text-center max-w-4xl mx-auto mb-16 space-y-6 pt-8 relative">
-        {/* Decorative elements */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[100px] pointer-events-none" />
+        {/* Decorative elements - Corrected to use max-w-[90vw] to prevent overflow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] md:w-[500px] md:h-[500px] bg-red-500/5 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="relative">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-100 text-red-700 text-sm font-bold mb-6 shadow-sm hover:shadow-md transition-all cursor-default">

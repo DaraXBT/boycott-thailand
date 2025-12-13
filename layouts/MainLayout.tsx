@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Ban, Menu, X, LogIn, User, ShieldCheck, LogOut, HeartHandshake } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -33,7 +32,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen w-full bg-white relative font-sans text-slate-900 selection:bg-red-100 selection:text-red-900">
+    <div className="min-h-screen w-full bg-white relative font-sans text-slate-900 selection:bg-red-100 selection:text-red-900 overflow-x-hidden">
       {/* Noise Texture (Darker Dots) Background */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"

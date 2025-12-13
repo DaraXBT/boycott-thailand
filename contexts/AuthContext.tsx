@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { Session } from '@supabase/supabase-js';
 
 export interface User {
+  id: string;
   email: string;
   name: string;
   role: 'user' | 'admin';
@@ -21,43 +24,88 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('boycott_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
+    // 1. Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        fetchProfile(session);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    // 2. Listen for changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        fetchProfile(session);
+      } else {
+        setUser(null);
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    // Mock API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Hardcoded Admin Logic
-    if (email.toLowerCase() === 'admin@boycott.com' && password === 'admin123') {
-      const adminUser: User = { email, name: 'Administrator', role: 'admin' };
-      setUser(adminUser);
-      localStorage.setItem('boycott_user', JSON.stringify(adminUser));
-      return true;
+  const fetchProfile = async (session: Session) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        // Fallback if profile doesn't exist yet (race condition on signup trigger)
+        setUser({
+          id: session.user.id,
+          email: session.user.email!,
+          name: session.user.user_metadata.full_name || 'User',
+          role: 'user'
+        });
+      } else {
+        setUser({
+          id: data.id,
+          email: data.email,
+          name: data.full_name,
+          role: data.role as 'user' | 'admin'
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    // Standard User Logic (Mock)
-    const stdUser: User = { email, name: email.split('@')[0], role: 'user' };
-    setUser(stdUser);
-    localStorage.setItem('boycott_user', JSON.stringify(stdUser));
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw error;
     return true;
   };
 
-  const signup = async (email: string, _password: string, name: string) => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    const newUser: User = { email, name, role: 'user' };
-    setUser(newUser);
-    localStorage.setItem('boycott_user', JSON.stringify(newUser));
+  const signup = async (email: string, password: string, name: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+        },
+      },
+    });
+    if (error) throw error;
     return true;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem('boycott_user');
   };
 
   return (

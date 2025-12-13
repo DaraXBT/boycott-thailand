@@ -1,12 +1,12 @@
-
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, AlertCircle } from 'lucide-react';
+import { Search, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category, Brand } from '../types';
 import { BRANDS } from '../constants';
 import BrandCard from '../components/BrandCard';
 import { Input } from '../components/ui';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase } from '../lib/supabase';
 
 const HomePage: React.FC = () => {
   const { t, getCategoryLabel } = useLanguage();
@@ -14,20 +14,54 @@ const HomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
   const [allBrands, setAllBrands] = useState<Brand[]>(BRANDS);
+  const [isLoading, setIsLoading] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const approved = localStorage.getItem('boycott_approved_brands');
-    if (approved) {
-      const approvedBrands = JSON.parse(approved);
-      const combined = [...BRANDS];
-      approvedBrands.forEach((b: Brand) => {
-        if (!combined.find(cb => cb.id === b.id)) {
-          combined.unshift(b);
+    const fetchBrands = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('brands')
+          .select('*')
+          .eq('status', 'approved');
+
+        if (error) {
+          console.error('Error fetching brands:', error);
+          return;
         }
-      });
-      setAllBrands(combined);
-    }
+
+        if (data) {
+          // Map snake_case DB fields to camelCase Types
+          const mappedBrands: Brand[] = data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            category: item.category as Category,
+            purpose: item.purpose,
+            purposeKm: item.purpose_km,
+            location: item.location,
+            locationKm: item.location_km,
+            website: item.website,
+            description: item.description,
+            descriptionKm: item.description_km,
+            imageUrl: item.image_url || 'https://via.placeholder.com/150'
+          }));
+
+          // Combine constants with Supabase data (Supabase items first)
+          // We use a Map to ensure unique IDs if a constant was migrated to DB
+          const combined = [...mappedBrands, ...BRANDS];
+          const uniqueBrands = Array.from(new Map(combined.map(item => [item.id, item])).values());
+          
+          setAllBrands(uniqueBrands);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBrands();
   }, []);
 
   const filteredBrands = useMemo(() => {
@@ -122,6 +156,7 @@ const HomePage: React.FC = () => {
       <div ref={resultsRef} className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-slate-200/60 pb-4 scroll-mt-24">
           <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
               {t('listingResults')}
+              {isLoading && <Loader2 className="w-5 h-5 animate-spin text-slate-400" />}
           </h2>
           <span className="text-sm font-medium text-slate-500">
               {t('showingResults', { count: filteredBrands.length })}

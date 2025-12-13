@@ -1,12 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
-import { Send, ArrowLeft, CheckCircle2, ShieldAlert, Lock } from 'lucide-react';
+import { Send, ArrowLeft, CheckCircle2, ShieldAlert, Lock, AlertCircle } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Brand, BrandReport } from '../types';
+import { Brand } from '../types';
 import { BRANDS } from '../constants';
 import { Card, Label, Textarea, Button, Select, Input } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase } from '../lib/supabase';
 
 const ReportPage: React.FC = () => {
   const { t, getCategoryLabel } = useLanguage();
@@ -16,51 +16,74 @@ const ReportPage: React.FC = () => {
   const [brand, setBrand] = useState<Brand | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    // Find brand by ID from constants or localStorage
+    // 1. Try finding in Constants
     let found = BRANDS.find(b => b.id === id);
+    
+    // 2. If not, try finding in Supabase (we need to fetch it to be sure)
     if (!found) {
-        const approved = JSON.parse(localStorage.getItem('boycott_approved_brands') || '[]');
-        found = approved.find((b: Brand) => b.id === id);
+        // Simple fetch for this specific brand from DB
+        supabase.from('brands').select('*').eq('id', id).single()
+        .then(({ data }) => {
+            if (data) {
+                 setBrand({
+                    id: data.id,
+                    name: data.name,
+                    category: data.category,
+                    purpose: data.purpose,
+                    purposeKm: data.purpose_km,
+                    location: data.location,
+                    locationKm: data.location_km,
+                    website: data.website,
+                    description: data.description,
+                    descriptionKm: data.description_km,
+                    imageUrl: data.image_url
+                 });
+            }
+        });
+    } else {
+        setBrand(found);
     }
-    setBrand(found || null);
   }, [id]);
 
   if (!brand) {
+      // Show loading if still checking DB, or Not Found if failed.
+      // For simplicity, we just show "Brand not found" or "Loading..." logic could be added
       return (
           <div className="text-center py-20">
-              <p className="text-slate-500">Brand not found.</p>
+              <p className="text-slate-500">Brand not found or loading...</p>
               <Button onClick={() => navigate('/')} variant="outline" className="mt-4">Return Home</Button>
           </div>
       )
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMsg('');
     
     const formData = new FormData(e.currentTarget);
-    const newReport: BrandReport = {
-        id: Date.now().toString(),
-        brandId: brand.id,
-        brandName: brand.name,
-        brandImage: brand.imageUrl,
+    const reportData = {
+        brand_id: brand.id,
+        brand_name: brand.name,
+        brand_image: brand.imageUrl,
         reason: formData.get('reason') as string,
         details: formData.get('details') as string,
-        email: formData.get('email') as string || undefined,
+        email: formData.get('email') as string || user?.email,
         status: 'pending',
-        submittedAt: new Date().toISOString()
     };
 
-    const existingReports = JSON.parse(localStorage.getItem('boycott_reports') || '[]');
-    existingReports.unshift(newReport);
-    localStorage.setItem('boycott_reports', JSON.stringify(existingReports));
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 1000);
+    try {
+        const { error } = await supabase.from('reports').insert([reportData]);
+        if (error) throw error;
+        setSubmitted(true);
+    } catch (err: any) {
+        setErrorMsg(err.message || 'Failed to submit report');
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   const categoryLabel = getCategoryLabel(brand.category);
@@ -190,6 +213,11 @@ const ReportPage: React.FC = () => {
           </div>
 
           <div className="pt-2 flex flex-col md:flex-row gap-4">
+            {errorMsg && (
+                 <div className="w-full mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm flex items-center gap-2">
+                     <AlertCircle className="w-4 h-4" /> {errorMsg}
+                 </div>
+             )}
              <Button 
                 type="submit" 
                 variant="destructive"

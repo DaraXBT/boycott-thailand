@@ -1,9 +1,9 @@
-
 import React, { useEffect, useState } from 'react';
-import { Check, X, Trash2, ShieldCheck, Inbox, Search, Plus, Edit2, Save, RotateCcw, ArrowUpDown, Filter, Calendar, Globe, User, Image as ImageIcon, ExternalLink, MapPin, Tag, Clock, Flag, AlertTriangle, FileText } from 'lucide-react';
+import { Check, X, Trash2, ShieldCheck, Inbox, Search, Plus, Edit2, Save, RotateCcw, ArrowUpDown, Filter, Calendar, Globe, User, Image as ImageIcon, ExternalLink, MapPin, Tag, Clock, Flag, AlertTriangle, FileText, Loader2 } from 'lucide-react';
 import { Brand, BrandReport, Category } from '../types';
 import { Card, Button, Badge, Input, Select, Label, Textarea } from '../components/ui';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase } from '../lib/supabase';
 
 interface Submission extends Brand {
   submissionDate: string;
@@ -11,105 +11,135 @@ interface Submission extends Brand {
   submittedBy: string;
 }
 
-const SAMPLE_SUBMISSIONS: Submission[] = [
-  {
-    id: 'sample-1',
-    name: 'Thai Tea Express',
-    category: Category.FOOD_BEVERAGE,
-    purpose: 'Bubble Tea Franchise',
-    location: 'Phnom Penh',
-    website: 'thaiteaexpress.com',
-    description: 'A new franchise spotted in BKK1 claiming 100% Thai origin.',
-    imageUrl: 'https://cdn-icons-png.flaticon.com/512/3054/3054889.png',
-    submissionDate: new Date().toISOString(),
-    status: 'pending',
-    submittedBy: 'concerned_citizen@gmail.com',
-    purposeKm: 'ហ្វ្រេនឆាយតែគុជ',
-    locationKm: 'ភ្នំពេញ',
-    descriptionKm: 'ហ្វ្រេនឆាយថ្មីនៅបឹងកេងកង១'
-  }
-];
-
-const SAMPLE_REPORTS: BrandReport[] = [
-  {
-    id: 'rep-1',
-    brandId: '1',
-    brandName: 'PTT Gas Station',
-    brandImage: 'https://cdn.worldvectorlogo.com/logos/ptt-station-logo.svg',
-    reason: 'incorrect_info',
-    details: 'The location information says "Nationwide" but they closed the branch in Kampot recently.',
-    email: 'reporter@example.com',
-    status: 'pending',
-    submittedAt: new Date().toISOString()
-  }
-];
-
 const AdminPage: React.FC = () => {
   const { t, getCategoryLabel } = useLanguage();
   const [activeTab, setActiveTab] = useState<'submissions' | 'reports'>('submissions');
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [reports, setReports] = useState<BrandReport[]>([]);
+  const [loading, setLoading] = useState(false);
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<string>('newest');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'resolved' | 'dismissed'>('all');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<Submission>>({});
 
-  useEffect(() => {
-    const storedSubmissions = localStorage.getItem('boycott_submissions');
-    if (storedSubmissions) {
-      setSubmissions(JSON.parse(storedSubmissions));
-    } else {
-      setSubmissions(SAMPLE_SUBMISSIONS);
-      localStorage.setItem('boycott_submissions', JSON.stringify(SAMPLE_SUBMISSIONS));
-    }
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+        // Fetch Brands (Submissions)
+        const { data: brandsData, error: brandsError } = await supabase
+            .from('brands')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-    const storedReports = localStorage.getItem('boycott_reports');
-    if (storedReports) {
-        setReports(JSON.parse(storedReports));
-    } else {
-        setReports(SAMPLE_REPORTS);
-        localStorage.setItem('boycott_reports', JSON.stringify(SAMPLE_REPORTS));
+        if (brandsData) {
+            const mappedBrands: Submission[] = brandsData.map((item: any) => ({
+                id: item.id,
+                name: item.name,
+                category: item.category as Category,
+                purpose: item.purpose,
+                purposeKm: item.purpose_km,
+                location: item.location,
+                locationKm: item.location_km,
+                website: item.website,
+                description: item.description,
+                descriptionKm: item.description_km,
+                imageUrl: item.image_url,
+                status: item.status,
+                submissionDate: item.created_at,
+                submittedBy: item.submitted_by
+            }));
+            setSubmissions(mappedBrands);
+        }
+
+        // Fetch Reports
+        const { data: reportsData, error: reportsError } = await supabase
+            .from('reports')
+            .select('*')
+            .order('submitted_at', { ascending: false });
+
+        if (reportsData) {
+            const mappedReports: BrandReport[] = reportsData.map((item: any) => ({
+                id: item.id,
+                brandId: item.brand_id,
+                brandName: item.brand_name,
+                brandImage: item.brand_image,
+                reason: item.reason,
+                details: item.details,
+                email: item.email,
+                status: item.status,
+                submittedAt: item.submitted_at
+            }));
+            setReports(mappedReports);
+        }
+
+    } catch (error) {
+        console.error('Error fetching admin data:', error);
+    } finally {
+        setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
-  const saveSubmissions = (newSubmissions: Submission[]) => {
-    setSubmissions(newSubmissions);
-    localStorage.setItem('boycott_submissions', JSON.stringify(newSubmissions));
-    const approved = newSubmissions.filter(s => s.status === 'approved');
-    localStorage.setItem('boycott_approved_brands', JSON.stringify(approved));
-  };
+  // --- Actions ---
 
-  const handleStatusChange = (id: string, newStatus: 'approved' | 'rejected' | 'pending') => {
-    const updated = submissions.map(s => 
-      s.id === id ? { ...s, status: newStatus } : s
-    );
-    saveSubmissions(updated);
-  };
+  const handleStatusChange = async (id: string, newStatus: 'approved' | 'rejected' | 'pending') => {
+    // Optimistic update
+    setSubmissions(prev => prev.map(s => s.id === id ? { ...s, status: newStatus } : s));
+    
+    const { error } = await supabase
+        .from('brands')
+        .update({ status: newStatus })
+        .eq('id', id);
 
-  const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this submission? This cannot be undone.')) {
-      const updated = submissions.filter(s => s.id !== id);
-      saveSubmissions(updated);
-      if (editingId === id) cancelEdit();
+    if (error) {
+        console.error('Update failed:', error);
+        fetchData(); // Revert
     }
   };
 
-  const saveReports = (newReports: BrandReport[]) => {
-    setReports(newReports);
-    localStorage.setItem('boycott_reports', JSON.stringify(newReports));
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this submission? This cannot be undone.')) {
+        // Optimistic
+        setSubmissions(prev => prev.filter(s => s.id !== id));
+        if (editingId === id) cancelEdit();
+
+        const { error } = await supabase
+            .from('brands')
+            .delete()
+            .eq('id', id);
+        
+        if (error) {
+            console.error('Delete failed:', error);
+            fetchData();
+        }
+    }
   };
 
-  const handleReportStatus = (id: string, newStatus: 'resolved' | 'dismissed' | 'pending') => {
-    const updated = reports.map(r => r.id === id ? { ...r, status: newStatus } : r);
-    saveReports(updated);
+  const handleReportStatus = async (id: string, newStatus: 'resolved' | 'dismissed' | 'pending') => {
+      setReports(prev => prev.map(r => r.id === id ? { ...r, status: newStatus } : r));
+
+      const { error } = await supabase
+          .from('reports')
+          .update({ status: newStatus })
+          .eq('id', id);
+       
+      if (error) fetchData();
   };
 
-  const deleteReport = (id: string) => {
+  const deleteReport = async (id: string) => {
      if (window.confirm('Delete this report?')) {
-         saveReports(reports.filter(r => r.id !== id));
+         setReports(prev => prev.filter(r => r.id !== id));
+         const { error } = await supabase.from('reports').delete().eq('id', id);
+         if (error) fetchData();
      }
   };
+
+  // --- Filtering & Sorting ---
 
   const filteredSubmissions = submissions
     .filter(s => {
@@ -140,6 +170,8 @@ const AdminPage: React.FC = () => {
         return 0;
     });
 
+  // --- Edit Form Handlers ---
+
   const startEdit = (submission: Submission) => {
     setEditingId(submission.id);
     setEditForm({ ...submission });
@@ -148,7 +180,6 @@ const AdminPage: React.FC = () => {
   const startCreate = () => {
     setEditingId('new');
     setEditForm({
-      id: Date.now().toString(),
       name: '',
       category: Category.RETAIL,
       purpose: '',
@@ -158,7 +189,6 @@ const AdminPage: React.FC = () => {
       imageUrl: '',
       status: 'approved',
       submittedBy: 'Admin',
-      submissionDate: new Date().toISOString(),
       purposeKm: '',
       locationKm: '',
       descriptionKm: ''
@@ -170,18 +200,36 @@ const AdminPage: React.FC = () => {
     setEditForm({});
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editForm.name || !editForm.category) {
       alert('Name and Category are required.');
       return;
     }
-    let updated: Submission[];
+
+    const payload = {
+        name: editForm.name,
+        category: editForm.category,
+        purpose: editForm.purpose,
+        purpose_km: editForm.purposeKm,
+        location: editForm.location,
+        location_km: editForm.locationKm,
+        website: editForm.website,
+        description: editForm.description,
+        description_km: editForm.descriptionKm,
+        image_url: editForm.imageUrl,
+        status: editForm.status || 'pending',
+        submitted_by: editForm.submittedBy || 'Admin'
+    };
+
     if (editingId === 'new') {
-       updated = [editForm as Submission, ...submissions];
+       const { error } = await supabase.from('brands').insert([payload]);
+       if (error) console.error(error);
     } else {
-       updated = submissions.map(s => s.id === editingId ? (editForm as Submission) : s);
+       const { error } = await supabase.from('brands').update(payload).eq('id', editingId);
+       if (error) console.error(error);
     }
-    saveSubmissions(updated);
+    
+    await fetchData();
     cancelEdit();
   };
 
@@ -194,6 +242,7 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div>
            <div className="flex items-center gap-2 mb-1">
@@ -203,6 +252,7 @@ const AdminPage: React.FC = () => {
            <p className="text-slate-500">{t('manageSubmissionsDesc')}</p>
         </div>
         
+        {/* Tab Switcher */}
         <div className="flex p-1 bg-slate-100 rounded-xl self-start md:self-center">
             <button 
                 onClick={() => { setActiveTab('submissions'); setStatusFilter('all'); }}
@@ -235,7 +285,9 @@ const AdminPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Controls Grid */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
+        {/* Search Bar */}
         <div className="md:col-span-6 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
@@ -246,6 +298,7 @@ const AdminPage: React.FC = () => {
             />
         </div>
 
+        {/* Status Filter */}
         <div className="md:col-span-3 relative">
              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none z-10" />
              <Select 
@@ -269,6 +322,7 @@ const AdminPage: React.FC = () => {
              </Select>
         </div>
 
+        {/* Sort/Add */}
         <div className="md:col-span-3 flex gap-2">
             <div className="relative flex-grow">
                  <ArrowUpDown className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none z-10" />
@@ -289,8 +343,15 @@ const AdminPage: React.FC = () => {
         </div>
       </div>
 
-      {activeTab === 'submissions' && (
+      {loading && (
+          <div className="py-20 flex justify-center">
+              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+          </div>
+      )}
+
+      {!loading && activeTab === 'submissions' && (
          <>
+          {/* Create Form */}
           {editingId === 'new' && (
             <div className="mb-8 animate-in slide-in-from-top-4">
                 <Card className="p-6 border-indigo-200 shadow-lg shadow-indigo-100/50 bg-indigo-50/30">
@@ -350,7 +411,7 @@ const AdminPage: React.FC = () => {
          </>
       )}
 
-      {activeTab === 'reports' && (
+      {!loading && activeTab === 'reports' && (
           <div className="space-y-4">
             {filteredReports.length === 0 ? (
                  <EmptyState type="report" clear={() => {setSearchQuery(''); setStatusFilter('all');}} t={t} />
@@ -369,7 +430,7 @@ const AdminPage: React.FC = () => {
                                 <h4 className="font-bold text-slate-900">{report.brandName}</h4>
                                 <div className="mt-2 flex items-center gap-1 text-xs text-slate-500">
                                     <span className="uppercase tracking-wider">{t('reportId')}:</span>
-                                    <code className="bg-slate-200 px-1 rounded">{report.id.slice(-4)}</code>
+                                    <code className="bg-slate-200 px-1 rounded">{report.id.slice(0, 8)}</code>
                                 </div>
                             </div>
 
@@ -427,18 +488,30 @@ const AdminPage: React.FC = () => {
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
+
                                         {report.status === 'pending' && (
                                             <>
-                                                <Button onClick={() => handleReportStatus(report.id, 'dismissed')} variant="outline" className="h-9 text-xs">
+                                                <Button 
+                                                    onClick={() => handleReportStatus(report.id, 'dismissed')} 
+                                                    variant="outline" 
+                                                    className="h-9 text-xs"
+                                                >
                                                     {t('dismiss')}
                                                 </Button>
-                                                <Button onClick={() => handleReportStatus(report.id, 'resolved')} className="h-9 text-xs bg-green-600 hover:bg-green-700 text-white border-green-700">
+                                                <Button 
+                                                    onClick={() => handleReportStatus(report.id, 'resolved')} 
+                                                    className="h-9 text-xs bg-green-600 hover:bg-green-700 text-white border-green-700"
+                                                >
                                                     {t('markResolved')}
                                                 </Button>
                                             </>
                                         )}
                                          {report.status !== 'pending' && (
-                                             <Button onClick={() => handleReportStatus(report.id, 'pending')} variant="outline" className="h-9 text-xs">
+                                             <Button 
+                                                onClick={() => handleReportStatus(report.id, 'pending')} 
+                                                variant="outline" 
+                                                className="h-9 text-xs"
+                                             >
                                                 {t('reopen')}
                                             </Button>
                                          )}
@@ -455,6 +528,7 @@ const AdminPage: React.FC = () => {
   );
 };
 
+// Extracted Empty State Component
 const EmptyState = ({ type, clear, t }: { type: 'submission' | 'report', clear: () => void, t: (key: any) => string }) => (
     <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
         <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
@@ -469,6 +543,7 @@ const EmptyState = ({ type, clear, t }: { type: 'submission' | 'report', clear: 
     </div>
 );
 
+// Extracted Submission Card Component
 const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusChange }: any) => {
     return (
         <Card className={`group overflow-hidden transition-all duration-200 hover:shadow-lg ${
@@ -476,6 +551,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
             item.status === 'rejected' ? 'border-red-200 bg-white opacity-80 hover:opacity-100' :
             'border-amber-200 bg-white'
         }`}>
+            {/* Top Color Bar Status Indicator */}
             <div className={`h-1.5 w-full ${
             item.status === 'approved' ? 'bg-gradient-to-r from-green-500 to-emerald-400' :
             item.status === 'rejected' ? 'bg-gradient-to-r from-red-500 to-rose-400' :
@@ -483,7 +559,10 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
             }`} />
 
             <div className="p-5 md:p-6 flex flex-col gap-6">
+            
+            {/* 1. Header Section: Identity */}
             <div className="flex flex-col md:flex-row gap-6">
+                {/* Logo Box */}
                 <div className="shrink-0">
                     <div className="w-24 h-24 md:w-32 md:h-32 bg-slate-50 rounded-2xl border border-slate-100 p-2 flex items-center justify-center relative overflow-hidden group-hover:bg-white group-hover:shadow-md transition-all">
                         {item.imageUrl ? (
@@ -494,7 +573,9 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                     </div>
                 </div>
 
+                {/* Main Info with Modernized Grid */}
                 <div className="flex-grow min-w-0 flex flex-col justify-between">
+                    {/* Title Row */}
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                         <div className="space-y-1">
                                 <h3 className="text-2xl md:text-3xl font-bold text-slate-900 group-hover:text-indigo-900 transition-colors">
@@ -515,7 +596,9 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                         </Badge>
                     </div>
                     
+                    {/* Modern Meta Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 p-4 bg-slate-50/80 rounded-xl border border-slate-100">
+                            {/* Category */}
                             <div className="flex items-center gap-3 overflow-hidden">
                             <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
                                 <Tag className="w-4 h-4" />
@@ -526,6 +609,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                             </div>
                             </div>
 
+                            {/* Website */}
                             <div className="flex items-center gap-3 overflow-hidden">
                             <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
                                 <Globe className="w-4 h-4" />
@@ -542,6 +626,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                             </div>
                             </div>
 
+                            {/* Date */}
                             <div className="flex items-center gap-3 overflow-hidden">
                             <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
                                 <Calendar className="w-4 h-4" />
@@ -552,6 +637,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                             </div>
                             </div>
 
+                            {/* Submitter */}
                             <div className="flex items-center gap-3 overflow-hidden">
                             <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
                                 <User className="w-4 h-4" />
@@ -565,7 +651,9 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                 </div>
             </div>
 
+            {/* 2. Content Comparison Grid */}
             <div className="border border-slate-200 rounded-xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+                {/* Left: English Details */}
                 <div className="p-5 bg-white space-y-4">
                     <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                         <span className="text-sm font-bold text-slate-400 tracking-widest">English</span>
@@ -591,6 +679,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                     </div>
                 </div>
 
+                {/* Right: Khmer Details */}
                 <div className="p-5 bg-slate-50/50 border-t lg:border-t-0 lg:border-l border-slate-200 space-y-4">
                     <div className="flex items-center gap-2 pb-3 border-b border-slate-200/60">
                         <span className="text-sm font-bold text-slate-400 font-['Kantumruy_Pro']">ភាសាខ្មែរ</span>
@@ -619,6 +708,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
 
             </div>
             
+            {/* Action Footer */}
             <div className={`px-4 py-4 md:px-6 md:py-3 border-t flex flex-col md:flex-row items-center justify-between gap-3 ${
             item.status === 'approved' ? 'bg-green-50/30' :
             item.status === 'rejected' ? 'bg-red-50/30' :
@@ -660,6 +750,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
     );
 };
 
+// Sub-component for the edit form
 const EditForm = ({ form, onChange, onSave, onCancel, t, getCategoryLabel }: any) => {
     return (
         <div className="space-y-6">
@@ -672,6 +763,7 @@ const EditForm = ({ form, onChange, onSave, onCancel, t, getCategoryLabel }: any
                     <Label>{t('category')}</Label>
                     <Select value={form.category || ''} onChange={(e: any) => onChange('category', e.target.value)} className="h-10">
                         {Object.values(Category).filter(c => c !== 'All').map((cat) => (
+                             // @ts-ignore
                             <option key={cat} value={cat}>{getCategoryLabel(cat)}</option>
                         ))}
                     </Select>

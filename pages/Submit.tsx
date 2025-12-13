@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Tag, Building2, Info, Lock, Languages } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +5,7 @@ import { Category } from '../types';
 import { Card, Input, Label, Textarea, Button, Select } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase } from '../lib/supabase';
 
 const SubmitPage: React.FC = () => {
   const { t, getCategoryLabel } = useLanguage();
@@ -13,38 +13,45 @@ const SubmitPage: React.FC = () => {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMsg('');
     
     // Extract form data
     const formData = new FormData(e.currentTarget);
-    const newSubmission = {
-      id: Date.now().toString(),
+    
+    const submissionData = {
       name: formData.get('brandName') as string,
       category: formData.get('category') as Category,
       purpose: formData.get('purpose') as string,
       location: formData.get('location') as string,
       website: formData.get('website') as string,
       description: formData.get('description') as string,
-      imageUrl: (formData.get('logoUrl') as string) || 'https://via.placeholder.com/150',
+      image_url: (formData.get('logoUrl') as string) || 'https://via.placeholder.com/150',
       status: 'pending',
-      submissionDate: new Date().toISOString(),
-      submittedBy: user?.email || 'Anonymous',
-      purposeKm: (formData.get('purposeKm') as string) || (formData.get('purpose') as string),
-      locationKm: (formData.get('locationKm') as string) || (formData.get('location') as string),
-      descriptionKm: (formData.get('descriptionKm') as string) || (formData.get('description') as string),
+      submitted_by: user?.email || 'Anonymous',
+      purpose_km: (formData.get('purposeKm') as string) || (formData.get('purpose') as string),
+      location_km: (formData.get('locationKm') as string) || (formData.get('location') as string),
+      description_km: (formData.get('descriptionKm') as string) || (formData.get('description') as string),
     };
 
-    const existing = JSON.parse(localStorage.getItem('boycott_submissions') || '[]');
-    existing.unshift(newSubmission);
-    localStorage.setItem('boycott_submissions', JSON.stringify(existing));
+    try {
+      const { error } = await supabase
+        .from('brands')
+        .insert([submissionData]);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+      if (error) throw error;
+
       setSubmitted(true);
-    }, 1000);
+    } catch (error: any) {
+      console.error('Error submitting brand:', error);
+      setErrorMsg(error.message || 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!user) {
@@ -207,6 +214,11 @@ const SubmitPage: React.FC = () => {
           </div>
 
           <div className="pt-4">
+             {errorMsg && (
+                 <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm flex items-center gap-2">
+                     <AlertCircle className="w-4 h-4" /> {errorMsg}
+                 </div>
+             )}
              <Button 
                 type="submit" 
                 className="w-full h-14 rounded-xl text-base font-semibold shadow-xl shadow-slate-900/10 hover:shadow-slate-900/20 transition-all active:scale-[0.98]" 

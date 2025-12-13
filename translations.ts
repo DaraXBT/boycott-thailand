@@ -135,7 +135,8 @@ export const translations = {
     purposeKmLabel: "Purpose (Km)",
     locationKmLabel: "Location (Km)",
     descriptionKmLabel: "Description (Km)",
-    descriptionLabel: "Description"
+    descriptionLabel: "Description",
+    checkEmail: "Please check your email to confirm your account."
   },
   km: {
     heroTag: "យុទ្ធនាការដាស់តឿនអ្នកប្រើប្រាស់",
@@ -270,7 +271,8 @@ export const translations = {
     purposeKmLabel: "គោលបំណង (ភាសាខ្មែរ)",
     locationKmLabel: "ទីតាំង (ភាសាខ្មែរ)",
     descriptionKmLabel: "ការពិពណ៌នា (ភាសាខ្មែរ)",
-    descriptionLabel: "ការពិពណ៌នា"
+    descriptionLabel: "ការពិពណ៌នា",
+    checkEmail: "សូមពិនិត្យអ៊ីមែលរបស់អ្នកដើម្បីបញ្ជាក់គណនី។"
   }
 };
 

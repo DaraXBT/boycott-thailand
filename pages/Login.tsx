@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -23,12 +22,20 @@ const LoginPage: React.FC = () => {
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
+        navigate('/');
       } else {
-        await signup(formData.email, formData.password, formData.name);
+        const { session } = await signup(formData.email, formData.password, formData.name);
+        // If session is null, email confirmation is likely required
+        if (!session) {
+          setError(t('checkEmail'));
+          setIsLogin(true); // Switch back to login mode so they can login after confirming
+        } else {
+          navigate('/');
+        }
       }
-      navigate('/');
-    } catch (err) {
-      setError(t('authFailed'));
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || t('authFailed'));
     } finally {
       setLoading(false);
     }
@@ -98,8 +105,8 @@ const LoginPage: React.FC = () => {
 
           {error && (
             <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-              <AlertCircle className="w-4 h-4" />
-              {error}
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
@@ -114,7 +121,10 @@ const LoginPage: React.FC = () => {
 
         <div className="mt-6 pt-6 border-t border-slate-100 text-center">
           <button
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError('');
+            }}
             className="text-sm text-slate-600 hover:text-red-600 font-medium transition-colors"
           >
             {isLogin ? t('noAccount') : t('hasAccount')}

@@ -12,7 +12,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
-  signup: (email: string, password: string, name: string) => Promise<boolean>;
+  signup: (email: string, password: string, name: string) => Promise<any>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -25,7 +25,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // 1. Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error("Error checking auth session:", error);
+        setIsLoading(false);
+        return;
+      }
+      
       if (session) {
         fetchProfile(session);
       } else {
@@ -57,8 +63,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
         // Fallback if profile doesn't exist yet (race condition on signup trigger)
+        // or if table doesn't exist
         setUser({
           id: session.user.id,
           email: session.user.email!,
@@ -90,7 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -100,7 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       },
     });
     if (error) throw error;
-    return true;
+    return data;
   };
 
   const logout = async () => {

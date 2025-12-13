@@ -5,6 +5,7 @@ import { Category, Brand } from '../types';
 import { Input } from '../components/ui';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
+import { BRANDS } from '../constants';
 import BrandCard from '../components/BrandCard';
 
 const HomePage: React.FC = () => {
@@ -25,12 +26,10 @@ const HomePage: React.FC = () => {
           .select('*')
           .eq('status', 'approved');
 
-        if (error) {
-          console.error('Error fetching brands:', error);
-          return;
-        }
-
-        if (data) {
+        if (error || !data || data.length === 0) {
+          if (error) console.warn('Supabase fetch failed, falling back to static data:', error);
+          setAllBrands(BRANDS);
+        } else {
           const mappedBrands: Brand[] = data.map((item: any) => ({
             id: item.id,
             name: item.name,
@@ -48,7 +47,8 @@ const HomePage: React.FC = () => {
           setAllBrands(mappedBrands);
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error in fetchBrands:', err);
+        setAllBrands(BRANDS);
       } finally {
         setIsLoading(false);
       }

@@ -20,15 +20,15 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
   const description = (lang === 'km' && brand.descriptionKm) ? brand.descriptionKm : brand.description;
 
   return (
-    <div className="group h-full flex flex-row md:flex-col bg-white rounded-xl md:rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:border-red-100 hover:-translate-y-1 transition-all duration-300">
+    <div className="group h-full flex flex-row md:flex-col bg-white rounded-xl md:rounded-xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:border-red-100 hover:-translate-y-1 transition-all duration-300">
       
       {/* Logo Section */}
-      <div className="relative w-32 sm:w-40 md:w-full md:h-48 bg-white p-3 md:p-6 flex items-center justify-center border-r md:border-r-0 md:border-b border-slate-50 overflow-hidden shrink-0">
+      <div className="relative w-32 sm:w-40 md:w-full md:h-40 bg-white p-3 md:p-4 flex items-center justify-center border-r md:border-r-0 md:border-b border-slate-50 overflow-hidden shrink-0">
          <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent opacity-50" />
          
          {imgError ? (
             <div className="flex flex-col items-center justify-center text-slate-300 gap-2">
-                <ImageIcon className="w-10 h-10 md:w-12 md:h-12" />
+                <ImageIcon className="w-10 h-10 md:w-10 md:h-10" />
                 <span className="text-[10px] md:text-[10px] font-medium uppercase tracking-wider hidden md:block">No Image</span>
             </div>
          ) : (
@@ -41,7 +41,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
              />
          )}
          
-         <div className="absolute top-2 left-2 md:top-3 md:right-3 md:left-auto z-20 select-none scale-[0.7] md:scale-90 origin-top-left md:origin-top-right">
+         <div className="absolute top-2 left-2 md:top-3 md:right-3 md:left-auto z-20 select-none scale-[0.7] md:scale-[0.85] origin-top-left md:origin-top-right">
             <div className="relative inline-flex group/badge">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-0 group-hover/badge:opacity-20 animate-ping duration-1000"></span>
                 <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-red-600 text-white rounded-full shadow-[0_4px_12px_-3px_rgba(220,38,38,0.4)] ring-1 ring-white/20 hover:bg-red-700 hover:scale-105 transition-all duration-300 backdrop-blur-sm">
@@ -56,15 +56,15 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
 
       {/* Content Section */}
       <div className="flex flex-col flex-grow min-w-0">
-          <div className="p-3 md:p-5 flex flex-col flex-grow gap-1.5 md:gap-3">
-              <div className="flex flex-col gap-1.5 md:gap-1.5">
+          <div className="p-3 md:p-4 flex flex-col flex-grow gap-1.5 md:gap-2">
+              <div className="flex flex-col gap-1.5 md:gap-1">
                  <div className="flex items-center">
-                    <span className="px-2 py-0.5 md:px-2.5 md:py-0.5 rounded-full bg-slate-100 text-slate-600 text-[9px] md:text-[10px] font-bold uppercase tracking-wider border border-slate-200 truncate max-w-full">
+                    <span className="px-2 py-0.5 md:px-2 md:py-0.5 rounded-full bg-slate-100 text-slate-600 text-[9px] md:text-[10px] font-bold uppercase tracking-wider border border-slate-200 truncate max-w-full">
                         {categoryLabel}
                     </span>
                  </div>
                  
-                 <h3 className="text-base md:text-lg font-bold text-slate-900 leading-tight group-hover:text-red-600 transition-colors font-sans line-clamp-2">
+                 <h3 className="text-base md:text-base font-bold text-slate-900 leading-tight group-hover:text-red-600 transition-colors font-sans line-clamp-2">
                     {brand.name}
                  </h3>
                  <p className="text-[10px] md:text-xs font-medium text-slate-500 flex items-center gap-1 md:gap-1.5">
@@ -78,8 +78,8 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
               </p>
           </div>
 
-          <div className="px-3 py-2 md:px-5 md:py-3 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between mt-auto gap-2 md:gap-3">
-              <div className="flex items-start gap-1.5 md:gap-2 text-slate-500 text-[10px] md:text-xs font-medium flex-1 overflow-hidden">
+          <div className="px-3 py-2 md:px-4 md:py-2.5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between mt-auto gap-2 md:gap-2">
+              <div className="flex items-start gap-1.5 md:gap-1.5 text-slate-500 text-[10px] md:text-xs font-medium flex-1 overflow-hidden">
                  <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-slate-400 mt-0.5 shrink-0" />
                  <span className="leading-snug truncate">{location}</span>
               </div>

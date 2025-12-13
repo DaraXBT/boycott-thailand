@@ -158,7 +158,7 @@ const HomePage: React.FC = () => {
 
       {/* Grid Layout */}
       {filteredBrands.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
           {filteredBrands.map((brand) => (
             <BrandCard key={brand.id} brand={brand} onReport={handleReport} />
           ))}

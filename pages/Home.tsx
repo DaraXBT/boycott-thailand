@@ -2,19 +2,18 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category, Brand } from '../types';
-import { BRANDS } from '../constants';
-import BrandCard from '../components/BrandCard';
 import { Input } from '../components/ui';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
+import BrandCard from '../components/BrandCard';
 
 const HomePage: React.FC = () => {
   const { t, getCategoryLabel } = useLanguage();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
-  const [allBrands, setAllBrands] = useState<Brand[]>(BRANDS);
-  const [isLoading, setIsLoading] = useState(false);
+  const [allBrands, setAllBrands] = useState<Brand[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +31,6 @@ const HomePage: React.FC = () => {
         }
 
         if (data) {
-          // Map snake_case DB fields to camelCase Types
           const mappedBrands: Brand[] = data.map((item: any) => ({
             id: item.id,
             name: item.name,
@@ -46,13 +44,8 @@ const HomePage: React.FC = () => {
             descriptionKm: item.description_km,
             imageUrl: item.image_url || 'https://via.placeholder.com/150'
           }));
-
-          // Combine constants with Supabase data (Supabase items first)
-          // We use a Map to ensure unique IDs if a constant was migrated to DB
-          const combined = [...mappedBrands, ...BRANDS];
-          const uniqueBrands = Array.from(new Map(combined.map(item => [item.id, item])).values());
           
-          setAllBrands(uniqueBrands);
+          setAllBrands(mappedBrands);
         }
       } catch (err) {
         console.error(err);
@@ -68,8 +61,8 @@ const HomePage: React.FC = () => {
     return allBrands.filter((brand) => {
       const matchesSearch = 
         brand.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        brand.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        brand.purpose.toLowerCase().includes(searchQuery.toLowerCase());
+        (brand.description && brand.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (brand.purpose && brand.purpose.toLowerCase().includes(searchQuery.toLowerCase()));
       
       const matchesCategory = selectedCategory === 'All' || brand.category === selectedCategory;
 

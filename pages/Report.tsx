@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Send, ArrowLeft, CheckCircle2, ShieldAlert, Lock, AlertCircle } from 'lucide-react';
+import { Send, ArrowLeft, CheckCircle2, ShieldAlert, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Brand } from '../types';
-import { BRANDS } from '../constants';
 import { Card, Label, Textarea, Button, Select, Input } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -17,16 +16,19 @@ const ReportPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [loadingBrand, setLoadingBrand] = useState(true);
 
   useEffect(() => {
-    // 1. Try finding in Constants
-    let found = BRANDS.find(b => b.id === id);
-    
-    // 2. If not, try finding in Supabase (we need to fetch it to be sure)
-    if (!found) {
-        // Simple fetch for this specific brand from DB
-        supabase.from('brands').select('*').eq('id', id).single()
-        .then(({ data }) => {
+    const fetchBrand = async () => {
+        if (!id) return;
+        setLoadingBrand(true);
+        try {
+            const { data, error } = await supabase
+                .from('brands')
+                .select('*')
+                .eq('id', id)
+                .single();
+
             if (data) {
                  setBrand({
                     id: data.id,
@@ -39,28 +41,24 @@ const ReportPage: React.FC = () => {
                     website: data.website,
                     description: data.description,
                     descriptionKm: data.description_km,
-                    imageUrl: data.image_url
+                    imageUrl: data.image_url || 'https://via.placeholder.com/150'
                  });
+            } else if (error) {
+                console.error("Error fetching brand:", error);
             }
-        });
-    } else {
-        setBrand(found);
-    }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoadingBrand(false);
+        }
+    };
+    fetchBrand();
   }, [id]);
-
-  if (!brand) {
-      // Show loading if still checking DB, or Not Found if failed.
-      // For simplicity, we just show "Brand not found" or "Loading..." logic could be added
-      return (
-          <div className="text-center py-20">
-              <p className="text-slate-500">Brand not found or loading...</p>
-              <Button onClick={() => navigate('/')} variant="outline" className="mt-4">Return Home</Button>
-          </div>
-      )
-  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!brand) return;
+    
     setIsSubmitting(true);
     setErrorMsg('');
     
@@ -85,6 +83,23 @@ const ReportPage: React.FC = () => {
         setIsSubmitting(false);
     }
   };
+
+  if (loadingBrand) {
+      return (
+          <div className="flex justify-center items-center min-h-[50vh]">
+              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+          </div>
+      );
+  }
+
+  if (!brand) {
+      return (
+          <div className="text-center py-20">
+              <p className="text-slate-500">Brand not found.</p>
+              <Button onClick={() => navigate('/')} variant="outline" className="mt-4">Return Home</Button>
+          </div>
+      )
+  }
 
   const categoryLabel = getCategoryLabel(brand.category);
 

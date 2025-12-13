@@ -19,6 +19,7 @@ const AdminPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sortOrder, setSortOrder] = useState<string>('newest');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'resolved' | 'dismissed'>('all');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -152,7 +153,8 @@ const AdminPage: React.FC = () => {
         s.purpose.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === 'all' || s.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      const matchesCategory = categoryFilter === 'all' || s.category === categoryFilter;
+      return matchesSearch && matchesStatus && matchesCategory;
     })
     .sort((a, b) => {
         if (sortOrder === 'newest') return new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime();
@@ -260,7 +262,7 @@ const AdminPage: React.FC = () => {
         {/* Tab Switcher */}
         <div className="flex p-1 bg-slate-100 rounded-xl self-start md:self-center">
             <button 
-                onClick={() => { setActiveTab('submissions'); setStatusFilter('all'); }}
+                onClick={() => { setActiveTab('submissions'); setStatusFilter('all'); setCategoryFilter('all'); }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                     activeTab === 'submissions' 
                     ? 'bg-white text-slate-900 shadow-sm' 
@@ -293,15 +295,33 @@ const AdminPage: React.FC = () => {
       {/* Controls Grid */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
         {/* Search Bar */}
-        <div className="md:col-span-6 relative">
+        <div className={`${activeTab === 'submissions' ? 'md:col-span-3' : 'md:col-span-6'} relative`}>
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
-                className="pl-12 h-12 rounded-2xl border-slate-200 text-lg shadow-sm" 
+                className="pl-12 h-12 rounded-2xl border-slate-200 text-lg shadow-sm w-full" 
                 placeholder={activeTab === 'submissions' ? t('searchSubmissions') : t('searchReports')} 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
         </div>
+
+        {/* Category Filter (Submissions Only) */}
+        {activeTab === 'submissions' && (
+            <div className="md:col-span-3 relative">
+                 <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none z-10" />
+                 <Select 
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm w-full"
+                 >
+                    <option value="all">{t('allListings')}</option>
+                    {Object.values(Category).filter(c => c !== 'All').map((cat) => (
+                         // @ts-ignore
+                        <option key={cat} value={cat}>{getCategoryLabel(cat)}</option>
+                    ))}
+                 </Select>
+            </div>
+        )}
 
         {/* Status Filter */}
         <div className="md:col-span-3 relative">
@@ -309,7 +329,7 @@ const AdminPage: React.FC = () => {
              <Select 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
-                className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm"
+                className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm w-full"
              >
                 <option value="all">{t('allStatus')}</option>
                 <option value="pending">{t('status_pending')}</option>
@@ -334,7 +354,7 @@ const AdminPage: React.FC = () => {
                  <Select 
                     value={sortOrder} 
                     onChange={(e) => setSortOrder(e.target.value)}
-                    className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm"
+                    className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm w-full"
                  >
                     <option value="newest">{t('newest')}</option>
                     <option value="oldest">{t('oldest')}</option>
@@ -379,7 +399,7 @@ const AdminPage: React.FC = () => {
 
           <div className="space-y-6">
             {filteredSubmissions.length === 0 ? (
-              <EmptyState type="submission" clear={() => {setSearchQuery(''); setStatusFilter('all');}} t={t} />
+              <EmptyState type="submission" clear={() => {setSearchQuery(''); setStatusFilter('all'); setCategoryFilter('all');}} t={t} />
             ) : (
               filteredSubmissions.map((item) => (
                 <React.Fragment key={item.id}>

@@ -33,6 +33,8 @@ const AdminPage: React.FC = () => {
             .select('*')
             .order('created_at', { ascending: false });
 
+        if (brandsError) throw brandsError;
+
         if (brandsData) {
             const mappedBrands: Submission[] = brandsData.map((item: any) => ({
                 id: item.id,
@@ -58,6 +60,8 @@ const AdminPage: React.FC = () => {
             .from('reports')
             .select('*')
             .order('submitted_at', { ascending: false });
+
+        if (reportsError) throw reportsError;
 
         if (reportsData) {
             const mappedReports: BrandReport[] = reportsData.map((item: any) => ({

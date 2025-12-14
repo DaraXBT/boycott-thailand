@@ -585,7 +585,7 @@ const AdminPage: React.FC = () => {
                                             className="h-10 w-10 p-0 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
                                             title="Delete This Report"
                                         >
-                                            <Trash2 className="w-5 h-5" />
+                                            <Trash2 className="w-8 h-8" />
                                         </Button>
                                     </div>
                                 </div>

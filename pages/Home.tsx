@@ -100,29 +100,16 @@ const HomePage: React.FC = () => {
   return (
     <div className="animate-in fade-in duration-700">
       
-      {/* Campaign Banner Image */}
-      <div className="w-full max-w-6xl mx-auto mb-12">
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 hover:shadow-3xl transition-shadow duration-500 group">
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
-            <img 
-                src="https://scontent.fpnh9-1.fna.fbcdn.net/v/t39.30808-6/597807787_2932214270308514_6893733743699882729_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_ohc=VsMk11hyAl0Q7kNvwExCAzy&_nc_oc=AdliFpo8q4PROQU3yZqywM4TzkZT5QrPw2UZwV9imM3cMut3ao_B9tKslu9i9mQPiik&_nc_zt=23&_nc_ht=scontent.fpnh9-1.fna&_nc_gid=Mjhbkt7qXp69V5uB25WSdg&oh=00_Afmvwp3guT3R7MxMZzHtNIbzRspg92Jgfz8LMPHqFey4ZQ&oe=6944C101" 
-                alt="Boycott Campaign Banner" 
-                className="w-full h-auto object-contain bg-slate-100 dark:bg-slate-900"
-                loading="eager"
-            />
-        </div>
-      </div>
-
       {/* Hero Section */}
-      <section className="text-center max-w-4xl mx-auto mb-16 space-y-6 pt-4 relative">
+      <section className="text-center mx-auto mb-12 pt-4 relative">
         {/* Decorative elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] md:w-[500px] md:h-[500px] bg-red-500/5 dark:bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
         
-        <div className="relative">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-bold mb-6 shadow-sm hover:shadow-md transition-all cursor-default">
+        <div className="relative max-w-4xl mx-auto space-y-6 px-4 md:px-0">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-bold mb-2 shadow-sm hover:shadow-md transition-all cursor-default">
             <AlertCircle className="w-4 h-4" /> {t('heroTag')}
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1] mb-6 font-sans">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1] font-sans">
             {t('heroTitle1')} <br/> 
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-orange-600 dark:from-red-500 dark:via-red-400 dark:to-orange-500">
                 {t('heroTitle2')}
@@ -132,10 +119,23 @@ const HomePage: React.FC = () => {
             {t('heroDesc')}
             </p>
         </div>
+
+        {/* Full Width Campaign Banner Image */}
+        <div className="mt-12 w-screen relative left-1/2 -translate-x-1/2">
+            <div className="relative w-full overflow-hidden shadow-2xl group">
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+                <img 
+                    src="https://scontent.fpnh9-1.fna.fbcdn.net/v/t39.30808-6/597807787_2932214270308514_6893733743699882729_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_ohc=VsMk11hyAl0Q7kNvwExCAzy&_nc_oc=AdliFpo8q4PROQU3yZqywM4TzkZT5QrPw2UZwV9imM3cMut3ao_B9tKslu9i9mQPiik&_nc_zt=23&_nc_ht=scontent.fpnh9-1.fna&_nc_gid=Mjhbkt7qXp69V5uB25WSdg&oh=00_Afmvwp3guT3R7MxMZzHtNIbzRspg92Jgfz8LMPHqFey4ZQ&oe=6944C101" 
+                    alt="Boycott Campaign Banner" 
+                    className="w-full h-auto object-cover max-h-[600px] bg-slate-100 dark:bg-slate-900"
+                    loading="eager"
+                />
+            </div>
+        </div>
       </section>
 
       {/* Search & Filter Section */}
-      <section className="mb-16 space-y-10">
+      <section className="mb-16 space-y-10 px-4 md:px-0">
         <div className="relative max-w-2xl mx-auto group z-10">
           <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
             <Search className="h-6 w-6 text-slate-400 group-focus-within:text-red-500 transition-colors" />
@@ -177,7 +177,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Results Info */}
-      <div ref={resultsRef} className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-border pb-4 scroll-mt-28">
+      <div ref={resultsRef} className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-border pb-4 scroll-mt-28 px-4 md:px-0">
           <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
               {t('listingResults')}
               {isLoading && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
@@ -196,13 +196,13 @@ const HomePage: React.FC = () => {
 
       {/* Grid Layout */}
       {filteredBrands.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20 px-4 md:px-0">
           {filteredBrands.map((brand) => (
             <BrandCard key={brand.id} brand={brand} onReport={handleReport} />
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 bg-card rounded-[2rem] border border-border shadow-xl shadow-slate-100/50 dark:shadow-none">
+        <div className="text-center py-24 bg-card rounded-[2rem] border border-border shadow-xl shadow-slate-100/50 dark:shadow-none mx-4 md:mx-0">
           <div className="mx-auto w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
               <Search className="w-10 h-10 text-slate-300 dark:text-slate-600" />
           </div>

@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { ExternalLink, MapPin, Tag, Flag, Ban, Image as ImageIcon, FileText } from 'lucide-react';
 import { Brand } from '../types';
@@ -29,11 +28,11 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
   };
 
   return (
-    <div className="group h-full flex flex-row md:flex-col bg-white rounded-xl md:rounded-xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:border-red-100 hover:-translate-y-1 transition-all duration-300">
+    <div className="group h-full flex flex-row md:flex-col bg-card dark:bg-slate-900 rounded-xl md:rounded-xl overflow-hidden border border-border dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-red-100 dark:hover:border-red-900/50 hover:-translate-y-1 transition-all duration-300">
       
-      {/* Logo Section */}
-      <div className="relative w-32 sm:w-40 md:w-full md:h-40 bg-white p-3 md:p-4 flex items-center justify-center border-r md:border-r-0 md:border-b border-slate-50 overflow-hidden shrink-0">
-         <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent opacity-50" />
+      {/* Logo Section - Keep light background for logo visibility */}
+      <div className="relative w-32 sm:w-40 md:w-full md:h-40 bg-white p-3 md:p-4 flex items-center justify-center border-r md:border-r-0 md:border-b border-border dark:border-slate-800 overflow-hidden shrink-0">
+         <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent opacity-50 pointer-events-none" />
          
          {imgError ? (
             <div className="flex flex-col items-center justify-center text-slate-300 gap-2">
@@ -68,27 +67,27 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
           <div className="p-3 md:p-4 flex flex-col flex-grow gap-1.5 md:gap-2">
               <div className="flex flex-col gap-1.5 md:gap-1">
                  <div className="flex items-center">
-                    <span className="px-2 py-0.5 md:px-2 md:py-0.5 rounded-full bg-slate-100 text-slate-600 text-[9px] md:text-[10px] font-bold uppercase tracking-wider border border-slate-200 truncate max-w-full">
+                    <span className="px-2 py-0.5 md:px-2 md:py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[9px] md:text-[10px] font-bold uppercase tracking-wider border border-slate-200 dark:border-slate-700 truncate max-w-full">
                         {categoryLabel}
                     </span>
                  </div>
                  
-                 <h3 className="text-base md:text-base font-bold text-slate-900 leading-tight group-hover:text-red-600 transition-colors font-sans line-clamp-2">
+                 <h3 className="text-base md:text-base font-bold text-foreground leading-tight group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors font-sans line-clamp-2">
                     {brand.name}
                  </h3>
-                 <p className="text-[10px] md:text-xs font-medium text-slate-500 flex items-center gap-1 md:gap-1.5">
+                 <p className="text-[10px] md:text-xs font-medium text-muted-foreground flex items-center gap-1 md:gap-1.5">
                     <Tag className="w-3 h-3 text-slate-400 shrink-0" />
                     <span className="truncate">{purpose}</span>
                  </p>
               </div>
 
-              <p className="text-slate-600 text-xs leading-relaxed line-clamp-2 md:line-clamp-3 font-sans mt-0.5 md:mt-1">
+              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed line-clamp-2 md:line-clamp-3 font-sans mt-0.5 md:mt-1">
                  {description}
               </p>
           </div>
 
-          <div className="px-3 py-2 md:px-4 md:py-2.5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between mt-auto gap-2 md:gap-2">
-              <div className="flex items-start gap-1.5 md:gap-1.5 text-slate-500 text-[10px] md:text-xs font-medium flex-1 overflow-hidden">
+          <div className="px-3 py-2 md:px-4 md:py-2.5 bg-slate-50/50 dark:bg-slate-800/50 border-t border-border flex items-center justify-between mt-auto gap-2 md:gap-2">
+              <div className="flex items-start gap-1.5 md:gap-1.5 text-muted-foreground text-[10px] md:text-xs font-medium flex-1 overflow-hidden">
                  <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-slate-400 mt-0.5 shrink-0" />
                  <span className="leading-snug truncate">{location}</span>
               </div>
@@ -99,7 +98,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
                       href={getSafeUrl(brand.website)}
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="p-1.5 md:p-1.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 hover:shadow-sm transition-all duration-200 group/btn"
+                      className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800 hover:shadow-sm transition-all duration-200 group/btn"
                       aria-label={t('website')}
                     >
                         <ExternalLink className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
@@ -110,7 +109,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
                        href={getSafeUrl(brand.evidenceUrl)}
                        target="_blank"
                        rel="noopener noreferrer"
-                       className="p-1.5 md:p-1.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-200 hover:shadow-sm transition-all duration-200 group/btn"
+                       className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-sm transition-all duration-200 group/btn"
                        aria-label={t('viewEvidence')}
                        title={t('viewEvidence')}
                      >
@@ -119,7 +118,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
                  )}
                  <button
                     onClick={() => onReport(brand)}
-                    className="p-1.5 md:p-1.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 hover:shadow-sm transition-all duration-200 group/btn"
+                    className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800 hover:shadow-sm transition-all duration-200 group/btn"
                     aria-label={t('reportIssue')}
                  >
                     <Flag className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -37,17 +38,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, t }) => {
   return (
     <div className="max-w-md mx-auto py-16 px-4 animate-in fade-in zoom-in duration-300">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-extrabold text-slate-900 mb-2">
+        <h2 className="text-3xl font-extrabold text-foreground mb-2">
           {isLogin ? t('welcomeBack') : t('joinMovement')}
         </h2>
-        <p className="text-slate-500">
+        <p className="text-muted-foreground">
           {isLogin 
             ? t('signInDesc')
             : t('createAccountDesc')}
         </p>
       </div>
 
-      <Card className="p-8 border-slate-200 shadow-xl bg-white rounded-3xl">
+      <Card className="p-8 border-border shadow-xl bg-card rounded-3xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <div className="space-y-2">
@@ -99,7 +100,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, t }) => {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+            <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 dark:bg-red-900/30 p-3 rounded-lg">
               <AlertCircle className="w-4 h-4" />
               {error}
             </div>
@@ -114,10 +115,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, t }) => {
           </Button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-slate-100 text-center">
+        <div className="mt-6 pt-6 border-t border-border text-center">
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-slate-600 hover:text-red-600 font-medium transition-colors"
+            className="text-sm text-muted-foreground hover:text-red-600 font-medium transition-colors"
           >
             {isLogin 
               ? t('noAccount')

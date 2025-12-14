@@ -1,5 +1,4 @@
 
-
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -102,20 +101,20 @@ const HomePage: React.FC = () => {
     <div className="animate-in fade-in duration-700">
       {/* Hero Section */}
       <section className="text-center max-w-4xl mx-auto mb-16 space-y-6 pt-8 relative">
-        {/* Decorative elements - Corrected to use max-w-[90vw] to prevent overflow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] md:w-[500px] md:h-[500px] bg-red-500/5 rounded-full blur-[100px] pointer-events-none" />
+        {/* Decorative elements */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] md:w-[500px] md:h-[500px] bg-red-500/5 dark:bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="relative">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-100 text-red-700 text-sm font-bold mb-6 shadow-sm hover:shadow-md transition-all cursor-default">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-bold mb-6 shadow-sm hover:shadow-md transition-all cursor-default">
             <AlertCircle className="w-4 h-4" /> {t('heroTag')}
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-6 font-sans">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1] mb-6 font-sans">
             {t('heroTitle1')} <br/> 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-orange-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-orange-600 dark:from-red-500 dark:via-red-400 dark:to-orange-500">
                 {t('heroTitle2')}
             </span>
             </h1>
-            <p className="text-slate-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
+            <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
             {t('heroDesc')}
             </p>
         </div>
@@ -130,7 +129,7 @@ const HomePage: React.FC = () => {
           <Input 
             type="text"
             placeholder={t('searchPlaceholder')}
-            className="pl-14 py-8 text-lg shadow-xl shadow-slate-200/40 rounded-3xl border-slate-200 bg-white/80 backdrop-blur-xl focus-visible:ring-red-500 focus-visible:border-red-500 transition-all hover:shadow-2xl hover:shadow-slate-200/50"
+            className="pl-14 py-8 text-lg shadow-xl shadow-slate-200/40 dark:shadow-slate-900/40 rounded-3xl border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl focus-visible:ring-red-500 focus-visible:border-red-500 transition-all hover:shadow-2xl hover:shadow-slate-200/50 dark:hover:shadow-slate-900/50 text-foreground"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -141,8 +140,8 @@ const HomePage: React.FC = () => {
             onClick={() => handleCategoryClick('All')}
             className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
               selectedCategory === 'All' 
-                ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20 scale-105' 
-                : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 hover:scale-105'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20 scale-105' 
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
             }`}
           >
             {t('allListings')}
@@ -154,7 +153,7 @@ const HomePage: React.FC = () => {
               className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
                 selectedCategory === cat 
                   ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105' 
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 hover:scale-105'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
               }`}
             >
               {getCategoryLabel(cat)}
@@ -164,18 +163,18 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Results Info */}
-      <div ref={resultsRef} className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200/60 pb-4 scroll-mt-28">
-          <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+      <div ref={resultsRef} className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-border pb-4 scroll-mt-28">
+          <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
               {t('listingResults')}
-              {isLoading && <Loader2 className="w-6 h-6 animate-spin text-slate-400" />}
+              {isLoading && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
           </h2>
           <div className="flex items-center gap-4">
             {usingFallback && (
-                <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-md border border-amber-100">
+                <span className="text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2 py-1 rounded-md border border-amber-100 dark:border-amber-900">
                     Offline Mode
                 </span>
             )}
-            <span className="text-sm font-bold text-slate-500">
+            <span className="text-sm font-bold text-muted-foreground">
                 {t('showingResults', { count: filteredBrands.length })}
             </span>
           </div>
@@ -189,15 +188,15 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-100/50">
-          <div className="mx-auto w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
-              <Search className="w-10 h-10 text-slate-300" />
+        <div className="text-center py-24 bg-card rounded-[2rem] border border-border shadow-xl shadow-slate-100/50 dark:shadow-none">
+          <div className="mx-auto w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
+              <Search className="w-10 h-10 text-slate-300 dark:text-slate-600" />
           </div>
-          <h3 className="text-2xl font-bold text-slate-900 mb-2">{t('noResultsTitle')}</h3>
-          <p className="text-slate-500 mb-8 max-w-sm mx-auto">{t('noResultsDesc')}</p>
+          <h3 className="text-2xl font-bold text-foreground mb-2">{t('noResultsTitle')}</h3>
+          <p className="text-muted-foreground mb-8 max-w-sm mx-auto">{t('noResultsDesc')}</p>
           <button 
               onClick={() => {setSearchQuery(''); setSelectedCategory('All');}}
-              className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="px-8 py-3 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all hover:shadow-lg hover:-translate-y-0.5"
           >
               {t('clearFilters')}
           </button>

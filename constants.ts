@@ -1,10 +1,12 @@
+
+
 import { Brand, Category } from './types';
 
 export const BRANDS: Brand[] = [
   {
     id: '1',
     name: 'PTT Gas Station',
-    category: Category.RETAIL,
+    category: Category.ENERGY,
     purpose: 'Fuel Retail',
     purposeKm: 'ការលក់រាយប្រេងឥន្ធនៈ',
     location: 'Nationwide',
@@ -56,7 +58,7 @@ export const BRANDS: Brand[] = [
   {
     id: '5',
     name: 'Global House',
-    category: Category.RETAIL,
+    category: Category.CONSTRUCTION,
     purpose: 'Furnitures, Appliances and Decor',
     purposeKm: 'គ្រឿងសង្ហារិម សម្ភារៈប្រើប្រាស់ និងការតុបតែង',
     location: 'Phnom Penh',
@@ -82,7 +84,7 @@ export const BRANDS: Brand[] = [
   {
     id: '7',
     name: 'PTT Lubricants',
-    category: Category.RETAIL,
+    category: Category.AUTOMOTIVE,
     purpose: 'Automotive',
     purposeKm: 'យានយន្ត (ប្រេងម៉ាស៊ីន)',
     location: 'Nationwide',
@@ -95,7 +97,7 @@ export const BRANDS: Brand[] = [
   {
     id: '8',
     name: 'Fit Auto',
-    category: Category.RETAIL,
+    category: Category.AUTOMOTIVE,
     purpose: 'Auto Service',
     purposeKm: 'សេវាកម្មរថយន្ត',
     location: 'PTT Stations',
@@ -147,7 +149,7 @@ export const BRANDS: Brand[] = [
   {
     id: '12',
     name: 'Fire Tiger',
-    category: Category.FOOD_BEVERAGE,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Premium Drink',
     purposeKm: 'ភេសជ្ជៈពិសេស',
     location: 'Phnom Penh',
@@ -160,7 +162,7 @@ export const BRANDS: Brand[] = [
   {
     id: '13',
     name: 'Five Star Chicken',
-    category: Category.FOOD_BEVERAGE,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Fast Food',
     purposeKm: 'អាហារ​ទាន់​ចិត្ត',
     location: 'Nationwide',
@@ -381,7 +383,7 @@ export const BRANDS: Brand[] = [
   {
     id: '30',
     name: 'TOUS les JOURS',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Baked Goods',
     purposeKm: 'នំនិងនំបុ័ង',
     location: 'Phnom Penh',
@@ -433,7 +435,7 @@ export const BRANDS: Brand[] = [
   {
     id: '34',
     name: 'ChaTraMue',
-    category: Category.FOOD_BEVERAGE,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Thai Tea',
     purposeKm: 'តែ​ថៃ',
     location: 'Phnom Penh',
@@ -498,7 +500,7 @@ export const BRANDS: Brand[] = [
   {
     id: '39',
     name: 'Bar-B-Q Plaza',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'BBQ',
     purposeKm: 'សាច់អាំង',
     location: 'Phnom Penh',
@@ -537,7 +539,7 @@ export const BRANDS: Brand[] = [
   {
     id: '42',
     name: 'The Pizza Company',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Pizza',
     purposeKm: 'ភីហ្សា',
     location: 'Phnom Penh',
@@ -550,7 +552,7 @@ export const BRANDS: Brand[] = [
   {
     id: '43',
     name: 'Swensen’s',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Ice Cream',
     purposeKm: 'ការ៉េម',
     location: 'Phnom Penh',
@@ -563,7 +565,7 @@ export const BRANDS: Brand[] = [
   {
     id: '44',
     name: 'The Coffee Club',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Cafe',
     purposeKm: 'ហាង​កាហ្វេ',
     location: 'Phnom Penh',
@@ -576,7 +578,7 @@ export const BRANDS: Brand[] = [
   {
     id: '45',
     name: 'Dairy Queen',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Ice Cream',
     purposeKm: 'ការ៉េម',
     location: 'Phnom Penh',
@@ -589,7 +591,7 @@ export const BRANDS: Brand[] = [
   {
     id: '46',
     name: 'Krispy Kreme',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Donuts',
     purposeKm: 'នំដូណាត់',
     location: 'Phnom Penh',
@@ -602,7 +604,7 @@ export const BRANDS: Brand[] = [
   {
     id: '47',
     name: 'Boost Juice',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Juice',
     purposeKm: 'ទឹក​ផ្លែឈើ',
     location: 'Phnom Penh',
@@ -693,7 +695,7 @@ export const BRANDS: Brand[] = [
   {
     id: '54',
     name: 'Kubota',
-    category: Category.CONSTRUCTION,
+    category: Category.AGRICULTURE,
     purpose: 'Machinery',
     purposeKm: 'គ្រឿងចក្រ',
     location: 'Nationwide',
@@ -927,7 +929,7 @@ export const BRANDS: Brand[] = [
   {
     id: '72',
     name: 'Denta Joy',
-    category: Category.DENTAL,
+    category: Category.HEALTHCARE,
     purpose: 'Dental Clinic',
     purposeKm: 'គ្លីនិកធ្មេញ',
     location: 'Phnom Penh',
@@ -992,7 +994,7 @@ export const BRANDS: Brand[] = [
   {
     id: '77',
     name: 'Kamu Kamu',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Milktea',
     purposeKm: 'តែ​ទឹកដោះគោ',
     location: 'Phnom Penh',
@@ -1057,7 +1059,7 @@ export const BRANDS: Brand[] = [
   {
     id: '82',
     name: 'Springmate',
-    category: Category.RETAIL,
+    category: Category.HOUSEHOLD_OFFICE,
     purpose: 'Bed Stuff & Mattresses',
     purposeKm: 'ពូក និងខ្នើយ',
     location: 'Phnom Penh',
@@ -1070,7 +1072,7 @@ export const BRANDS: Brand[] = [
   {
     id: '83',
     name: 'Hungry App',
-    category: Category.EFG,
+    category: Category.LOGISTICS,
     purpose: 'Delivery App',
     purposeKm: 'កម្មវិធីដឹកជញ្ជូន',
     location: 'Phnom Penh',
@@ -1187,7 +1189,7 @@ export const BRANDS: Brand[] = [
   {
     id: '92',
     name: 'Dentisté',
-    category: Category.ORAL_CARE,
+    category: Category.COSMETICS,
     purpose: 'Toothpaste',
     purposeKm: 'ថ្នាំដុសធ្មេញ',
     location: 'Nationwide',
@@ -1200,7 +1202,7 @@ export const BRANDS: Brand[] = [
   {
     id: '93',
     name: 'Palmolive',
-    category: Category.HAIR_CARE,
+    category: Category.COSMETICS,
     purpose: 'Shampoo',
     purposeKm: 'សាប៊ូកក់សក់',
     location: 'Retailers',
@@ -1304,7 +1306,7 @@ export const BRANDS: Brand[] = [
   {
     id: '101',
     name: 'Dim Sum Emperors',
-    category: Category.EFG,
+    category: Category.CAFES_RESTAURANTS,
     purpose: 'Dim Sum',
     purposeKm: 'ឌីមសាំ',
     location: 'Phnom Penh',
@@ -1317,7 +1319,7 @@ export const BRANDS: Brand[] = [
   {
     id: '102',
     name: 'Zebra',
-    category: Category.KITCHENWARE,
+    category: Category.HOUSEHOLD_OFFICE,
     purpose: 'Household products',
     purposeKm: 'ផលិតផលប្រើប្រាស់ក្នុងផ្ទះ',
     location: 'Nationwide',
@@ -1356,7 +1358,7 @@ export const BRANDS: Brand[] = [
   {
     id: '105',
     name: 'Double A',
-    category: Category.OFFICE_SUPPLIES,
+    category: Category.HOUSEHOLD_OFFICE,
     purpose: 'Paper',
     purposeKm: 'ក្រដាស',
     location: 'Nationwide',
@@ -1395,7 +1397,7 @@ export const BRANDS: Brand[] = [
   {
     id: '108',
     name: 'Colgate',
-    category: Category.ORAL_CARE,
+    category: Category.COSMETICS,
     purpose: 'Toothpaste',
     purposeKm: 'ថ្នាំដុសធ្មេញ',
     location: 'Retailers',

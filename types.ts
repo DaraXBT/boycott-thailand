@@ -2,25 +2,27 @@
 
 export enum Category {
   ALL = "All",
+  AGRICULTURE = "Agriculture & Farming",
+  MANUFACTURING = "Manufacturing & Industrial",
+  REAL_ESTATE = "Real Estate & Property",
+  CONSTRUCTION = "Construction & Materials",
+  ENERGY = "Energy & Fuel",
+  LOGISTICS = "Logistics & Transport",
   RETAIL = "Retail & Markets",
   FOOD_BEVERAGE = "Food & Beverage",
   CAFES_RESTAURANTS = "Cafés & Restaurants",
-  EFG = "EFG Group",
-  ENERGY = "Energy & Fuel",
-  CONSTRUCTION = "Construction",
+  AUTOMOTIVE = "Automotive",
   FINANCE = "Banking & Finance",
-  LOGISTICS = "Logistics",
-  COSMETICS = "Cosmetics",
-  DENTAL = "Dental Clinic",
-  ELECTRONICS = "Electronics",
-  ENTERTAINMENT = "Entertainment",
-  FASHION = "Fashion",
-  HAIR_CARE = "Hair Care",
-  HEALTHCARE = "Healthcare",
-  HOSPITALITY = "Hospitality",
-  KITCHENWARE = "Kitchenware",
-  OFFICE_SUPPLIES = "Office Supplies",
-  ORAL_CARE = "Oral Care"
+  PROFESSIONAL_SERVICES = "Professional Services",
+  ELECTRONICS = "Electronics & Tech",
+  MEDIA = "Media & Communications",
+  EDUCATION = "Education & Training",
+  HEALTHCARE = "Healthcare & Pharmacy",
+  COSMETICS = "Cosmetics & Personal Care",
+  FASHION = "Fashion & Apparel",
+  HOSPITALITY = "Hospitality & Tourism",
+  ENTERTAINMENT = "Entertainment & Leisure",
+  HOUSEHOLD_OFFICE = "Household & Office Supplies"
 }
 
 export interface Brand {

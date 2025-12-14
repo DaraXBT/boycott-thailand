@@ -1,5 +1,6 @@
 
 
+
 export type Language = 'en' | 'km';
 
 export const translations = {
@@ -25,25 +26,30 @@ export const translations = {
     website: "Website",
     reportIssue: "Report incorrect information",
     location: "Location",
-    category_Retail_Markets: "Retail & Markets",
+    
+    // Categories
+    category_Agriculture: "Agriculture & Farming",
+    category_Manufacturing: "Manufacturing & Industrial",
+    category_Real_Estate: "Real Estate & Property",
+    category_Construction: "Construction & Materials",
+    category_Energy: "Energy & Fuel",
+    category_Logistics: "Logistics & Transport",
+    category_Retail: "Retail & Markets",
     category_Food_Beverage: "Food & Beverage",
     category_Cafes_Restaurants: "Cafés & Restaurants",
-    category_EFG_Group: "EFG Group",
-    category_Energy_Fuel: "Energy & Fuel",
-    category_Construction: "Construction",
-    category_Banking_Finance: "Banking & Finance",
-    category_Logistics: "Logistics",
-    category_Cosmetics: "Cosmetics",
-    category_Dental_Clinic: "Dental Clinic",
-    category_Electronics: "Electronics",
-    category_Entertainment: "Entertainment",
-    category_Fashion: "Fashion",
-    category_Hair_Care: "Hair Care",
-    category_Healthcare: "Healthcare",
-    category_Hospitality: "Hospitality",
-    category_Kitchenware: "Kitchenware",
-    category_Office_Supplies: "Office Supplies",
-    category_Oral_Care: "Oral Care",
+    category_Automotive: "Automotive",
+    category_Finance: "Banking & Finance",
+    category_Professional_Services: "Professional Services",
+    category_Electronics: "Electronics & Tech",
+    category_Media: "Media & Communications",
+    category_Education: "Education & Training",
+    category_Healthcare: "Healthcare & Pharmacy",
+    category_Cosmetics: "Cosmetics & Personal Care",
+    category_Fashion: "Fashion & Apparel",
+    category_Hospitality: "Hospitality & Tourism",
+    category_Entertainment: "Entertainment & Leisure",
+    category_Household_Office: "Household & Office Supplies",
+
     submitBrand: "Submit a Brand",
     submitDesc: "Know a Thai brand operating in Cambodia that isn't listed? Help us keep the community informed.",
     brandName: "Brand Name",
@@ -163,25 +169,30 @@ export const translations = {
     website: "គេហទំព័រ",
     reportIssue: "រាយការណ៍ព័ត៌មានមិនត្រឹមត្រូវ",
     location: "ទីតាំង",
-    category_Retail_Markets: "លក់រាយ & ផ្សារ",
-    category_Food_Beverage: "អាហារ & ភេសជ្ជៈ",
-    category_Cafes_Restaurants: "ហាងកាហ្វេ & ភោជនីយដ្ឋាន",
-    category_EFG_Group: "ក្រុម EFG (Express Food Group)",
-    category_Energy_Fuel: "ថាមពល & ប្រេងឥន្ធនៈ",
-    category_Construction: "សំណង់",
-    category_Banking_Finance: "ធនាគារ & ហិរញ្ញវត្ថុ",
-    category_Logistics: "ដឹកជញ្ជូន",
-    category_Cosmetics: "គ្រឿងសំអាង",
-    category_Dental_Clinic: "គ្លីនិកធ្មេញ",
-    category_Electronics: "គ្រឿង​អេឡិចត្រូនិច",
-    category_Entertainment: "ការកម្សាន្ត",
-    category_Fashion: "ម៉ូដ & សម្លៀកបំពាក់",
-    category_Hair_Care: "ថែរក្សាសក់",
-    category_Healthcare: "សុខាភិបាល",
-    category_Hospitality: "បដិសណ្ឋារកិច្ច (សណ្ឋាគារ)",
-    category_Kitchenware: "សម្ភារៈផ្ទះបាយ",
-    category_Office_Supplies: "សម្ភារៈការិយាល័យ",
-    category_Oral_Care: "ថែរក្សាមាត់ធ្មេញ",
+
+    // Categories
+    category_Agriculture: "កសិកម្ម",
+    category_Manufacturing: "ផលិតកម្ម និងឧស្សាហកម្ម",
+    category_Real_Estate: "អចលនទ្រព្យ",
+    category_Construction: "សំណង់ និងសម្ភារៈ",
+    category_Energy: "ថាមពល និងប្រេងឥន្ធនៈ",
+    category_Logistics: "ដឹកជញ្ជូន និងឃ្លាំង",
+    category_Retail: "ទំនិញលក់រាយ និងផ្សារ",
+    category_Food_Beverage: "អាហារ និងភេសជ្ជៈ",
+    category_Cafes_Restaurants: "ហាងកាហ្វេ និងភោជនីយដ្ឋាន",
+    category_Automotive: "យានយន្ត និងគ្រឿងបន្លាស់",
+    category_Finance: "ធនាគារ និងហិរញ្ញវត្ថុ",
+    category_Professional_Services: "សេវាកម្មជំនាញ",
+    category_Electronics: "អេឡិចត្រូនិច និងបច្ចេកវិទ្យា",
+    category_Media: "ប្រព័ន្ធផ្សព្វផ្សាយ និងទូរគមនាគមន៍",
+    category_Education: "អប់រំ និងបណ្តុះបណ្តាល",
+    category_Healthcare: "សុខាភិបាល និងឱសថ",
+    category_Cosmetics: "គ្រឿងសម្អាង និងថែរក្សាខ្លួន",
+    category_Fashion: "ម៉ូដ និងសម្លៀកបំពាក់",
+    category_Hospitality: "សណ្ឋាគារ និងទេសចរណ៍",
+    category_Entertainment: "ការកម្សាន្ត និងលំហែ",
+    category_Household_Office: "សម្ភារៈប្រើប្រាស់",
+
     submitBrand: "ដាក់ស្នើឈ្មោះក្រុមហ៊ុន",
     submitDesc: "ស្គាល់ម៉ាកយីហោថៃដែលកំពុងរកស៊ីនៅកម្ពុជា ហើយមិនមានក្នុងបញ្ជីនេះទេ? ជួយផ្តល់ព័ត៌មានដល់សហគមន៍យើង។",
     brandName: "ឈ្មោះម៉ាកយីហោ",
@@ -283,25 +294,27 @@ export const translations = {
 
 export const getCategoryTranslationKey = (category: string) => {
     switch (category) {
-        case "Retail & Markets": return "category_Retail_Markets";
+        case "Agriculture & Farming": return "category_Agriculture";
+        case "Manufacturing & Industrial": return "category_Manufacturing";
+        case "Real Estate & Property": return "category_Real_Estate";
+        case "Construction & Materials": return "category_Construction";
+        case "Energy & Fuel": return "category_Energy";
+        case "Logistics & Transport": return "category_Logistics";
+        case "Retail & Markets": return "category_Retail";
         case "Food & Beverage": return "category_Food_Beverage";
         case "Cafés & Restaurants": return "category_Cafes_Restaurants";
-        case "EFG Group": return "category_EFG_Group";
-        case "Energy & Fuel": return "category_Energy_Fuel";
-        case "Construction": return "category_Construction";
-        case "Banking & Finance": return "category_Banking_Finance";
-        case "Logistics": return "category_Logistics";
-        case "Cosmetics": return "category_Cosmetics";
-        case "Dental Clinic": return "category_Dental_Clinic";
-        case "Electronics": return "category_Electronics";
-        case "Entertainment": return "category_Entertainment";
-        case "Fashion": return "category_Fashion";
-        case "Hair Care": return "category_Hair_Care";
-        case "Healthcare": return "category_Healthcare";
-        case "Hospitality": return "category_Hospitality";
-        case "Kitchenware": return "category_Kitchenware";
-        case "Office Supplies": return "category_Office_Supplies";
-        case "Oral Care": return "category_Oral_Care";
-        default: return "category_Retail_Markets"; // Fallback
+        case "Automotive": return "category_Automotive";
+        case "Banking & Finance": return "category_Finance";
+        case "Professional Services": return "category_Professional_Services";
+        case "Electronics & Tech": return "category_Electronics";
+        case "Media & Communications": return "category_Media";
+        case "Education & Training": return "category_Education";
+        case "Healthcare & Pharmacy": return "category_Healthcare";
+        case "Cosmetics & Personal Care": return "category_Cosmetics";
+        case "Fashion & Apparel": return "category_Fashion";
+        case "Hospitality & Tourism": return "category_Hospitality";
+        case "Entertainment & Leisure": return "category_Entertainment";
+        case "Household & Office Supplies": return "category_Household_Office";
+        default: return "category_Retail"; // Fallback
     }
 }

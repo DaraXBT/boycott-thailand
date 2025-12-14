@@ -99,8 +99,22 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="animate-in fade-in duration-700">
+      
+      {/* Campaign Banner Image */}
+      <div className="w-full max-w-6xl mx-auto mb-12">
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 hover:shadow-3xl transition-shadow duration-500 group">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+            <img 
+                src="https://scontent.fpnh9-1.fna.fbcdn.net/v/t39.30808-6/597807787_2932214270308514_6893733743699882729_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_ohc=VsMk11hyAl0Q7kNvwExCAzy&_nc_oc=AdliFpo8q4PROQU3yZqywM4TzkZT5QrPw2UZwV9imM3cMut3ao_B9tKslu9i9mQPiik&_nc_zt=23&_nc_ht=scontent.fpnh9-1.fna&_nc_gid=Mjhbkt7qXp69V5uB25WSdg&oh=00_Afmvwp3guT3R7MxMZzHtNIbzRspg92Jgfz8LMPHqFey4ZQ&oe=6944C101" 
+                alt="Boycott Campaign Banner" 
+                className="w-full h-auto object-contain bg-slate-100 dark:bg-slate-900"
+                loading="eager"
+            />
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="text-center max-w-4xl mx-auto mb-16 space-y-6 pt-8 relative">
+      <section className="text-center max-w-4xl mx-auto mb-16 space-y-6 pt-4 relative">
         {/* Decorative elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] md:w-[500px] md:h-[500px] bg-red-500/5 dark:bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
         

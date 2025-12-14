@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Send, ArrowLeft, CheckCircle2, ShieldAlert, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -41,7 +42,8 @@ const ReportPage: React.FC = () => {
                     website: data.website,
                     description: data.description,
                     descriptionKm: data.description_km,
-                    imageUrl: data.image_url || 'https://via.placeholder.com/150'
+                    imageUrl: data.image_url || 'https://via.placeholder.com/150',
+                    evidenceUrl: data.evidence_url
                  });
             } else if (error) {
                 console.error("Error fetching brand:", error);

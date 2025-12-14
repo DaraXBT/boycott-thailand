@@ -575,6 +575,13 @@ const EmptyState = ({ type, clear, t }: { type: 'submission' | 'report', clear: 
 
 // Extracted Submission Card Component
 const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusChange }: any) => {
+    // Helper to ensure URLs are absolute (external)
+    const getSafeUrl = (url: string) => {
+        if (!url) return '';
+        if (url.startsWith('http://') || url.startsWith('https://')) return url;
+        return `https://${url}`;
+    };
+
     return (
         <Card className={`group overflow-hidden transition-all duration-200 hover:shadow-lg ${
             item.status === 'approved' ? 'border-green-200 bg-white' :
@@ -647,7 +654,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('website')}</span>
                                 {item.website ? (
-                                    <a href={`https://${item.website}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 hover:underline truncate flex items-center gap-1">
+                                    <a href={getSafeUrl(item.website)} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 hover:underline truncate flex items-center gap-1">
                                         {item.website} <ExternalLink className="w-3 h-3" />
                                     </a>
                                 ) : (
@@ -664,7 +671,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('viewEvidence')}</span>
                                 {item.evidenceUrl ? (
-                                    <a href={item.evidenceUrl} target="_blank" rel="noreferrer" className="text-sm font-medium text-purple-600 hover:underline truncate flex items-center gap-1">
+                                    <a href={getSafeUrl(item.evidenceUrl)} target="_blank" rel="noreferrer" className="text-sm font-medium text-purple-600 hover:underline truncate flex items-center gap-1">
                                         Link <ExternalLink className="w-3 h-3" />
                                     </a>
                                 ) : (

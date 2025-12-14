@@ -21,6 +21,13 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
   const location = (lang === 'km' && brand.locationKm) ? brand.locationKm : brand.location;
   const description = (lang === 'km' && brand.descriptionKm) ? brand.descriptionKm : brand.description;
 
+  // Helper to ensure URLs are absolute (external)
+  const getSafeUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return `https://${url}`;
+  };
+
   return (
     <div className="group h-full flex flex-row md:flex-col bg-white rounded-xl md:rounded-xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:border-red-100 hover:-translate-y-1 transition-all duration-300">
       
@@ -89,7 +96,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
               <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
                  {brand.website && (
                     <a 
-                      href={`https://${brand.website}`} 
+                      href={getSafeUrl(brand.website)}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="p-1.5 md:p-1.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 hover:shadow-sm transition-all duration-200 group/btn"
@@ -100,7 +107,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
                  )}
                  {brand.evidenceUrl && (
                      <a
-                       href={brand.evidenceUrl}
+                       href={getSafeUrl(brand.evidenceUrl)}
                        target="_blank"
                        rel="noopener noreferrer"
                        className="p-1.5 md:p-1.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-200 hover:shadow-sm transition-all duration-200 group/btn"

@@ -1,14 +1,16 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig({
-  plugins: [react()],
+import { defineConfig } from 'vite'; import react from 
+'@vitejs/plugin-react'; const requestLogger = () => ({
+  name: 'request-logger', configureServer(server) { 
+    server.middlewares.use((req, res, next) => {
+      console.log(`[Vite Request] ${req.method} 
+      ${req.url}`); next();
+    });
+  },
+});
+export default defineConfig({ plugins: [ react(), 
+    requestLogger(),
+  ],
   
-  // ⬅️ The 'server' object is required here
-  server: { 
-    // ⬅️ 'allowedHosts' must be inside the 'server' object
-    allowedHosts: [
-      'boycott-thailand.com',
-    ],
+  server: { allowedHosts: [ 'boycott-thailand.com', ],
   },
 });

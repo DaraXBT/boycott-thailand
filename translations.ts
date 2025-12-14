@@ -1,6 +1,7 @@
 
 
 
+
 export type Language = 'en' | 'km';
 
 export const translations = {
@@ -101,8 +102,10 @@ export const translations = {
     signInBtn: "Sign In",
     createAccountBtn: "Create Account",
     authFailed: "Authentication failed. Please try again.",
-    noAccount: "Don't have an account? Sign up",
-    hasAccount: "Already have an account? Sign in",
+    noAccount: "Don't have an account?",
+    hasAccount: "Already have an account?",
+    signUpLink: "Sign up",
+    signInLink: "Sign in",
     pleaseWait: "Please wait...",
     adminDashboard: "Admin Dashboard",
     manageSubmissionsDesc: "Manage submissions and review user reports.",
@@ -145,7 +148,9 @@ export const translations = {
     locationKmLabel: "Location (Km)",
     descriptionKmLabel: "Description (Km)",
     descriptionLabel: "Description",
-    checkEmail: "Please check your email to confirm your account."
+    checkEmail: "Please check your email to confirm your account.",
+    continueWithGoogle: "Continue with Google",
+    orSeparator: "Or continue with"
   },
   km: {
     heroTag: "យុទ្ធនាការដាស់តឿនអ្នកប្រើប្រាស់",
@@ -244,8 +249,10 @@ export const translations = {
     signInBtn: "ចូលគណនី",
     createAccountBtn: "បង្កើតគណនី",
     authFailed: "ការផ្ទៀងផ្ទាត់បរាជ័យ។ សូម​ព្យាយាម​ម្តង​ទៀត។",
-    noAccount: "មិនទាន់មានគណនី? ចុះឈ្មោះ",
-    hasAccount: "មានគណនីរួចហើយ? ចូលគណនី",
+    noAccount: "មិនទាន់មានគណនី?",
+    hasAccount: "មានគណនីរួចហើយ?",
+    signUpLink: "ចុះឈ្មោះ",
+    signInLink: "ចូលគណនី",
     pleaseWait: "កំពុងដំណើរការ...",
     adminDashboard: "ផ្ទាំងគ្រប់គ្រងរដ្ឋបាល",
     manageSubmissionsDesc: "គ្រប់គ្រងការដាក់ស្នើ និងពិនិត្យមើលរបាយការណ៍អ្នកប្រើប្រាស់។",
@@ -288,7 +295,9 @@ export const translations = {
     locationKmLabel: "ទីតាំង (ភាសាខ្មែរ)",
     descriptionKmLabel: "ការពិពណ៌នា (ភាសាខ្មែរ)",
     descriptionLabel: "ការពិពណ៌នា",
-    checkEmail: "សូមពិនិត្យអ៊ីមែលរបស់អ្នកដើម្បីបញ្ជាក់គណនី។"
+    checkEmail: "សូមពិនិត្យអ៊ីមែលរបស់អ្នកដើម្បីបញ្ជាក់គណនី។",
+    continueWithGoogle: "បន្តជាមួយ Google",
+    orSeparator: "ឬបន្តជាមួយ"
   }
 };
 

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -31,6 +32,7 @@ const AppContent: React.FC = () => {
               <Route path="/submit" element={<SubmitPage />} />
               <Route path="/report/:id" element={<ReportPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<LoginPage />} />
               <Route 
                 path="/admin" 
                 element={

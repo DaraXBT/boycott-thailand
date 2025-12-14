@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/Home';
 import SubmitPage from './pages/Submit';
@@ -48,9 +49,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
     return (
         <AuthProvider>
-            <LanguageProvider>
-                <AppContent />
-            </LanguageProvider>
+            <ThemeProvider>
+                <LanguageProvider>
+                    <AppContent />
+                </LanguageProvider>
+            </ThemeProvider>
         </AuthProvider>
     );
 };

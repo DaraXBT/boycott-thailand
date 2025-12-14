@@ -32,7 +32,7 @@ const AudioPlayer: React.FC = () => {
                     setIsPlaying(true);
                     setHasError(false);
                 })
-                .catch(e => console.error("Play failed after interaction"));
+                .catch(() => console.error("Play failed after interaction"));
            }
            removeListeners();
         };
@@ -69,7 +69,7 @@ const AudioPlayer: React.FC = () => {
                 setIsPlaying(true);
                 setHasError(false);
             })
-            .catch(e => {
+            .catch(() => {
                 console.error("Toggle play failed");
                 setIsPlaying(false);
             });

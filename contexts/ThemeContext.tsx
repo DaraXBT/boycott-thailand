@@ -17,16 +17,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Check localStorage
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     
-    // Check system preference
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
     if (savedTheme) {
       setTheme(savedTheme);
       applyTheme(savedTheme);
-    } else if (systemPrefersDark) {
-      setTheme('dark');
-      applyTheme('dark');
     } else {
+      // Default to Light mode if no preference is saved
       setTheme('light');
       applyTheme('light');
     }

@@ -90,7 +90,7 @@ const ReportPage: React.FC = () => {
   if (loadingBrand) {
       return (
           <div className="flex justify-center items-center min-h-[50vh]">
-              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
       );
   }
@@ -98,7 +98,7 @@ const ReportPage: React.FC = () => {
   if (!brand) {
       return (
           <div className="text-center py-20">
-              <p className="text-slate-500">Brand not found.</p>
+              <p className="text-muted-foreground">Brand not found.</p>
               <Button onClick={() => navigate('/')} variant="outline" className="mt-4">Return Home</Button>
           </div>
       )
@@ -109,19 +109,19 @@ const ReportPage: React.FC = () => {
   if (!user) {
     return (
        <div className="max-w-md mx-auto py-16 px-4 animate-in fade-in zoom-in duration-300">
-        <Card className="p-10 text-center space-y-6 rounded-3xl border-slate-100 shadow-xl">
-           <div className="mx-auto w-20 h-20 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center">
+        <Card className="p-10 text-center space-y-6 rounded-3xl border-border shadow-xl">
+           <div className="mx-auto w-20 h-20 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-full flex items-center justify-center">
             <Lock className="w-10 h-10" />
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-slate-900">{t('loginRequired')}</h2>
-            <p className="text-slate-500">{t('loginRequiredReportDesc')}</p>
+            <h2 className="text-2xl font-bold text-foreground">{t('loginRequired')}</h2>
+            <p className="text-muted-foreground">{t('loginRequiredReportDesc')}</p>
           </div>
           <div className="space-y-3">
               <Button onClick={() => navigate('/login')} className="w-full h-12 rounded-xl text-base">
                 {t('navLoginSignup')}
               </Button>
-              <Button onClick={() => navigate(-1)} variant="ghost" className="w-full text-slate-500 hover:text-slate-900">
+              <Button onClick={() => navigate(-1)} variant="ghost" className="w-full text-muted-foreground hover:text-foreground">
                 {t('cancel')}
               </Button>
           </div>
@@ -133,17 +133,17 @@ const ReportPage: React.FC = () => {
   if (submitted) {
     return (
        <div className="max-w-md mx-auto py-16 px-4 animate-in fade-in zoom-in duration-300">
-        <Card className="p-12 text-center space-y-8 rounded-3xl border-slate-100 shadow-xl shadow-slate-200/50">
-          <div className="mx-auto w-24 h-24 bg-green-50 text-green-600 rounded-full flex items-center justify-center shadow-inner">
+        <Card className="p-12 text-center space-y-8 rounded-3xl border-border shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <div className="mx-auto w-24 h-24 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-full flex items-center justify-center shadow-inner">
             <CheckCircle2 className="w-12 h-12" />
           </div>
           <div className="space-y-3">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{t('reportReceived')}</h2>
-            <p className="text-slate-500 leading-relaxed">
+            <h2 className="text-2xl font-bold text-foreground tracking-tight">{t('reportReceived')}</h2>
+            <p className="text-muted-foreground leading-relaxed">
               {t('reportThanks')}
             </p>
           </div>
-          <Button onClick={() => navigate('/')} variant="outline" className="w-full h-12 rounded-xl border-slate-200 hover:bg-slate-50 hover:text-slate-900 font-medium">
+          <Button onClick={() => navigate('/')} variant="outline" className="w-full h-12 rounded-xl border-border font-medium">
             {t('returnListings')}
           </Button>
         </Card>
@@ -155,9 +155,9 @@ const ReportPage: React.FC = () => {
     <div className="max-w-xl mx-auto py-8 animate-in slide-in-from-bottom-4 duration-500">
       <button 
         onClick={() => navigate(-1)} 
-        className="group flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-8 pl-1"
+        className="group flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mb-8 pl-1"
       >
-        <div className="p-1.5 rounded-full bg-slate-100 group-hover:bg-slate-200 transition-colors">
+        <div className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors">
             <ArrowLeft className="w-4 h-4" />
         </div>
         {t('backToListings')}
@@ -165,45 +165,45 @@ const ReportPage: React.FC = () => {
       
       <div className="space-y-6 mb-8">
          <div className="space-y-2">
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+            <h2 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
                 <ShieldAlert className="w-8 h-8 text-red-600" />
                 {t('reportIssueTitle')}
             </h2>
-            <p className="text-slate-500 text-lg">Help us maintain accurate information.</p>
+            <p className="text-muted-foreground text-lg">Help us maintain accurate information.</p>
          </div>
 
-         <div className="bg-slate-50 p-5 rounded-3xl border border-slate-200 flex items-center gap-5 relative overflow-hidden group">
+         <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-border flex items-center gap-5 relative overflow-hidden group">
              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
              
-             <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-3 border border-slate-200 shadow-sm shrink-0 z-10">
+             <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-3 border border-border shadow-sm shrink-0 z-10">
                  <img src={brand.imageUrl} alt={brand.name} className="w-full h-full object-contain" />
              </div>
              <div className="z-10">
                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{t('target')}</p>
-                 <h3 className="text-2xl font-bold text-slate-900">{brand.name}</h3>
-                 <p className="text-slate-500 text-sm mt-0.5">{categoryLabel}</p>
+                 <h3 className="text-2xl font-bold text-foreground">{brand.name}</h3>
+                 <p className="text-muted-foreground text-sm mt-0.5">{categoryLabel}</p>
              </div>
          </div>
       </div>
 
-      <Card className="rounded-3xl border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden bg-white">
+      <Card className="rounded-3xl border-border shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden bg-card">
         <div className="h-1 bg-gradient-to-r from-red-500 to-red-600" />
         <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-8">
           
           <div className="space-y-5">
             <div className="space-y-2">
-                <Label htmlFor="brandNameInput" className="text-slate-700">{t('brandName')}</Label>
+                <Label htmlFor="brandNameInput">{t('brandName')}</Label>
                 <Input 
                     id="brandNameInput" 
                     value={brand.name} 
                     disabled 
-                    className="bg-slate-50 text-slate-600 border-slate-200 font-semibold h-12" 
+                    className="bg-slate-50 dark:bg-slate-800 text-muted-foreground border-border font-semibold h-12" 
                 />
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="reason" className="text-slate-700">{t('whatIsIssue')} <span className="text-red-500">*</span></Label>
-                <Select name="reason" id="reason" required defaultValue="" className="rounded-xl border-slate-200 focus:ring-red-500 h-12 bg-white">
+                <Label htmlFor="reason">{t('whatIsIssue')} <span className="text-red-500">*</span></Label>
+                <Select name="reason" id="reason" required defaultValue="" className="rounded-xl h-12">
                     <option value="" disabled>{t('selectReason')}</option>
                     <option value="incorrect_info">{t('reason_incorrect')}</option>
                     <option value="not_thai">{t('reason_not_thai')}</option>
@@ -214,25 +214,25 @@ const ReportPage: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="details" className="text-slate-700">{t('details')} <span className="text-red-500">*</span></Label>
+                <Label htmlFor="details">{t('details')} <span className="text-red-500">*</span></Label>
                 <Textarea 
                 name="details"
                 id="details" 
                 required
                 placeholder="Describe the inaccuracy or provide the correct information..." 
-                className="min-h-[140px] rounded-xl border-slate-200 focus:ring-red-500 p-4 leading-relaxed resize-none focus:bg-white transition-colors"
+                className="min-h-[140px] rounded-xl p-4 leading-relaxed resize-none transition-colors"
                 />
             </div>
             
             <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-700">{t('yourEmail')} <span className="text-slate-400 text-xs font-normal">(Optional)</span></Label>
-                <Input name="email" id="email" type="email" placeholder="contact@email.com" className="rounded-xl border-slate-200 focus:ring-red-500 h-12 focus:bg-white transition-colors" />
+                <Label htmlFor="email">{t('yourEmail')} <span className="text-muted-foreground text-xs font-normal">(Optional)</span></Label>
+                <Input name="email" id="email" type="email" placeholder="contact@email.com" className="rounded-xl h-12 transition-colors" />
             </div>
           </div>
 
           <div className="pt-2 flex flex-col md:flex-row gap-4">
             {errorMsg && (
-                 <div className="w-full mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm flex items-center gap-2">
+                 <div className="w-full mb-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm flex items-center gap-2">
                      <AlertCircle className="w-4 h-4" /> {errorMsg}
                  </div>
              )}
@@ -248,7 +248,7 @@ const ReportPage: React.FC = () => {
                  <span className="flex items-center gap-2 justify-center"><Send className="w-4 h-4" /> {t('submitReport')}</span>
               )}
             </Button>
-             <Button type="button" variant="ghost" onClick={() => navigate(-1)} className="flex-none h-12 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100">{t('cancel')}</Button>
+             <Button type="button" variant="ghost" onClick={() => navigate(-1)} className="flex-none h-12 rounded-xl text-muted-foreground hover:text-foreground">{t('cancel')}</Button>
           </div>
         </form>
       </Card>

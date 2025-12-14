@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useState } from 'react';
 import { Check, X, Trash2, ShieldCheck, Inbox, Search, Plus, Edit2, Save, RotateCcw, ArrowUpDown, Filter, Calendar, Globe, User, Image as ImageIcon, ExternalLink, MapPin, Tag, Clock, Flag, AlertTriangle, FileText, Loader2 } from 'lucide-react';
 import { Brand, BrandReport, Category } from '../types';
@@ -258,40 +257,40 @@ const AdminPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div>
            <div className="flex items-center gap-2 mb-1">
-             <ShieldCheck className="w-8 h-8 text-indigo-600" />
-             <h2 className="text-3xl font-bold text-slate-900">{t('adminDashboard')}</h2>
+             <ShieldCheck className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+             <h2 className="text-3xl font-bold text-foreground">{t('adminDashboard')}</h2>
            </div>
-           <p className="text-slate-500">{t('manageSubmissionsDesc')}</p>
+           <p className="text-muted-foreground">{t('manageSubmissionsDesc')}</p>
         </div>
         
         {/* Tab Switcher */}
-        <div className="flex p-1 bg-slate-100 rounded-xl self-start md:self-center">
+        <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start md:self-center">
             <button 
                 onClick={() => { setActiveTab('submissions'); setStatusFilter('all'); setCategoryFilter('all'); }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                     activeTab === 'submissions' 
-                    ? 'bg-white text-slate-900 shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                 }`}
             >
                 <Inbox className="w-4 h-4" />
                 {t('brandSubmissions')}
                 {pendingSubmissionCount > 0 && (
-                    <span className="bg-indigo-100 text-indigo-700 text-xs px-1.5 py-0.5 rounded-full">{pendingSubmissionCount}</span>
+                    <span className="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs px-1.5 py-0.5 rounded-full">{pendingSubmissionCount}</span>
                 )}
             </button>
             <button 
                 onClick={() => { setActiveTab('reports'); setStatusFilter('all'); }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                     activeTab === 'reports' 
-                    ? 'bg-white text-slate-900 shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                 }`}
             >
                 <Flag className="w-4 h-4" />
                 {t('issueReports')}
                 {pendingReportCount > 0 && (
-                    <span className="bg-red-100 text-red-700 text-xs px-1.5 py-0.5 rounded-full">{pendingReportCount}</span>
+                    <span className="bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 text-xs px-1.5 py-0.5 rounded-full">{pendingReportCount}</span>
                 )}
             </button>
         </div>
@@ -303,7 +302,7 @@ const AdminPage: React.FC = () => {
         <div className={`${activeTab === 'submissions' ? 'md:col-span-3' : 'md:col-span-6'} relative`}>
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
-                className="pl-12 h-12 rounded-2xl border-slate-200 text-lg shadow-sm w-full" 
+                className="pl-12 h-12 rounded-2xl border-input text-lg shadow-sm w-full" 
                 placeholder={activeTab === 'submissions' ? t('searchSubmissions') : t('searchReports')} 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -317,7 +316,7 @@ const AdminPage: React.FC = () => {
                  <Select 
                     value={categoryFilter}
                     onChange={(e) => setCategoryFilter(e.target.value)}
-                    className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm w-full"
+                    className="pl-10 h-12 rounded-2xl border-input bg-card shadow-sm w-full"
                  >
                     <option value="all">{t('allListings')}</option>
                     {Object.values(Category).filter(c => c !== 'All').map((cat) => (
@@ -334,7 +333,7 @@ const AdminPage: React.FC = () => {
              <Select 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
-                className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm w-full"
+                className="pl-10 h-12 rounded-2xl border-input bg-card shadow-sm w-full"
              >
                 <option value="all">{t('allStatus')}</option>
                 <option value="pending">{t('status_pending')}</option>
@@ -359,14 +358,14 @@ const AdminPage: React.FC = () => {
                  <Select 
                     value={sortOrder} 
                     onChange={(e) => setSortOrder(e.target.value)}
-                    className="pl-10 h-12 rounded-2xl border-slate-200 bg-white shadow-sm w-full"
+                    className="pl-10 h-12 rounded-2xl border-input bg-card shadow-sm w-full"
                  >
                     <option value="newest">{t('newest')}</option>
                     <option value="oldest">{t('oldest')}</option>
                  </Select>
             </div>
             {activeTab === 'submissions' && (
-                <Button onClick={startCreate} className="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center p-0 shrink-0 shadow-sm">
+                <Button onClick={startCreate} className="h-12 w-12 rounded-2xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 flex items-center justify-center p-0 shrink-0 shadow-sm">
                     <Plus className="w-5 h-5" />
                 </Button>
             )}
@@ -375,7 +374,7 @@ const AdminPage: React.FC = () => {
 
       {loading && (
           <div className="py-20 flex justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
       )}
 
@@ -384,9 +383,9 @@ const AdminPage: React.FC = () => {
           {/* Create Form */}
           {editingId === 'new' && (
             <div className="mb-8 animate-in slide-in-from-top-4">
-                <Card className="p-6 border-indigo-200 shadow-lg shadow-indigo-100/50 bg-indigo-50/30">
-                    <div className="flex items-center justify-between mb-4 border-b border-indigo-100 pb-2">
-                        <h3 className="font-bold text-lg text-indigo-900 flex items-center gap-2">
+                <Card className="p-6 border-indigo-200 dark:border-indigo-900 shadow-lg shadow-indigo-100/50 dark:shadow-none bg-indigo-50/30 dark:bg-indigo-900/20">
+                    <div className="flex items-center justify-between mb-4 border-b border-indigo-100 dark:border-indigo-800 pb-2">
+                        <h3 className="font-bold text-lg text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
                             <Plus className="w-5 h-5" /> {t('createNewListing')}
                         </h3>
                     </div>
@@ -409,9 +408,9 @@ const AdminPage: React.FC = () => {
               filteredSubmissions.map((item) => (
                 <React.Fragment key={item.id}>
                     {editingId === item.id ? (
-                        <Card className="p-6 border-blue-200 shadow-lg ring-2 ring-blue-500/10">
-                            <div className="flex items-center justify-between mb-4 border-b border-blue-100 pb-2">
-                                <h3 className="font-bold text-lg text-blue-900 flex items-center gap-2">
+                        <Card className="p-6 border-blue-200 dark:border-blue-900 shadow-lg ring-2 ring-blue-500/10">
+                            <div className="flex items-center justify-between mb-4 border-b border-blue-100 dark:border-blue-900 pb-2">
+                                <h3 className="font-bold text-lg text-blue-900 dark:text-blue-300 flex items-center gap-2">
                                     <Edit2 className="w-5 h-5" /> {t('editing')}: {item.name}
                                 </h3>
                             </div>
@@ -448,30 +447,30 @@ const AdminPage: React.FC = () => {
             ) : (
                 filteredReports.map((report) => (
                     <Card key={report.id} className={`p-0 overflow-hidden ${
-                        report.status === 'resolved' ? 'border-green-200 bg-slate-50/50' : 
-                        report.status === 'dismissed' ? 'border-slate-200 opacity-75' : 
-                        'border-red-200 bg-white shadow-md shadow-red-100/20'
+                        report.status === 'resolved' ? 'border-green-200 dark:border-green-900 bg-slate-50/50 dark:bg-slate-900/50' : 
+                        report.status === 'dismissed' ? 'border-border opacity-75' : 
+                        'border-red-200 dark:border-red-900/50 bg-card shadow-md shadow-red-100/20 dark:shadow-none'
                     }`}>
                         <div className="flex flex-col md:flex-row">
-                            <div className="w-full md:w-64 bg-slate-50 p-6 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-slate-100 shrink-0">
-                                <div className="w-16 h-16 bg-white rounded-xl p-2 mb-3 border border-slate-200 shadow-sm">
+                            <div className="w-full md:w-64 bg-slate-50 dark:bg-slate-800 p-6 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-border shrink-0">
+                                <div className="w-16 h-16 bg-white rounded-xl p-2 mb-3 border border-border shadow-sm">
                                     <img src={report.brandImage} alt={report.brandName} className="w-full h-full object-contain" />
                                 </div>
-                                <h4 className="font-bold text-slate-900">{report.brandName}</h4>
-                                <div className="mt-2 flex items-center gap-1 text-xs text-slate-500">
+                                <h4 className="font-bold text-foreground">{report.brandName}</h4>
+                                <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                                     <span className="uppercase tracking-wider">{t('reportId')}:</span>
-                                    <code className="bg-slate-200 px-1 rounded">{report.id.slice(0, 8)}</code>
+                                    <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">{report.id.slice(0, 8)}</code>
                                 </div>
                             </div>
 
                             <div className="p-6 flex-grow flex flex-col">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">
                                             <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
                                             {t('issueReported')}
                                         </div>
-                                        <h3 className="text-lg font-bold text-slate-900">
+                                        <h3 className="text-lg font-bold text-foreground">
                                             {report.reason === 'incorrect_info' ? t('reason_incorrect') :
                                              report.reason === 'not_thai' ? t('reason_not_thai') :
                                              report.reason === 'closed' ? t('reason_closed') :
@@ -479,24 +478,24 @@ const AdminPage: React.FC = () => {
                                         </h3>
                                     </div>
                                     <Badge className={`${
-                                        report.status === 'pending' ? 'bg-red-100 text-red-700 hover:bg-red-200' :
-                                        report.status === 'resolved' ? 'bg-green-100 text-green-700 hover:bg-green-200' :
-                                        'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                        report.status === 'pending' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200' :
+                                        report.status === 'resolved' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200' :
+                                        'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                                     }`}>
                                         {report.status === 'pending' ? t('status_pending') : 
                                          report.status === 'resolved' ? t('status_resolved') : t('status_dismissed')}
                                     </Badge>
                                 </div>
 
-                                <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-6 flex-grow">
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-border mb-6 flex-grow">
                                     <div className="flex items-start gap-3">
                                         <FileText className="w-5 h-5 text-slate-400 mt-0.5 shrink-0" />
-                                        <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">{report.details}</p>
+                                        <p className="text-foreground text-sm leading-relaxed whitespace-pre-wrap">{report.details}</p>
                                     </div>
                                 </div>
 
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
-                                    <div className="flex items-center gap-4 text-xs text-slate-500 w-full md:w-auto">
+                                    <div className="flex items-center gap-4 text-xs text-muted-foreground w-full md:w-auto">
                                         <div className="flex items-center gap-1.5">
                                             <Clock className="w-3.5 h-3.5" />
                                             {new Date(report.submittedAt).toLocaleDateString()}
@@ -513,7 +512,7 @@ const AdminPage: React.FC = () => {
                                         <Button 
                                             onClick={() => deleteReport(report.id)}
                                             variant="ghost" 
-                                            className="h-9 w-9 p-0 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50"
+                                            className="h-9 w-9 p-0 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
                                             title={t('delete')}
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -560,14 +559,14 @@ const AdminPage: React.FC = () => {
 
 // Extracted Empty State Component
 const EmptyState = ({ type, clear, t }: { type: 'submission' | 'report', clear: () => void, t: (key: any) => string }) => (
-    <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
-        <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
-            <Search className="w-8 h-8 text-slate-300" />
+    <div className="text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-dashed border-border">
+        <div className="mx-auto w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Search className="w-8 h-8 text-slate-300 dark:text-slate-600" />
         </div>
-        <p className="text-slate-500 font-medium">
+        <p className="text-muted-foreground font-medium">
             {type === 'submission' ? t('noSubmissionsFound') : t('noReportsFound')}
         </p>
-        <Button onClick={clear} variant="outline" className="mt-4 border-slate-200">
+        <Button onClick={clear} variant="outline" className="mt-4 border-border">
             {t('clearFilters')}
         </Button>
     </div>
@@ -584,9 +583,9 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
 
     return (
         <Card className={`group overflow-hidden transition-all duration-200 hover:shadow-lg ${
-            item.status === 'approved' ? 'border-green-200 bg-white' :
-            item.status === 'rejected' ? 'border-red-200 bg-white opacity-80 hover:opacity-100' :
-            'border-amber-200 bg-white'
+            item.status === 'approved' ? 'border-green-200 dark:border-green-900 bg-card' :
+            item.status === 'rejected' ? 'border-red-200 dark:border-red-900 bg-card opacity-80 hover:opacity-100' :
+            'border-amber-200 dark:border-amber-900 bg-card'
         }`}>
             {/* Top Color Bar Status Indicator */}
             <div className={`h-1.5 w-full ${
@@ -615,18 +614,18 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                     {/* Title Row */}
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                         <div className="space-y-1">
-                                <h3 className="text-2xl md:text-3xl font-bold text-slate-900 group-hover:text-indigo-900 transition-colors">
+                                <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                 {item.name}
                             </h3>
                             <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">ID:</span>
-                                <code className="text-xs bg-slate-100 px-1.5 py-0.5 rounded text-slate-500 font-mono">{item.id.slice(0, 8)}</code>
+                                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">ID:</span>
+                                <code className="text-xs bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-muted-foreground font-mono">{item.id.slice(0, 8)}</code>
                             </div>
                         </div>
                         <Badge variant="outline" className={`border-0 font-bold uppercase tracking-wider text-[11px] px-3 py-1 ${
-                            item.status === 'approved' ? 'bg-green-100 text-green-700' :
-                            item.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                            'bg-amber-100 text-amber-700'
+                            item.status === 'approved' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
+                            item.status === 'rejected' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' :
+                            'bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300'
                         }`}>
                             {item.status === 'approved' ? t('status_approved') : 
                              item.status === 'rejected' ? t('status_rejected') : t('status_pending')}
@@ -634,71 +633,71 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                     </div>
                     
                     {/* Modern Meta Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 p-4 bg-slate-50/80 rounded-xl border border-slate-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 p-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-xl border border-border">
                             {/* Category */}
                             <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                                 <Tag className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('category')}</span>
-                                <span className="text-sm font-medium text-slate-700 truncate">{getCategoryLabel(item.category)}</span>
+                                <span className="text-sm font-medium text-foreground truncate">{getCategoryLabel(item.category)}</span>
                             </div>
                             </div>
 
                             {/* Website */}
                             <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                                 <Globe className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('website')}</span>
                                 {item.website ? (
-                                    <a href={getSafeUrl(item.website)} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 hover:underline truncate flex items-center gap-1">
+                                    <a href={getSafeUrl(item.website)} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate flex items-center gap-1">
                                         {item.website} <ExternalLink className="w-3 h-3" />
                                     </a>
                                 ) : (
-                                    <span className="text-sm text-slate-400 italic">{t('noneProvided')}</span>
+                                    <span className="text-sm text-muted-foreground italic">{t('noneProvided')}</span>
                                 )}
                             </div>
                             </div>
                             
                             {/* Evidence */}
                             <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
                                 <FileText className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('viewEvidence')}</span>
                                 {item.evidenceUrl ? (
-                                    <a href={getSafeUrl(item.evidenceUrl)} target="_blank" rel="noreferrer" className="text-sm font-medium text-purple-600 hover:underline truncate flex items-center gap-1">
+                                    <a href={getSafeUrl(item.evidenceUrl)} target="_blank" rel="noreferrer" className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline truncate flex items-center gap-1">
                                         Link <ExternalLink className="w-3 h-3" />
                                     </a>
                                 ) : (
-                                    <span className="text-sm text-slate-400 italic">{t('noneProvided')}</span>
+                                    <span className="text-sm text-muted-foreground italic">{t('noneProvided')}</span>
                                 )}
                             </div>
                             </div>
 
                             {/* Date */}
                             <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                                 <Calendar className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('submittedDate')}</span>
-                                <span className="text-sm font-medium text-slate-700 truncate">{new Date(item.submissionDate).toLocaleDateString()}</span>
+                                <span className="text-sm font-medium text-foreground truncate">{new Date(item.submissionDate).toLocaleDateString()}</span>
                             </div>
                             </div>
 
                             {/* Submitter */}
                             <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                                 <User className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('submittedBy')}</span>
-                                <span className="text-sm font-medium text-slate-700 truncate" title={item.submittedBy}>{item.submittedBy}</span>
+                                <span className="text-sm font-medium text-foreground truncate" title={item.submittedBy}>{item.submittedBy}</span>
                             </div>
                             </div>
                     </div>
@@ -706,27 +705,27 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
             </div>
 
             {/* 2. Content Comparison Grid */}
-            <div className="border border-slate-200 rounded-xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+            <div className="border border-border rounded-xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
                 {/* Left: English Details */}
-                <div className="p-5 bg-white space-y-4">
-                    <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <div className="p-5 bg-white dark:bg-slate-900 space-y-4">
+                    <div className="flex items-center gap-2 pb-3 border-b border-border">
                         <span className="text-sm font-bold text-slate-400 tracking-widest">English</span>
                     </div>
                     
                     <div className="space-y-4">
                         <div className="grid grid-cols-[80px_1fr] gap-2 items-start">
                             <span className="text-xs font-semibold text-slate-400 uppercase mt-0.5">{t('purpose')}</span>
-                            <span className="text-sm font-medium text-slate-700">{item.purpose}</span>
+                            <span className="text-sm font-medium text-foreground">{item.purpose}</span>
                         </div>
                         <div className="grid grid-cols-[80px_1fr] gap-2 items-start">
                             <span className="text-xs font-semibold text-slate-400 uppercase mt-0.5">{t('location')}</span>
-                            <span className="text-sm text-slate-600 flex items-start gap-1">
+                            <span className="text-sm text-muted-foreground flex items-start gap-1">
                                 <MapPin className="w-3.5 h-3.5 mt-0.5 text-slate-400 shrink-0" /> {item.location}
                             </span>
                         </div>
                         <div className="grid grid-cols-[80px_1fr] gap-2 items-start">
                             <span className="text-xs font-semibold text-slate-400 uppercase mt-0.5">{t('descriptionLabel')}</span>
-                            <p className="text-sm text-slate-500 leading-relaxed">
+                            <p className="text-sm text-muted-foreground leading-relaxed">
                                 {item.description || <span className="italic text-slate-300">{t('noDescription')}</span>}
                             </p>
                         </div>
@@ -734,25 +733,25 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                 </div>
 
                 {/* Right: Khmer Details */}
-                <div className="p-5 bg-slate-50/50 border-t lg:border-t-0 lg:border-l border-slate-200 space-y-4">
-                    <div className="flex items-center gap-2 pb-3 border-b border-slate-200/60">
+                <div className="p-5 bg-slate-50/50 dark:bg-slate-800/50 border-t lg:border-t-0 lg:border-l border-border space-y-4">
+                    <div className="flex items-center gap-2 pb-3 border-b border-border">
                         <span className="text-sm font-bold text-slate-400 font-['Kantumruy_Pro']">ភាសាខ្មែរ</span>
                     </div>
 
                     <div className="space-y-4 font-['Kantumruy_Pro']">
                         <div className="grid grid-cols-[80px_1fr] gap-2 items-start">
                             <span className="text-xs font-semibold text-slate-400 uppercase mt-0.5 font-sans">{t('purpose')}</span>
-                            <span className="text-sm font-medium text-slate-700">{item.purposeKm || <span className="text-slate-300 italic">-</span>}</span>
+                            <span className="text-sm font-medium text-foreground">{item.purposeKm || <span className="text-slate-300 italic">-</span>}</span>
                         </div>
                         <div className="grid grid-cols-[80px_1fr] gap-2 items-start">
                             <span className="text-xs font-semibold text-slate-400 uppercase mt-0.5 font-sans">{t('location')}</span>
-                            <span className="text-sm text-slate-600 flex items-start gap-1">
+                            <span className="text-sm text-muted-foreground flex items-start gap-1">
                                 <MapPin className="w-3.5 h-3.5 mt-0.5 text-slate-400 shrink-0" /> {item.locationKm || <span className="text-slate-300 italic">-</span>}
                             </span>
                         </div>
                         <div className="grid grid-cols-[80px_1fr] gap-2 items-start">
                             <span className="text-xs font-semibold text-slate-400 uppercase mt-0.5 font-sans">{t('descriptionLabel')}</span>
-                            <p className="text-sm text-slate-500 leading-relaxed">
+                            <p className="text-sm text-muted-foreground leading-relaxed">
                                 {item.descriptionKm || <span className="italic text-slate-300">{t('noDescriptionKm')}</span>}
                             </p>
                         </div>
@@ -763,16 +762,16 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
             </div>
             
             {/* Action Footer */}
-            <div className={`px-4 py-4 md:px-6 md:py-3 border-t flex flex-col md:flex-row items-center justify-between gap-3 ${
-            item.status === 'approved' ? 'bg-green-50/30' :
-            item.status === 'rejected' ? 'bg-red-50/30' :
-            'bg-amber-50/30'
+            <div className={`px-4 py-4 md:px-6 md:py-3 border-t border-border flex flex-col md:flex-row items-center justify-between gap-3 ${
+            item.status === 'approved' ? 'bg-green-50/30 dark:bg-green-900/10' :
+            item.status === 'rejected' ? 'bg-red-50/30 dark:bg-red-900/10' :
+            'bg-amber-50/30 dark:bg-amber-900/10'
             }`}>
                 <div className="flex gap-3 w-full md:w-auto">
-                    <Button onClick={() => onEdit(item)} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs bg-white hover:bg-slate-50 border-slate-200 text-slate-600 font-medium shadow-sm">
+                    <Button onClick={() => onEdit(item)} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-border text-muted-foreground font-medium shadow-sm">
                         <Edit2 className="w-3.5 h-3.5 mr-1.5" /> {t('edit')}
                     </Button>
-                    <Button onClick={() => onDelete(item.id)} variant="ghost" className="flex-1 md:flex-none justify-center h-9 text-xs text-slate-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100">
+                    <Button onClick={() => onDelete(item.id)} variant="ghost" className="flex-1 md:flex-none justify-center h-9 text-xs text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 border border-transparent hover:border-red-100 dark:hover:border-red-900/50">
                         <Trash2 className="w-3.5 h-3.5 mr-1.5" /> {t('delete')}
                     </Button>
                 </div>
@@ -780,7 +779,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                 <div className="flex gap-3 w-full md:w-auto md:ml-auto">
                         {item.status === 'pending' && (
                         <>
-                            <Button onClick={() => onStatusChange(item.id, 'rejected')} variant="ghost" className="flex-1 md:flex-none justify-center h-9 text-xs font-semibold bg-white border border-red-200 text-red-600 hover:bg-red-600 hover:text-white hover:border-red-600 shadow-sm transition-all">
+                            <Button onClick={() => onStatusChange(item.id, 'rejected')} variant="ghost" className="flex-1 md:flex-none justify-center h-9 text-xs font-semibold bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-900 dark:hover:text-red-100 hover:border-red-600 shadow-sm transition-all">
                                 <X className="w-3.5 h-3.5 mr-1.5" /> {t('reject')}
                             </Button>
                             <Button onClick={() => onStatusChange(item.id, 'approved')} className="flex-1 md:flex-none justify-center h-9 text-xs font-semibold bg-green-600 text-white hover:bg-green-700 border border-green-700 shadow-sm transition-all">
@@ -789,12 +788,12 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                         </>
                         )}
                         {item.status === 'rejected' && (
-                            <Button onClick={() => onStatusChange(item.id, 'pending')} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm bg-white">
+                            <Button onClick={() => onStatusChange(item.id, 'pending')} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs border-border text-muted-foreground hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm bg-white dark:bg-slate-800">
                             <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> {t('restorePending')}
                             </Button>
                         )}
                         {item.status === 'approved' && (
-                            <Button onClick={() => onStatusChange(item.id, 'pending')} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs border-amber-200 text-amber-700 hover:bg-amber-50 shadow-sm bg-white">
+                            <Button onClick={() => onStatusChange(item.id, 'pending')} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs border-amber-200 dark:border-amber-900 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 shadow-sm bg-white dark:bg-slate-800">
                             <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> {t('reevaluate')}
                             </Button>
                         )}
@@ -838,7 +837,7 @@ const EditForm = ({ form, onChange, onSave, onCancel, t, getCategoryLabel }: any
                     <Label>{t('imageUrl')}</Label>
                     <div className="flex gap-2">
                          <Input value={form.imageUrl || ''} onChange={(e: any) => onChange('imageUrl', e.target.value)} className="flex-grow h-10" />
-                         {form.imageUrl && <img src={form.imageUrl} alt={t('preview')} className="w-10 h-10 object-contain rounded border border-slate-200 bg-white" />}
+                         {form.imageUrl && <img src={form.imageUrl} alt={t('preview')} className="w-10 h-10 object-contain rounded border border-border bg-white" />}
                     </div>
                 </div>
                 <div className="space-y-2">
@@ -847,9 +846,9 @@ const EditForm = ({ form, onChange, onSave, onCancel, t, getCategoryLabel }: any
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border">
                 <div className="space-y-4">
-                    <h4 className="font-semibold text-slate-900 text-sm uppercase">{t('englishDetails')}</h4>
+                    <h4 className="font-semibold text-foreground text-sm uppercase">{t('englishDetails')}</h4>
                     <div className="space-y-2">
                         <Label>{t('purpose')}</Label>
                         <Input value={form.purpose || ''} onChange={(e: any) => onChange('purpose', e.target.value)} className="h-10" />
@@ -865,7 +864,7 @@ const EditForm = ({ form, onChange, onSave, onCancel, t, getCategoryLabel }: any
                 </div>
                 
                 <div className="space-y-4">
-                    <h4 className="font-semibold text-slate-900 text-sm uppercase text-blue-600">{t('khmerDetails')}</h4>
+                    <h4 className="font-semibold text-foreground text-sm uppercase text-blue-600 dark:text-blue-400">{t('khmerDetails')}</h4>
                     <div className="space-y-2">
                         <Label>{t('purposeKmLabel')}</Label>
                         <Input value={form.purposeKm || ''} onChange={(e: any) => onChange('purposeKm', e.target.value)} placeholder={t('purpose')} className="h-10 font-['Kantumruy_Pro']" />
@@ -883,7 +882,7 @@ const EditForm = ({ form, onChange, onSave, onCancel, t, getCategoryLabel }: any
 
             <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-4">
                 <Button onClick={onCancel} variant="ghost" className="h-10 w-full md:w-auto">{t('cancel')}</Button>
-                <Button onClick={onSave} className="bg-slate-900 text-white hover:bg-slate-800 h-10 w-full md:w-auto shadow-md">
+                <Button onClick={onSave} className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-full md:w-auto shadow-md">
                     <Save className="w-4 h-4 mr-2" /> {t('saveChanges')}
                 </Button>
             </div>

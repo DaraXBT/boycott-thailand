@@ -585,13 +585,13 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
         <Card className={`group overflow-hidden transition-all duration-200 hover:shadow-lg ${
             item.status === 'approved' ? 'border-green-200 dark:border-green-900 bg-card' :
             item.status === 'rejected' ? 'border-red-200 dark:border-red-900 bg-card opacity-80 hover:opacity-100' :
-            'border-amber-200 dark:border-amber-900 bg-card'
+            'border-yellow-400 dark:border-yellow-600 bg-card'
         }`}>
             {/* Top Color Bar Status Indicator */}
             <div className={`h-1.5 w-full ${
             item.status === 'approved' ? 'bg-gradient-to-r from-green-500 to-emerald-400' :
             item.status === 'rejected' ? 'bg-gradient-to-r from-red-500 to-rose-400' :
-            'bg-gradient-to-r from-amber-400 to-yellow-400'
+            'bg-gradient-to-r from-yellow-400 to-yellow-300'
             }`} />
 
             <div className="p-5 md:p-6 flex flex-col gap-6">
@@ -625,7 +625,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                         <Badge variant="outline" className={`border-0 font-bold uppercase tracking-wider text-[11px] px-3 py-1 ${
                             item.status === 'approved' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
                             item.status === 'rejected' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' :
-                            'bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300'
+                            'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                         }`}>
                             {item.status === 'approved' ? t('status_approved') : 
                              item.status === 'rejected' ? t('status_rejected') : t('status_pending')}
@@ -765,7 +765,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
             <div className={`px-4 py-4 md:px-6 md:py-3 border-t border-border flex flex-col md:flex-row items-center justify-between gap-3 ${
             item.status === 'approved' ? 'bg-green-50/30 dark:bg-green-900/10' :
             item.status === 'rejected' ? 'bg-red-50/30 dark:bg-red-900/10' :
-            'bg-amber-50/30 dark:bg-amber-900/10'
+            'bg-yellow-50/50 dark:bg-yellow-900/10'
             }`}>
                 <div className="flex gap-3 w-full md:w-auto">
                     <Button onClick={() => onEdit(item)} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-border text-muted-foreground font-medium shadow-sm">

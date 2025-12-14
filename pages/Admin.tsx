@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Check, X, Trash2, ShieldCheck, Inbox, Search, Plus, Edit2, Save, RotateCcw, ArrowUpDown, Filter, Calendar, Globe, User, Image as ImageIcon, ExternalLink, MapPin, Tag, Clock, Flag, AlertTriangle, FileText, Loader2 } from 'lucide-react';
+import { Check, X, Trash2, ShieldCheck, Inbox, Search, Plus, Edit2, Save, RotateCcw, ArrowUpDown, Filter, Calendar, Globe, User, Image as ImageIcon, ExternalLink, MapPin, Tag, Clock, Flag, AlertTriangle, FileText, Loader2, Ban } from 'lucide-react';
 import { Brand, BrandReport, Category } from '../types';
 import { Card, Button, Badge, Input, Select, Label, Textarea } from '../components/ui';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -110,7 +110,7 @@ const AdminPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this submission? This cannot be undone.')) {
+    if (window.confirm('Are you sure you want to delete this listing? This cannot be undone.')) {
         // Optimistic
         setSubmissions(prev => prev.filter(s => s.id !== id));
         if (editingId === id) cancelEdit();
@@ -139,11 +139,32 @@ const AdminPage: React.FC = () => {
   };
 
   const deleteReport = async (id: string) => {
-     if (window.confirm('Delete this report?')) {
+     if (window.confirm('Delete this report permanently?')) {
          setReports(prev => prev.filter(r => r.id !== id));
          const { error } = await supabase.from('reports').delete().eq('id', id);
          if (error) fetchData();
      }
+  };
+
+  // Special function to delete the BRAND referenced in the report
+  const deleteTargetBrand = async (brandId: string, reportId: string) => {
+      if (window.confirm('WARNING: This will permanently delete the Brand listing associated with this report. Continue?')) {
+          
+          // 1. Delete Brand
+          const { error: brandError } = await supabase.from('brands').delete().eq('id', brandId);
+          
+          if (brandError) {
+              alert('Failed to delete brand: ' + brandError.message);
+              return;
+          }
+
+          // 2. Mark report as resolved
+          await handleReportStatus(reportId, 'resolved');
+          
+          // 3. Remove from local state
+          setSubmissions(prev => prev.filter(s => s.id !== brandId));
+          alert('Brand deleted successfully.');
+      }
   };
 
   // --- Filtering & Sorting ---
@@ -153,7 +174,7 @@ const AdminPage: React.FC = () => {
       const matchesSearch = 
         s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.purpose.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.description.toLowerCase().includes(searchQuery.toLowerCase());
+        (s.description && s.description.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesStatus = statusFilter === 'all' || s.status === statusFilter;
       const matchesCategory = categoryFilter === 'all' || s.category === categoryFilter;
       return matchesSearch && matchesStatus && matchesCategory;
@@ -454,7 +475,7 @@ const AdminPage: React.FC = () => {
                         <div className="flex flex-col md:flex-row">
                             <div className="w-full md:w-64 bg-slate-50 dark:bg-slate-800 p-6 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-border shrink-0">
                                 <div className="w-16 h-16 bg-white rounded-xl p-2 mb-3 border border-border shadow-sm">
-                                    <img src={report.brandImage} alt={report.brandName} className="w-full h-full object-contain" />
+                                    <img src={report.brandImage || 'https://via.placeholder.com/150'} alt={report.brandName} className="w-full h-full object-contain" />
                                 </div>
                                 <h4 className="font-bold text-foreground">{report.brandName}</h4>
                                 <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
@@ -508,18 +529,27 @@ const AdminPage: React.FC = () => {
                                         )}
                                     </div>
 
-                                    <div className="flex items-center gap-2 w-full md:w-auto">
+                                    <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                                        {/* Dangerous Actions */}
                                         <Button 
                                             onClick={() => deleteReport(report.id)}
                                             variant="ghost" 
                                             className="h-9 w-9 p-0 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
-                                            title={t('delete')}
+                                            title="Delete Report Only"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
 
+                                        {/* Workflow Actions */}
                                         {report.status === 'pending' && (
                                             <>
+                                                <Button 
+                                                    onClick={() => deleteTargetBrand(report.brandId, report.id)}
+                                                    variant="outline" 
+                                                    className="h-9 text-xs border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/20"
+                                                >
+                                                    <Ban className="w-3.5 h-3.5 mr-1" /> Delete Brand
+                                                </Button>
                                                 <Button 
                                                     onClick={() => handleReportStatus(report.id, 'dismissed')} 
                                                     variant="outline" 

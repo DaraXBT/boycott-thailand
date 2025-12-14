@@ -12,53 +12,44 @@ const AudioPlayer: React.FC = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    audio.volume = 0.6;
+    audio.volume = 0.5;
 
-    const handleCanPlay = () => {
+    const onMetadataLoaded = () => {
+        // Metadata loaded means we know duration, safe to show UI
         setIsLoading(false);
-        // Attempt autoplay once loaded
-        audio.play()
-            .then(() => {
-                setIsPlaying(true);
-                setHasError(false);
-            })
-            .catch(() => {
-                // Autoplay blocked, expected
-                setIsPlaying(false);
-            });
     };
 
-    audio.addEventListener('canplay', handleCanPlay);
-    
-    // Check if already ready
-    if (audio.readyState >= 3) {
-        handleCanPlay();
-    }
-
-    // Interaction listeners to unlock audio context if needed
-    const unlockAudio = () => {
+    const onCanPlay = () => {
+        setIsLoading(false);
+        // Only attempt autoplay if not already playing and no error
         if (audio.paused && !hasError) {
-            // We don't force play here, just let the user click the button.
-            // But we can ensure audio context is resumed if we were using Web Audio API (not used here).
+             audio.play()
+                .then(() => setIsPlaying(true))
+                .catch(() => {
+                    // Autoplay blocked - perfectly normal, just update state to show 'Tap to Play'
+                    setIsPlaying(false);
+                });
         }
-        removeListeners();
     };
 
-    const removeListeners = () => {
-        document.removeEventListener('click', unlockAudio);
-        document.removeEventListener('touchstart', unlockAudio);
-        document.removeEventListener('keydown', unlockAudio);
-    };
+    // If browser doesn't fire events quickly (e.g. data saver), force ready state after 2s
+    const safetyTimeout = setTimeout(() => {
+        if (isLoading) setIsLoading(false);
+    }, 2000);
 
-    document.addEventListener('click', unlockAudio);
-    document.addEventListener('touchstart', unlockAudio);
-    document.addEventListener('keydown', unlockAudio);
+    audio.addEventListener('loadedmetadata', onMetadataLoaded);
+    audio.addEventListener('canplay', onCanPlay);
+    
+    // Check immediate state in case events already fired
+    if (audio.readyState >= 1) setIsLoading(false);
+    if (audio.readyState >= 3) onCanPlay();
 
     return () => {
-        audio.removeEventListener('canplay', handleCanPlay);
-        removeListeners();
+        audio.removeEventListener('loadedmetadata', onMetadataLoaded);
+        audio.removeEventListener('canplay', onCanPlay);
+        clearTimeout(safetyTimeout);
     };
-  }, [hasError]);
+  }, []);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -67,16 +58,20 @@ const AudioPlayer: React.FC = () => {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
+      setIsLoading(true); // Show spinner briefly while buffering
       const playPromise = audioRef.current.play();
+      
       if (playPromise !== undefined) {
         playPromise
             .then(() => {
                 setIsPlaying(true);
+                setIsLoading(false);
                 setHasError(false);
             })
             .catch((err) => {
-                console.error("Toggle play failed:", err);
+                console.error("Manual play failed:", err);
                 setIsPlaying(false);
+                setIsLoading(false);
             });
       }
     }
@@ -84,7 +79,7 @@ const AudioPlayer: React.FC = () => {
 
   const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
       const audioEl = e.currentTarget;
-      // Only set global error if the audio element itself failed (all sources failed)
+      // If the media error property is set, it's a fatal error
       if (audioEl.error) {
           console.error(`Audio Error: ${audioEl.error.code} - ${audioEl.error.message}`);
           setHasError(true);

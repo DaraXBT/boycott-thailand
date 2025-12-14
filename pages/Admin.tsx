@@ -467,28 +467,30 @@ const AdminPage: React.FC = () => {
                  <EmptyState type="report" clear={() => {setSearchQuery(''); setStatusFilter('all');}} t={t} />
             ) : (
                 filteredReports.map((report) => (
-                    <Card key={report.id} className={`p-0 overflow-hidden ${
+                    <Card key={report.id} className={`p-0 overflow-hidden group transition-all hover:shadow-md ${
                         report.status === 'resolved' ? 'border-green-200 dark:border-green-900 bg-slate-50/50 dark:bg-slate-900/50' : 
-                        report.status === 'dismissed' ? 'border-border opacity-75' : 
-                        'border-red-200 dark:border-red-900/50 bg-card shadow-md shadow-red-100/20 dark:shadow-none'
+                        report.status === 'dismissed' ? 'border-border opacity-75 bg-slate-50 dark:bg-slate-900' : 
+                        'border-red-200 dark:border-red-900/50 bg-card shadow-sm'
                     }`}>
                         <div className="flex flex-col md:flex-row">
+                            {/* Brand Context Side */}
                             <div className="w-full md:w-64 bg-slate-50 dark:bg-slate-800 p-6 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-border shrink-0">
-                                <div className="w-16 h-16 bg-white rounded-xl p-2 mb-3 border border-border shadow-sm">
+                                <div className="w-16 h-16 bg-white p-2 mb-3 border border-border shadow-sm rounded-xl">
                                     <img src={report.brandImage || 'https://via.placeholder.com/150'} alt={report.brandName} className="w-full h-full object-contain" />
                                 </div>
-                                <h4 className="font-bold text-foreground">{report.brandName}</h4>
+                                <h4 className="font-bold text-foreground line-clamp-1">{report.brandName}</h4>
                                 <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                                    <span className="uppercase tracking-wider">{t('reportId')}:</span>
-                                    <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">{report.id.slice(0, 8)}</code>
+                                    <span className="uppercase tracking-wider font-bold text-[10px]">{t('reportId')}:</span>
+                                    <code className="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-[10px]">{report.id.slice(0, 8)}</code>
                                 </div>
                             </div>
 
+                            {/* Report Details */}
                             <div className="p-6 flex-grow flex flex-col">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                                            <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
+                                            <AlertTriangle className={`w-3.5 h-3.5 ${report.status === 'pending' ? 'text-red-500' : 'text-slate-400'}`} />
                                             {t('issueReported')}
                                         </div>
                                         <h3 className="text-lg font-bold text-foreground">
@@ -498,69 +500,68 @@ const AdminPage: React.FC = () => {
                                              report.reason === 'duplicate' ? t('reason_duplicate') : t('reason_other')}
                                         </h3>
                                     </div>
-                                    <Badge className={`${
-                                        report.status === 'pending' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200' :
-                                        report.status === 'resolved' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200' :
-                                        'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                                    
+                                    <Badge className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border shadow-sm flex items-center gap-1.5 ${
+                                        report.status === 'pending' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' :
+                                        report.status === 'resolved' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
+                                        'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
                                     }`}>
+                                        {report.status === 'pending' && <Clock className="w-3.5 h-3.5" />}
+                                        {report.status === 'resolved' && <Check className="w-3.5 h-3.5" />}
+                                        {report.status === 'dismissed' && <X className="w-3.5 h-3.5" />}
                                         {report.status === 'pending' ? t('status_pending') : 
                                          report.status === 'resolved' ? t('status_resolved') : t('status_dismissed')}
                                     </Badge>
                                 </div>
 
-                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-border mb-6 flex-grow">
-                                    <div className="flex items-start gap-3">
-                                        <FileText className="w-5 h-5 text-slate-400 mt-0.5 shrink-0" />
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-border mb-6 flex-grow relative">
+                                    {/* Quote decoration */}
+                                    <div className="absolute top-3 left-3 text-slate-200 dark:text-slate-700 pointer-events-none">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.01697 21L5.01697 18C5.01697 16.8954 5.9124 16 7.01697 16H10.017C10.5693 16 11.017 15.5523 11.017 15V9C11.017 8.44772 10.5693 8 10.017 8H6.01697C5.46468 8 5.01697 8.44772 5.01697 9V11C5.01697 11.5523 4.56925 12 4.01697 12H3.01697V5H13.017V15C13.017 18.3137 10.3307 21 7.01697 21H5.01697Z" /></svg>
+                                    </div>
+                                    <div className="flex items-start gap-3 relative z-10 pl-2">
                                         <p className="text-foreground text-sm leading-relaxed whitespace-pre-wrap">{report.details}</p>
                                     </div>
                                 </div>
 
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
                                     <div className="flex items-center gap-4 text-xs text-muted-foreground w-full md:w-auto">
-                                        <div className="flex items-center gap-1.5">
+                                        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">
                                             <Clock className="w-3.5 h-3.5" />
                                             {new Date(report.submittedAt).toLocaleDateString()}
                                         </div>
                                         {report.email && (
-                                            <div className="flex items-center gap-1.5">
+                                            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">
                                                 <User className="w-3.5 h-3.5" />
-                                                {report.email}
+                                                <span className="truncate max-w-[150px]" title={report.email}>{report.email}</span>
                                             </div>
                                         )}
                                     </div>
 
                                     <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-                                        {/* Dangerous Actions */}
-                                        <Button 
-                                            onClick={() => deleteReport(report.id)}
-                                            variant="ghost" 
-                                            className="h-9 w-9 p-0 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
-                                            title="Delete Report Only"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
-
+                                        
                                         {/* Workflow Actions */}
                                         {report.status === 'pending' && (
                                             <>
                                                 <Button 
                                                     onClick={() => deleteTargetBrand(report.brandId, report.id)}
                                                     variant="outline" 
-                                                    className="h-9 text-xs border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/20"
+                                                    className="h-10 text-xs border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/20 font-medium"
                                                 >
-                                                    <Ban className="w-3.5 h-3.5 mr-1" /> Delete Brand
+                                                    <Ban className="w-4 h-4 mr-1.5" /> Delete Brand
                                                 </Button>
                                                 <Button 
                                                     onClick={() => handleReportStatus(report.id, 'dismissed')} 
                                                     variant="outline" 
-                                                    className="h-9 text-xs"
+                                                    className="h-10 text-xs font-medium"
                                                 >
                                                     {t('dismiss')}
                                                 </Button>
                                                 <Button 
                                                     onClick={() => handleReportStatus(report.id, 'resolved')} 
-                                                    className="h-9 text-xs bg-green-600 hover:bg-green-700 text-white border-green-700"
+                                                    className="h-10 text-xs bg-green-600 hover:bg-green-700 text-white border-green-700 font-bold shadow-sm"
                                                 >
+                                                    <Check className="w-4 h-4 mr-1.5" />
                                                     {t('markResolved')}
                                                 </Button>
                                             </>
@@ -569,11 +570,23 @@ const AdminPage: React.FC = () => {
                                              <Button 
                                                 onClick={() => handleReportStatus(report.id, 'pending')} 
                                                 variant="outline" 
-                                                className="h-9 text-xs"
+                                                className="h-10 text-xs"
                                              >
+                                                <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
                                                 {t('reopen')}
                                             </Button>
                                          )}
+
+                                        {/* Delete Report Button - Made larger */}
+                                        <div className="h-8 w-px bg-border mx-1"></div>
+                                        <Button 
+                                            onClick={() => deleteReport(report.id)}
+                                            variant="ghost" 
+                                            className="h-10 w-10 p-0 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
+                                            title="Delete This Report"
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

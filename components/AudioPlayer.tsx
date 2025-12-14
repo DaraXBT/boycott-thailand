@@ -4,44 +4,55 @@ import { Music2 } from 'lucide-react';
 
 const AudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const startAudio = async () => {
-        if (audioRef.current) {
-            try {
-                audioRef.current.volume = 0.4;
-                await audioRef.current.play();
-                setIsPlaying(true);
-            } catch (err) {
-                // Autoplay was prevented.
-                // We don't set isPlaying(true) here because it's not actually playing.
-                // Instead, we wait for the first interaction.
-                console.log("Autoplay waiting for interaction");
-            }
-        }
-    };
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    startAudio();
+    // Set volume to a reasonable level
+    audio.volume = 0.6;
 
-    const handleInteraction = () => {
-      if (audioRef.current && audioRef.current.paused) {
-        audioRef.current.play()
-          .then(() => setIsPlaying(true))
-          .catch(e => console.error("Playback failed:", e));
+    const playAudio = async () => {
+      try {
+        await audio.play();
+        setIsPlaying(true);
+        setHasError(false);
+      } catch (err) {
+        // Autoplay blocked. This is expected in modern browsers.
+        console.log("Autoplay blocked. Waiting for interaction...");
+        setIsPlaying(false);
+        
+        // Add one-time listeners to unlock audio on first user interaction
+        const unlockAudio = () => {
+           if (audio.paused) {
+             audio.play()
+                .then(() => {
+                    setIsPlaying(true);
+                    setHasError(false);
+                })
+                .catch(e => console.error("Play failed after interaction"));
+           }
+           removeListeners();
+        };
+        
+        const removeListeners = () => {
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+            document.removeEventListener('keydown', unlockAudio);
+        };
+
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+        document.addEventListener('keydown', unlockAudio);
+        
+        // Cleanup function for the effect
+        return removeListeners;
       }
     };
 
-    // Listen for any interaction to trigger audio
-    document.addEventListener('click', handleInteraction, { once: true });
-    document.addEventListener('keydown', handleInteraction, { once: true });
-    document.addEventListener('touchstart', handleInteraction, { once: true });
-
-    return () => {
-      document.removeEventListener('click', handleInteraction);
-      document.removeEventListener('keydown', handleInteraction);
-      document.removeEventListener('touchstart', handleInteraction);
-    };
+    playAudio();
   }, []);
 
   const togglePlay = () => {
@@ -51,43 +62,81 @@ const AudioPlayer: React.FC = () => {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
-      setIsPlaying(true);
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+            .then(() => {
+                setIsPlaying(true);
+                setHasError(false);
+            })
+            .catch(e => {
+                console.error("Toggle play failed");
+                setIsPlaying(false);
+            });
+      }
     }
   };
 
+  const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
+      // When using <source> tags, the error event fires on the <source> element if it fails.
+      // React's onError captures this. However, if the <audio> element itself hasn't failed (e.g. it might try another source),
+      // e.currentTarget.error will be null. We should only treat it as a fatal error if audio.error exists.
+      
+      const audioEl = e.currentTarget;
+      
+      if (audioEl.error) {
+        console.error(`Audio loading error: Code ${audioEl.error.code}, Message: ${audioEl.error.message}`);
+        setHasError(true);
+        setIsPlaying(false);
+      } else {
+        // This is likely a non-fatal error from a <source> tag.
+        // We log it as a warning but don't hide the player yet, hoping a fallback works.
+        console.warn("Audio source failed to load, trying fallback...");
+      }
+  };
+
+  if (hasError) return null; // Hide player if broken
+
   return (
-    <div className="fixed bottom-5 right-5 z-[100] flex flex-col items-end gap-2">
-      <audio ref={audioRef} src="/khmer.mp3" loop preload="auto" />
+    <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <audio 
+        ref={audioRef} 
+        loop 
+        preload="auto"
+        onError={handleAudioError}
+      >
+        <source src="/khmer.mp3" type="audio/mpeg" />
+        <source src="khmer.mp3" type="audio/mpeg" />
+      </audio>
       
       <button 
         onClick={togglePlay}
-        className={`group flex items-center gap-2 p-1.5 pr-3 rounded-full transition-all duration-300 backdrop-blur-xl border shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 ${
+        className={`group flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full transition-all duration-500 backdrop-blur-md border shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
           isPlaying 
-            ? 'bg-slate-900/80 border-slate-700 text-white dark:bg-white/90 dark:border-white/20 dark:text-slate-900' 
-            : 'bg-white/80 border-slate-200 text-slate-600 dark:bg-slate-900/80 dark:border-slate-700 dark:text-slate-300'
+            ? 'bg-slate-900/90 border-slate-700 text-white dark:bg-white/90 dark:border-white/20 dark:text-slate-900' 
+            : 'bg-white/80 border-slate-200 text-slate-500 dark:bg-slate-900/80 dark:border-slate-700 dark:text-slate-400'
         }`}
       >
-        <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
-            isPlaying ? 'bg-red-600 text-white' : 'bg-slate-200 dark:bg-slate-800'
-        } transition-colors duration-300`}>
+        <div className={`w-7 h-7 flex items-center justify-center rounded-full ${
+            isPlaying ? 'bg-red-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
+        } transition-colors duration-500`}>
              {isPlaying ? (
-                 <div className="flex gap-0.5 items-end justify-center h-3 pb-0.5">
-                    <span className="w-0.5 bg-white animate-[bounce_0.8s_infinite] rounded-full h-2"></span>
-                    <span className="w-0.5 bg-white animate-[bounce_1s_infinite] rounded-full h-3"></span>
-                    <span className="w-0.5 bg-white animate-[bounce_0.6s_infinite] rounded-full h-1.5"></span>
+                 <div className="flex gap-0.5 items-end justify-center h-2.5 pb-0.5">
+                    <span className="w-0.5 bg-white animate-[bounce_0.8s_infinite] rounded-full h-1.5"></span>
+                    <span className="w-0.5 bg-white animate-[bounce_1s_infinite] rounded-full h-2.5"></span>
+                    <span className="w-0.5 bg-white animate-[bounce_0.6s_infinite] rounded-full h-1"></span>
                  </div>
              ) : (
-                <Music2 className="w-4 h-4" />
+                <Music2 className="w-3.5 h-3.5" />
              )}
         </div>
 
         <div className="flex flex-col items-start overflow-hidden">
-            <span className="text-[10px] font-bold leading-tight font-['Kantumruy_Pro'] whitespace-nowrap">
+            <span className="text-[10px] font-bold leading-none font-['Kantumruy_Pro'] whitespace-nowrap mb-0.5">
                 គន់មើលទៅមេឃ
             </span>
-            <span className="text-[8px] opacity-70 leading-none uppercase tracking-wider font-sans">
-                {isPlaying ? 'Playing' : 'Paused'}
+            <span className="text-[8px] opacity-70 leading-none uppercase tracking-wider font-sans font-medium">
+                {isPlaying ? 'On Air' : 'Tap to Play'}
             </span>
         </div>
       </button>

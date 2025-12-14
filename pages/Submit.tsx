@@ -1,5 +1,7 @@
+
+
 import React, { useState } from 'react';
-import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Tag, Building2, Info, Lock, Languages } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Tag, Building2, Info, Lock, Languages, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category } from '../types';
 import { Card, Input, Label, Textarea, Button, Select } from '../components/ui';
@@ -31,6 +33,7 @@ const SubmitPage: React.FC = () => {
       website: formData.get('website') as string,
       description: formData.get('description') as string,
       image_url: (formData.get('logoUrl') as string) || '',
+      evidence_url: (formData.get('evidenceUrl') as string) || '',
       status: 'pending',
       submitted_by: user?.email || 'Anonymous',
       purpose_km: (formData.get('purposeKm') as string) || (formData.get('purpose') as string),
@@ -148,6 +151,14 @@ const SubmitPage: React.FC = () => {
                         <ImageIcon className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
                     </div>
                  </div>
+             </div>
+             
+             <div className="space-y-2">
+                <Label htmlFor="evidenceUrl" className="text-slate-700">{t('evidenceUrl')} <span className="text-slate-400 text-xs font-normal">({t('optional')})</span></Label>
+                <div className="relative">
+                    <Input name="evidenceUrl" id="evidenceUrl" type="url" placeholder="https://..." className="rounded-xl border-slate-200 focus:ring-slate-900 pl-10 h-11" />
+                    <FileText className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+                </div>
              </div>
           </div>
 

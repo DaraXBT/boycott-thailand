@@ -1,5 +1,7 @@
+
+
 import React, { useState } from 'react';
-import { ExternalLink, MapPin, Tag, Flag, Ban, Image as ImageIcon } from 'lucide-react';
+import { ExternalLink, MapPin, Tag, Flag, Ban, Image as ImageIcon, FileText } from 'lucide-react';
 import { Brand } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -95,6 +97,18 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
                     >
                         <ExternalLink className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
                     </a>
+                 )}
+                 {brand.evidenceUrl && (
+                     <a
+                       href={brand.evidenceUrl}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="p-1.5 md:p-1.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-200 hover:shadow-sm transition-all duration-200 group/btn"
+                       aria-label={t('viewEvidence')}
+                       title={t('viewEvidence')}
+                     >
+                         <FileText className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
+                     </a>
                  )}
                  <button
                     onClick={() => onReport(brand)}

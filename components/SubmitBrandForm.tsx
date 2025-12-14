@@ -1,5 +1,7 @@
+
+
 import React, { useState } from 'react';
-import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Tag, Building2, Info, Lock, Languages } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Tag, Building2, Info, Lock, Languages, FileText } from 'lucide-react';
 import { Category } from '../types';
 import { Card, Input, Label, Textarea, Button, Select } from './ui';
 import { getCategoryTranslationKey } from '../translations';
@@ -30,6 +32,7 @@ const SubmitBrandForm: React.FC<SubmitBrandFormProps> = ({ t, onRedirectLogin })
       website: formData.get('website') as string,
       description: formData.get('description') as string,
       imageUrl: (formData.get('logoUrl') as string) || 'https://via.placeholder.com/150',
+      evidenceUrl: (formData.get('evidenceUrl') as string) || '',
       status: 'pending',
       submissionDate: new Date().toISOString(),
       submittedBy: user?.email || 'Anonymous',
@@ -146,6 +149,14 @@ const SubmitBrandForm: React.FC<SubmitBrandFormProps> = ({ t, onRedirectLogin })
                         <ImageIcon className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
                     </div>
                  </div>
+             </div>
+             
+             <div className="space-y-2">
+                <Label htmlFor="evidenceUrl" className="text-slate-700">{t('evidenceUrl')} <span className="text-slate-400 text-xs font-normal">(Optional)</span></Label>
+                <div className="relative">
+                    <Input name="evidenceUrl" id="evidenceUrl" type="url" placeholder="https://..." className="rounded-xl border-slate-200 focus:ring-slate-900 pl-10 h-11" />
+                    <FileText className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+                </div>
              </div>
           </div>
 

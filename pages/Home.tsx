@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -44,7 +46,8 @@ const HomePage: React.FC = () => {
             website: item.website,
             description: item.description,
             descriptionKm: item.description_km,
-            imageUrl: item.image_url || 'https://via.placeholder.com/150'
+            imageUrl: item.image_url || 'https://via.placeholder.com/150',
+            evidenceUrl: item.evidence_url
           }));
           setAllBrands(mappedBrands);
         } else {

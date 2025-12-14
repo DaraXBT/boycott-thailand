@@ -1,4 +1,5 @@
 
+
 export enum Category {
   ALL = "All",
   RETAIL = "Retail & Markets",
@@ -34,6 +35,7 @@ export interface Brand {
   description: string;
   descriptionKm?: string; // Khmer translation
   imageUrl: string;
+  evidenceUrl?: string; // URL to evidence/source
 }
 
 export interface BrandReport {

@@ -1,4 +1,5 @@
 
+
 export type Language = 'en' | 'km';
 
 export const translations = {
@@ -51,6 +52,8 @@ export const translations = {
     presence: "Presence / Location",
     officialWebsite: "Official Website Domain",
     logoUrl: "Logo Image URL",
+    evidenceUrl: "Evidence / Source URL",
+    viewEvidence: "View Evidence",
     additionalDetails: "Additional Details / Proof",
     submitButton: "Submit for Review",
     processing: "Processing...",
@@ -187,6 +190,8 @@ export const translations = {
     presence: "វត្តមាន / ទីតាំង",
     officialWebsite: "ដែនគេហទំព័រផ្លូវការ",
     logoUrl: "URL រូបភាពឡូហ្គោ",
+    evidenceUrl: "ប្រភពឯកសារយោង (URL)",
+    viewEvidence: "មើលឯកសារយោង",
     additionalDetails: "ព័ត៌មានបន្ថែម / ភស្តុតាង",
     submitButton: "ដាក់ស្នើសម្រាប់ការត្រួតពិនិត្យ",
     processing: "កំពុងដំណើរការ...",

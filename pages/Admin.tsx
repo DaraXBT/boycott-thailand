@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { Check, X, Trash2, ShieldCheck, Inbox, Search, Plus, Edit2, Save, RotateCcw, ArrowUpDown, Filter, Calendar, Globe, User, Image as ImageIcon, ExternalLink, MapPin, Tag, Clock, Flag, AlertTriangle, FileText, Loader2 } from 'lucide-react';
 import { Brand, BrandReport, Category } from '../types';
@@ -49,6 +51,7 @@ const AdminPage: React.FC = () => {
                 description: item.description,
                 descriptionKm: item.description_km,
                 imageUrl: item.image_url,
+                evidenceUrl: item.evidence_url,
                 status: item.status,
                 submissionDate: item.created_at,
                 submittedBy: item.submitted_by
@@ -193,6 +196,7 @@ const AdminPage: React.FC = () => {
       website: '',
       description: '',
       imageUrl: '',
+      evidenceUrl: '',
       status: 'approved',
       submittedBy: 'Admin',
       submissionDate: new Date().toISOString(),
@@ -224,6 +228,7 @@ const AdminPage: React.FC = () => {
         description: editForm.description,
         description_km: editForm.descriptionKm,
         image_url: editForm.imageUrl,
+        evidence_url: editForm.evidenceUrl,
         status: editForm.status || 'pending',
         submitted_by: editForm.submittedBy || 'Admin'
     };
@@ -622,7 +627,7 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                     </div>
                     
                     {/* Modern Meta Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 p-4 bg-slate-50/80 rounded-xl border border-slate-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 p-4 bg-slate-50/80 rounded-xl border border-slate-100">
                             {/* Category */}
                             <div className="flex items-center gap-3 overflow-hidden">
                             <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
@@ -644,6 +649,23 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                                 {item.website ? (
                                     <a href={`https://${item.website}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 hover:underline truncate flex items-center gap-1">
                                         {item.website} <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                ) : (
+                                    <span className="text-sm text-slate-400 italic">{t('noneProvided')}</span>
+                                )}
+                            </div>
+                            </div>
+                            
+                            {/* Evidence */}
+                            <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+                                <FileText className="w-4 h-4" />
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('viewEvidence')}</span>
+                                {item.evidenceUrl ? (
+                                    <a href={item.evidenceUrl} target="_blank" rel="noreferrer" className="text-sm font-medium text-purple-600 hover:underline truncate flex items-center gap-1">
+                                        Link <ExternalLink className="w-3 h-3" />
                                     </a>
                                 ) : (
                                     <span className="text-sm text-slate-400 italic">{t('noneProvided')}</span>
@@ -805,12 +827,16 @@ const EditForm = ({ form, onChange, onSave, onCancel, t, getCategoryLabel }: any
                     <Label>{t('website')}</Label>
                     <Input value={form.website || ''} onChange={(e: any) => onChange('website', e.target.value)} className="h-10" />
                 </div>
-                 <div className="space-y-2 md:col-span-2">
+                 <div className="space-y-2">
                     <Label>{t('imageUrl')}</Label>
                     <div className="flex gap-2">
                          <Input value={form.imageUrl || ''} onChange={(e: any) => onChange('imageUrl', e.target.value)} className="flex-grow h-10" />
                          {form.imageUrl && <img src={form.imageUrl} alt={t('preview')} className="w-10 h-10 object-contain rounded border border-slate-200 bg-white" />}
                     </div>
+                </div>
+                <div className="space-y-2">
+                    <Label>{t('evidenceUrl')}</Label>
+                    <Input value={form.evidenceUrl || ''} onChange={(e: any) => onChange('evidenceUrl', e.target.value)} className="h-10" />
                 </div>
             </div>
 

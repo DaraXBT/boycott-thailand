@@ -297,7 +297,7 @@ const AdminPage: React.FC = () => {
                 <Inbox className="w-4 h-4" />
                 {t('brandSubmissions')}
                 {pendingSubmissionCount > 0 && (
-                    <span className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-xs px-1.5 py-0.5 rounded-full">{pendingSubmissionCount}</span>
+                    <span className="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs px-1.5 py-0.5 rounded-full">{pendingSubmissionCount}</span>
                 )}
             </button>
             <button 
@@ -311,7 +311,7 @@ const AdminPage: React.FC = () => {
                 <Flag className="w-4 h-4" />
                 {t('issueReports')}
                 {pendingReportCount > 0 && (
-                    <span className="bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-xs px-1.5 py-0.5 rounded-full">{pendingReportCount}</span>
+                    <span className="bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 text-xs px-1.5 py-0.5 rounded-full">{pendingReportCount}</span>
                 )}
             </button>
         </div>
@@ -468,9 +468,9 @@ const AdminPage: React.FC = () => {
             ) : (
                 filteredReports.map((report) => (
                     <Card key={report.id} className={`p-0 overflow-hidden group transition-all hover:shadow-md ${
-                        report.status === 'resolved' ? 'border-emerald-200 dark:border-emerald-900 bg-emerald-50/20 dark:bg-emerald-900/10' : 
+                        report.status === 'resolved' ? 'border-green-200 dark:border-green-900 bg-slate-50/50 dark:bg-slate-900/50' : 
                         report.status === 'dismissed' ? 'border-border opacity-75 bg-slate-50 dark:bg-slate-900' : 
-                        'border-orange-200 dark:border-orange-900/50 bg-card shadow-sm'
+                        'border-red-200 dark:border-red-900/50 bg-card shadow-sm'
                     }`}>
                         <div className="flex flex-col md:flex-row">
                             {/* Brand Context Side */}
@@ -490,7 +490,7 @@ const AdminPage: React.FC = () => {
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                                            <AlertTriangle className={`w-3.5 h-3.5 ${report.status === 'pending' ? 'text-orange-500' : 'text-slate-400'}`} />
+                                            <AlertTriangle className={`w-3.5 h-3.5 ${report.status === 'pending' ? 'text-red-500' : 'text-slate-400'}`} />
                                             {t('issueReported')}
                                         </div>
                                         <h3 className="text-lg font-bold text-foreground">
@@ -502,8 +502,8 @@ const AdminPage: React.FC = () => {
                                     </div>
                                     
                                     <Badge className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border shadow-sm flex items-center gap-1.5 ${
-                                        report.status === 'pending' ? 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800' :
-                                        report.status === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800' :
+                                        report.status === 'pending' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' :
+                                        report.status === 'resolved' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
                                         'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
                                     }`}>
                                         {report.status === 'pending' && <Clock className="w-3.5 h-3.5" />}
@@ -559,7 +559,7 @@ const AdminPage: React.FC = () => {
                                                 </Button>
                                                 <Button 
                                                     onClick={() => handleReportStatus(report.id, 'resolved')} 
-                                                    className="h-10 text-xs bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700 font-bold shadow-sm"
+                                                    className="h-10 text-xs bg-green-600 hover:bg-green-700 text-white border-green-700 font-bold shadow-sm"
                                                 >
                                                     <Check className="w-4 h-4 mr-1.5" />
                                                     {t('markResolved')}
@@ -626,15 +626,15 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
 
     return (
         <Card className={`group overflow-hidden transition-all duration-200 hover:shadow-lg ${
-            item.status === 'approved' ? 'border-emerald-200 dark:border-emerald-900 bg-card' :
-            item.status === 'rejected' ? 'border-rose-200 dark:border-rose-900 bg-card opacity-80 hover:opacity-100' :
-            'border-amber-400 dark:border-amber-600 bg-card'
+            item.status === 'approved' ? 'border-green-200 dark:border-green-900 bg-card' :
+            item.status === 'rejected' ? 'border-red-200 dark:border-red-900 bg-card opacity-80 hover:opacity-100' :
+            'border-yellow-400 dark:border-yellow-600 bg-card'
         }`}>
             {/* Top Color Bar Status Indicator */}
             <div className={`h-1.5 w-full ${
-            item.status === 'approved' ? 'bg-gradient-to-r from-emerald-500 to-emerald-400' :
-            item.status === 'rejected' ? 'bg-gradient-to-r from-rose-500 to-rose-400' :
-            'bg-gradient-to-r from-amber-400 to-amber-300'
+            item.status === 'approved' ? 'bg-gradient-to-r from-green-500 to-emerald-400' :
+            item.status === 'rejected' ? 'bg-gradient-to-r from-red-500 to-rose-400' :
+            'bg-gradient-to-r from-yellow-400 to-yellow-300'
             }`} />
 
             <div className="p-5 md:p-6 flex flex-col gap-6">
@@ -666,9 +666,9 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                             </div>
                         </div>
                         <Badge variant="outline" className={`border-0 font-bold uppercase tracking-wider text-[11px] px-3 py-1 ${
-                            item.status === 'approved' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' :
-                            item.status === 'rejected' ? 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400' :
-                            'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                            item.status === 'approved' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
+                            item.status === 'rejected' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' :
+                            'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                         }`}>
                             {item.status === 'approved' ? t('status_approved') : 
                              item.status === 'rejected' ? t('status_rejected') : t('status_pending')}
@@ -806,9 +806,9 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
             
             {/* Action Footer */}
             <div className={`px-4 py-4 md:px-6 md:py-3 border-t border-border flex flex-col md:flex-row items-center justify-between gap-3 ${
-            item.status === 'approved' ? 'bg-emerald-50/30 dark:bg-emerald-900/10' :
-            item.status === 'rejected' ? 'bg-rose-50/30 dark:bg-rose-900/10' :
-            'bg-amber-50/50 dark:bg-amber-900/10'
+            item.status === 'approved' ? 'bg-green-50/30 dark:bg-green-900/10' :
+            item.status === 'rejected' ? 'bg-red-50/30 dark:bg-red-900/10' :
+            'bg-yellow-50/50 dark:bg-yellow-900/10'
             }`}>
                 <div className="flex gap-3 w-full md:w-auto">
                     <Button onClick={() => onEdit(item)} variant="outline" className="flex-1 md:flex-none justify-center h-9 text-xs bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-border text-muted-foreground font-medium shadow-sm">
@@ -822,10 +822,10 @@ const SubmissionCard = ({ item, t, getCategoryLabel, onEdit, onDelete, onStatusC
                 <div className="flex gap-3 w-full md:w-auto md:ml-auto">
                         {item.status === 'pending' && (
                         <>
-                            <Button onClick={() => onStatusChange(item.id, 'rejected')} variant="ghost" className="flex-1 md:flex-none justify-center h-9 text-xs font-semibold bg-white dark:bg-slate-800 border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-900 dark:hover:text-rose-100 hover:border-rose-600 shadow-sm transition-all">
+                            <Button onClick={() => onStatusChange(item.id, 'rejected')} variant="ghost" className="flex-1 md:flex-none justify-center h-9 text-xs font-semibold bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-900 dark:hover:text-red-100 hover:border-red-600 shadow-sm transition-all">
                                 <X className="w-3.5 h-3.5 mr-1.5" /> {t('reject')}
                             </Button>
-                            <Button onClick={() => onStatusChange(item.id, 'approved')} className="flex-1 md:flex-none justify-center h-9 text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 border border-emerald-700 shadow-sm transition-all">
+                            <Button onClick={() => onStatusChange(item.id, 'approved')} className="flex-1 md:flex-none justify-center h-9 text-xs font-semibold bg-green-600 text-white hover:bg-green-700 border border-green-700 shadow-sm transition-all">
                                 <Check className="w-3.5 h-3.5 mr-1.5" /> {t('approve')}
                             </Button>
                         </>

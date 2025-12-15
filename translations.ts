@@ -1,7 +1,3 @@
-
-
-
-
 export type Language = 'en' | 'km';
 
 export const translations = {
@@ -150,7 +146,9 @@ export const translations = {
     descriptionLabel: "Description",
     checkEmail: "Please check your email to confirm your account.",
     continueWithGoogle: "Continue with Google",
-    orSeparator: "Or continue with"
+    orSeparator: "Or continue with",
+    emailSignupDisabled: "Email registration is currently unavailable. Please use Google.",
+    useGoogle: "Please use Google to create an account."
   },
   km: {
     heroTag: "យុទ្ធនាការដាស់តឿនអ្នកប្រើប្រាស់",
@@ -297,7 +295,9 @@ export const translations = {
     descriptionLabel: "ការពិពណ៌នា",
     checkEmail: "សូមពិនិត្យអ៊ីមែលរបស់អ្នកដើម្បីបញ្ជាក់គណនី។",
     continueWithGoogle: "បន្តជាមួយ Google",
-    orSeparator: "ឬបន្តជាមួយ"
+    orSeparator: "ឬបន្តជាមួយ",
+    emailSignupDisabled: "ការចុះឈ្មោះតាមអ៊ីមែលមិនដំណើរការទេ។ សូមប្រើប្រាស់ Google ។",
+    useGoogle: "សូមប្រើប្រាស់ Google ដើម្បីបង្កើតគណនី។"
   }
 };
 

@@ -3,11 +3,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Loader2, Play } from 'lucide-react';
 
 // --- CONFIGURATION ---
-// Priority 1: Local File (Must be in 'public/khmer.mp3')
-const LOCAL_URL = "/khmer.mp3";
-// Priority 2: Cloud Backup (The specific Google Drive song you provided)
-// If the local file fails, the browser will automatically try this link.
-const CLOUD_URL = "https://docs.google.com/uc?export=download&id=1mHwKJir2h2MBSv0qZbRkrTkR4Ey8cNOZ";
+// Local File (Must be in 'public/khmer.mp3')
+const AUDIO_URL = "/khmer.mp3";
 
 const AudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -41,10 +38,10 @@ const AudioPlayer: React.FC = () => {
     };
 
     const handleError = (e: any) => {
-        // If the audio element errors, it means ALL sources failed.
         console.error("Audio Load Error:", e);
         if (audio.error) {
             console.error("Error Code:", audio.error.code);
+            // Only set error if we really can't play (e.g. file missing)
             setHasError(true);
             setIsLoading(false);
         }
@@ -100,9 +97,7 @@ const AudioPlayer: React.FC = () => {
         preload="auto"
         playsInline
       >
-        {/* Browser tries sources in order */}
-        <source src={LOCAL_URL} type="audio/mpeg" />
-        <source src={CLOUD_URL} type="audio/mpeg" />
+        <source src={AUDIO_URL} type="audio/mpeg" />
       </audio>
       
       <button 

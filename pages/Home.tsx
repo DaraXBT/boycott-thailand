@@ -180,12 +180,14 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Scrollable Category Container */}
-        <div className="relative w-full md:max-w-7xl md:mx-auto">
+        <div className="relative w-[calc(100%+2rem)] -mx-4 md:w-full md:mx-auto md:max-w-7xl">
             {/* 
-              Mobile: Full width scrolling, no padding-x on container.
-              Margins added to first/last children for spacing.
+              Mobile: Negative margins (-mx-4) allow the container to break out of the parent padding (px-4),
+              making it truly full-width edge-to-edge.
+              
+              Padding (py-6) increased to prevent clipping of 'scale' animations on hover/selection.
             */}
-            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible py-4 px-0 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible py-6 px-0 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <button
                 onClick={() => handleCategoryClick('All')}
                 className={`group shrink-0 pl-4 pr-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ml-4 md:ml-0 ${

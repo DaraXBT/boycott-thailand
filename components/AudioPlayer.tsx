@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Loader2, Play, Pause, Music } from 'lucide-react';
+import { Loader2, Play } from 'lucide-react';
 
 // --- CONFIGURATION ---
 // Local File (Must be in 'public/khmer.mp3')
@@ -36,7 +36,7 @@ const AudioPlayer: React.FC = () => {
         }
     };
 
-    const handleError = (e: any) => {
+    const handleError = () => {
         // Code 4 usually means MEDIA_ELEMENT_ERROR: Format error
         // In SPA context, this often happens if the file is missing and the server returns index.html (text/html)
         // instead of the audio file.

@@ -3,8 +3,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Loader2, Play, AlertCircle } from 'lucide-react';
 
 // --- CONFIGURATION ---
-// Local File (Must be in 'public/khmer.mp3')
-const AUDIO_URL = "/khmer.mp3";
+// Using Cambodian National Anthem (Nokor Reach) as a default working stream.
+// You can replace this with "/khmer.mp3" if you add the file to your public folder later.
+const AUDIO_URL = "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/83/Nokoreach_-_Instrumental.ogg/Nokoreach_-_Instrumental.ogg.mp3";
 
 const AudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -36,10 +37,8 @@ const AudioPlayer: React.FC = () => {
     };
 
     const handleError = () => {
-        // Code 4 usually means MEDIA_ELEMENT_ERROR: Format error
-        // This usually implies the file is missing and the server returned index.html
         const code = audio.error ? audio.error.code : 'Unknown';
-        console.warn(`Audio playback issue (Code ${code}). Please ensure 'public/khmer.mp3' exists.`);
+        console.warn(`Audio playback issue (Code ${code}). Please ensure the audio URL is accessible.`);
         
         setHasError(true);
         setIsLoading(false);
@@ -81,6 +80,11 @@ const AudioPlayer: React.FC = () => {
       }
     }
   };
+
+  // If there's an error, we hide the player to keep the UI beautiful
+  if (hasError) {
+      return null;
+  }
 
   return (
     <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -134,10 +138,10 @@ const AudioPlayer: React.FC = () => {
 
         <div className="flex flex-col items-start overflow-hidden min-w-[60px]">
             <span className={`text-[10px] font-bold leading-none font-['Kantumruy_Pro'] whitespace-nowrap mb-0.5 ${hasError ? 'text-red-800' : ''}`}>
-               {hasError ? 'Audio Error' : 'គន់មើលទៅមេឃ'}
+               {hasError ? 'Audio Error' : 'បទ នគររាជ'}
             </span>
             <span className={`text-[8px] opacity-70 leading-none uppercase tracking-wider font-sans font-medium ${hasError ? 'text-red-600' : ''}`}>
-                {hasError ? 'File Missing' : (isLoading ? 'Loading...' : (isPlaying ? 'Playing' : 'Play Music'))}
+                {hasError ? 'File Missing' : (isLoading ? 'Loading...' : (isPlaying ? 'Playing' : 'National Anthem'))}
             </span>
         </div>
       </button>

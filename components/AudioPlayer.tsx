@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Music2, Loader2 } from 'lucide-react';
+import { Music2, Loader2, AlertCircle } from 'lucide-react';
 
 const AudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -12,47 +12,50 @@ const AudioPlayer: React.FC = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Set initial volume to be non-intrusive
-    audio.volume = 0.4;
-
-    const onMetadataLoaded = () => {
-        setIsLoading(false);
-    };
+    // Set initial volume
+    audio.volume = 0.5;
 
     const onCanPlay = () => {
         setIsLoading(false);
-        // Only attempt autoplay if not already playing and no error
-        if (audio.paused && !hasError) {
+        setHasError(false);
+        
+        // Attempt autoplay if not already playing
+        if (audio.paused) {
              const playPromise = audio.play();
              
              if (playPromise !== undefined) {
                 playPromise
                     .then(() => setIsPlaying(true))
-                    .catch(() => {
-                        // Autoplay blocked by browser policy - normal behavior
-                        // We simply stay in "paused" state and let user click to play
+                    .catch((error) => {
+                        console.log("Autoplay prevented by browser:", error);
+                        // Normal behavior for browsers: user must interact first.
+                        // We stay in 'paused' state so user can click the button.
                         setIsPlaying(false);
                     });
              }
         }
     };
 
-    // Safety timeout in case events fail to fire
-    const safetyTimeout = setTimeout(() => {
-        if (isLoading) setIsLoading(false);
-    }, 2000);
+    const onError = (e: Event | React.SyntheticEvent) => {
+        console.error("Audio load error", e);
+        // Only set error if we haven't loaded successfully
+        if (audio.networkState === 3) { // NETWORK_NO_SOURCE
+             setHasError(true);
+             setIsLoading(false);
+        }
+    };
 
-    audio.addEventListener('loadedmetadata', onMetadataLoaded);
+    // Listeners
     audio.addEventListener('canplay', onCanPlay);
+    // We attach error to the audio element, but source errors bubble up
+    audio.addEventListener('error', onError); 
     
     // Check immediate state
-    if (audio.readyState >= 1) setIsLoading(false);
     if (audio.readyState >= 3) onCanPlay();
 
     return () => {
-        audio.removeEventListener('loadedmetadata', onMetadataLoaded);
         audio.removeEventListener('canplay', onCanPlay);
-        clearTimeout(safetyTimeout);
+        audio.removeEventListener('error', onError);
     };
   }, []);
 
@@ -72,24 +75,25 @@ const AudioPlayer: React.FC = () => {
             })
             .catch((err) => {
                 console.error("Manual play failed:", err);
-                // If manual play fails, it might be a source error
-                if (audioRef.current?.error) setHasError(true);
                 setIsPlaying(false);
+                if (audioRef.current?.error) setHasError(true);
             });
       }
     }
   };
 
-  const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
-      const audioEl = e.currentTarget;
-      if (audioEl.error) {
-          console.error(`Audio Error: ${audioEl.error.code} - ${audioEl.error.message}`);
-          setHasError(true);
-          setIsLoading(false);
-      }
-  };
-
-  if (hasError) return null; // Hide completely if file missing
+  if (hasError) {
+      return (
+        <div className="fixed bottom-4 right-4 z-[9999] animate-in fade-in slide-in-from-bottom-4 duration-700">
+             <div className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-red-50/90 border border-red-200 shadow-sm backdrop-blur-md">
+                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-red-100 text-red-600">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-[10px] font-bold text-red-800">Music Unavailable</span>
+             </div>
+        </div>
+      );
+  }
 
   return (
     <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -97,9 +101,10 @@ const AudioPlayer: React.FC = () => {
         ref={audioRef} 
         loop 
         preload="auto"
-        onError={handleAudioError}
         playsInline
       >
+        {/* Try the music folder first as requested, then fallback to root */}
+        <source src="/public/khmer.mp3" type="audio/mpeg" />
         <source src="/khmer.mp3" type="audio/mpeg" />
       </audio>
       

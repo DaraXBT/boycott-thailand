@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Loader2, Play } from 'lucide-react';
+import { Loader2, Play, Pause, Music } from 'lucide-react';
 
 // --- CONFIGURATION ---
 // Local File (Must be in 'public/khmer.mp3')
@@ -16,49 +16,50 @@ const AudioPlayer: React.FC = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Set volume (0.0 to 1.0)
+    // Reset volume
     audio.volume = 0.5;
 
     const handleCanPlay = () => {
         setIsLoading(false);
         setHasError(false);
         
-        // Browsers block autoplay without user interaction.
-        // We try to play, but catch the error silently if it's blocked.
+        // Attempt autoplay only if we haven't already interacted
+        // (Browsers might block this, which is fine)
         const playPromise = audio.play();
         if (playPromise !== undefined) {
             playPromise
                 .then(() => setIsPlaying(true))
-                .catch(() => {
-                    // Autoplay was prevented. 
-                    // We simply set state to paused and wait for user to click play.
+                .catch((err) => {
+                    console.log("Autoplay paused (waiting for user interaction):", err);
                     setIsPlaying(false);
                 });
         }
     };
 
     const handleError = (e: any) => {
-        console.error("Audio Load Error:", e);
-        if (audio.error) {
-            console.error("Error Code:", audio.error.code);
-            // Only set error if we really can't play (e.g. file missing)
-            setHasError(true);
-            setIsLoading(false);
-        }
+        // Code 4 usually means MEDIA_ELEMENT_ERROR: Format error
+        // In SPA context, this often happens if the file is missing and the server returns index.html (text/html)
+        // instead of the audio file.
+        const code = audio.error ? audio.error.code : 'Unknown';
+        console.warn(`Audio playback issue (Code ${code}). Please ensure 'public/khmer.mp3' exists.`);
+        
+        // We set error state but don't crash the component
+        setHasError(true);
+        setIsLoading(false);
+        setIsPlaying(false);
     };
 
     // Attach listeners
     audio.addEventListener('canplay', handleCanPlay);
-    audio.addEventListener('error', handleError); 
+    audio.addEventListener('error', handleError);
     
-    // Check if already ready (for cached files)
-    if (audio.readyState >= 3) {
-        handleCanPlay();
-    }
+    // Trigger load to ensure source changes are picked up
+    audio.load();
 
     return () => {
         audio.removeEventListener('canplay', handleCanPlay);
         audio.removeEventListener('error', handleError);
+        audio.pause();
     };
   }, []);
 
@@ -84,20 +85,17 @@ const AudioPlayer: React.FC = () => {
     }
   };
 
+  // If error, we hide the player to avoid clutter, 
+  // or show a small error state if debugging is needed.
   if (hasError) {
-      return null; // Hide player if completely failed to load
+      return null; 
   }
 
   return (
     <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
-      <audio 
-        ref={audioRef} 
-        loop 
-        preload="auto"
-        playsInline
-      >
-        <source src={AUDIO_URL} type="audio/mpeg" />
+      <audio ref={audioRef} loop preload="auto" playsInline>
+          <source src={AUDIO_URL} type="audio/mpeg" />
       </audio>
       
       <button 
@@ -117,8 +115,7 @@ const AudioPlayer: React.FC = () => {
                  <Loader2 className="w-4 h-4 animate-spin" />
              ) : isPlaying ? (
                  <>
-                    {/* Visualizer Animation */}
-                    <div className="flex gap-0.5 items-end justify-center h-3 pb-0.5">
+                    <div className="flex gap-0.5 items-end justify-center h-3 pb-0.5 relative z-10">
                         <span className="w-0.5 bg-white animate-[bounce_0.8s_infinite] rounded-full h-1.5"></span>
                         <span className="w-0.5 bg-white animate-[bounce_1s_infinite] rounded-full h-2.5"></span>
                         <span className="w-0.5 bg-white animate-[bounce_0.6s_infinite] rounded-full h-1"></span>
@@ -129,7 +126,7 @@ const AudioPlayer: React.FC = () => {
              )}
         </div>
 
-        <div className="flex flex-col items-start overflow-hidden">
+        <div className="flex flex-col items-start overflow-hidden min-w-[60px]">
             <span className="text-[10px] font-bold leading-none font-['Kantumruy_Pro'] whitespace-nowrap mb-0.5">
                គន់មើលទៅមេឃ 
             </span>

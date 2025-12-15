@@ -8,6 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { BRANDS } from '../constants';
 import BrandCard from '../components/BrandCard';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const HomePage: React.FC = () => {
   const { t, getCategoryLabel } = useLanguage();
@@ -97,8 +98,19 @@ const HomePage: React.FC = () => {
     navigate(`/report/${brand.id}`);
   };
 
+  // Animation Variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.05 
+      }
+    }
+  };
+
   return (
-    <div className="animate-in fade-in duration-700">
+    <div>
       
       {/* Hero Section */}
       <section className="text-center mx-auto mb-12 pt-4 relative">
@@ -106,22 +118,44 @@ const HomePage: React.FC = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] md:w-[500px] md:h-[500px] bg-red-500/5 dark:bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="relative max-w-4xl mx-auto space-y-6 px-4 md:px-0">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-bold mb-2 shadow-sm hover:shadow-md transition-all cursor-default">
-            <AlertCircle className="w-4 h-4" /> {t('heroTag')}
-            </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1] font-sans">
-            {t('heroTitle1')} <br/> 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-orange-600 dark:from-red-500 dark:via-red-400 dark:to-orange-500">
-                {t('heroTitle2')}
-            </span>
-            </h1>
-            <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
-            {t('heroDesc')}
-            </p>
+            <motion.div 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-bold mb-2 shadow-sm hover:shadow-md transition-all cursor-default"
+            >
+                <AlertCircle className="w-4 h-4" /> {t('heroTag')}
+            </motion.div>
+            
+            <motion.h1 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+                className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1] font-sans"
+            >
+                {t('heroTitle1')} <br/> 
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-orange-600 dark:from-red-500 dark:via-red-400 dark:to-orange-500">
+                    {t('heroTitle2')}
+                </span>
+            </motion.h1>
+            
+            <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light"
+            >
+                {t('heroDesc')}
+            </motion.p>
         </div>
 
         {/* Full Width Campaign Banner Image */}
-        <div className="mt-12 w-screen relative left-1/2 -translate-x-1/2">
+        <motion.div 
+             initial={{ opacity: 0, y: 40 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+             className="mt-12 w-screen relative left-1/2 -translate-x-1/2"
+        >
             <div className="relative w-full overflow-hidden shadow-2xl group">
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
                 <img 
@@ -131,12 +165,17 @@ const HomePage: React.FC = () => {
                     loading="eager"
                 />
             </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Search & Filter Section */}
       <section className="mb-16 space-y-10 px-4 md:px-0">
-        <div className="relative max-w-2xl mx-auto group z-10">
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="relative max-w-2xl mx-auto group z-10"
+        >
           <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
             <Search className="h-6 w-6 text-slate-400 group-focus-within:text-red-500 transition-colors" />
           </div>
@@ -147,33 +186,42 @@ const HomePage: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-        </div>
+        </motion.div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-5xl mx-auto">
-          <button
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="flex flex-wrap items-center justify-center gap-2.5 max-w-5xl mx-auto"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => handleCategoryClick('All')}
-            className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
+            className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-colors duration-300 ${
               selectedCategory === 'All' 
-                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20 scale-105' 
-                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20' 
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800'
             }`}
           >
             {t('allListings')}
-          </button>
+          </motion.button>
           {categories.filter(cat => cat !== Category.ALL).map((cat) => (
-            <button
+            <motion.button
               key={cat}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => handleCategoryClick(cat)}
-              className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
+              className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-colors duration-300 ${
                 selectedCategory === cat 
-                  ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105' 
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
+                  ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' 
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800'
               }`}
             >
               {getCategoryLabel(cat)}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Results Info */}
@@ -196,25 +244,40 @@ const HomePage: React.FC = () => {
 
       {/* Grid Layout */}
       {filteredBrands.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20 px-4 md:px-0">
-          {filteredBrands.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} onReport={handleReport} />
-          ))}
-        </div>
+        <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            // Layout prop allows Framer Motion to animate the reordering
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20 px-4 md:px-0"
+        >
+            <AnimatePresence>
+                {filteredBrands.map((brand) => (
+                    <BrandCard key={brand.id} brand={brand} onReport={handleReport} />
+                ))}
+            </AnimatePresence>
+        </motion.div>
       ) : (
-        <div className="text-center py-24 bg-card rounded-[2rem] border border-border shadow-xl shadow-slate-100/50 dark:shadow-none mx-4 md:mx-0">
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }} 
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-24 bg-card rounded-[2rem] border border-border shadow-xl shadow-slate-100/50 dark:shadow-none mx-4 md:mx-0"
+        >
           <div className="mx-auto w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
               <Search className="w-10 h-10 text-slate-300 dark:text-slate-600" />
           </div>
           <h3 className="text-2xl font-bold text-foreground mb-2">{t('noResultsTitle')}</h3>
           <p className="text-muted-foreground mb-8 max-w-sm mx-auto">{t('noResultsDesc')}</p>
-          <button 
+          <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {setSearchQuery(''); setSelectedCategory('All');}}
-              className="px-8 py-3 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="px-8 py-3 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shadow-lg"
           >
               {t('clearFilters')}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
     </div>
   );

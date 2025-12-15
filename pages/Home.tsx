@@ -1,5 +1,11 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, AlertCircle, Loader2, Sparkles, Zap } from 'lucide-react';
+import { 
+  Search, AlertCircle, Loader2, Sparkles, Zap, 
+  LayoutGrid, Wheat, Factory, Building, Hammer, Truck, 
+  ShoppingBag, Utensils, Coffee, Car, Landmark, Briefcase, 
+  Smartphone, Tv, GraduationCap, Stethoscope, Shirt, 
+  Bed, Ticket, Armchair 
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category, Brand } from '../types';
 import { Input } from '../components/ui';
@@ -17,6 +23,31 @@ const HomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [usingFallback, setUsingFallback] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Icon Mapping
+  const categoryIcons: Record<string, React.ElementType> = {
+    [Category.AGRICULTURE]: Wheat,
+    [Category.MANUFACTURING]: Factory,
+    [Category.REAL_ESTATE]: Building,
+    [Category.CONSTRUCTION]: Hammer,
+    [Category.ENERGY]: Zap,
+    [Category.LOGISTICS]: Truck,
+    [Category.RETAIL]: ShoppingBag,
+    [Category.FOOD_BEVERAGE]: Utensils,
+    [Category.CAFES_RESTAURANTS]: Coffee,
+    [Category.AUTOMOTIVE]: Car,
+    [Category.FINANCE]: Landmark,
+    [Category.PROFESSIONAL_SERVICES]: Briefcase,
+    [Category.ELECTRONICS]: Smartphone,
+    [Category.MEDIA]: Tv,
+    [Category.EDUCATION]: GraduationCap,
+    [Category.HEALTHCARE]: Stethoscope,
+    [Category.COSMETICS]: Sparkles,
+    [Category.FASHION]: Shirt,
+    [Category.HOSPITALITY]: Bed,
+    [Category.ENTERTAINMENT]: Ticket,
+    [Category.HOUSEHOLD_OFFICE]: Armchair,
+  };
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -148,30 +179,45 @@ const HomePage: React.FC = () => {
           />
         </div>
 
-        <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-2.5 max-w-5xl mx-auto overflow-x-auto md:overflow-visible pb-4 md:pb-0 px-4 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <button
-            onClick={() => handleCategoryClick('All')}
-            className={`shrink-0 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
-              selectedCategory === 'All' 
-                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20 scale-105' 
-                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
-            }`}
-          >
-            {t('allListings')}
-          </button>
-          {categories.filter(cat => cat !== Category.ALL).map((cat) => (
+        {/* Scrollable Category Container */}
+        <div className="relative max-w-7xl mx-auto px-4 md:px-0">
+            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <button
-              key={cat}
-              onClick={() => handleCategoryClick(cat)}
-              className={`shrink-0 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
-                selectedCategory === cat 
-                  ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105' 
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
-              }`}
+                onClick={() => handleCategoryClick('All')}
+                className={`group shrink-0 pl-4 pr-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-2 ${
+                selectedCategory === 'All' 
+                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20 scale-105 ring-2 ring-slate-900 dark:ring-slate-100' 
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
+                }`}
             >
-              {getCategoryLabel(cat)}
+                <LayoutGrid className="w-4 h-4" />
+                {t('allListings')}
             </button>
-          ))}
+            
+            {categories.filter(cat => cat !== Category.ALL).map((cat) => {
+                const Icon = categoryIcons[cat] || AlertCircle;
+                const isSelected = selectedCategory === cat;
+                
+                return (
+                    <button
+                    key={cat}
+                    onClick={() => handleCategoryClick(cat)}
+                    className={`group shrink-0 pl-4 pr-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-2 ${
+                        isSelected 
+                        ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105 ring-2 ring-red-600 ring-offset-2 ring-offset-background' 
+                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
+                    }`}
+                    >
+                    <Icon className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`} />
+                    {getCategoryLabel(cat)}
+                    </button>
+                );
+            })}
+            </div>
+            
+            {/* Visual gradient hints for scrolling on mobile */}
+            <div className="absolute top-0 bottom-4 left-0 w-8 bg-gradient-to-r from-background to-transparent md:hidden pointer-events-none" />
+            <div className="absolute top-0 bottom-4 right-0 w-8 bg-gradient-to-l from-background to-transparent md:hidden pointer-events-none" />
         </div>
       </section>
 

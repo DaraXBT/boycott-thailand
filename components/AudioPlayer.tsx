@@ -3,8 +3,10 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Music2, Loader2, AlertCircle } from 'lucide-react';
 
 // --- CONFIGURATION ---
-// Exclusive Song URL (Google Drive Direct Link)
-const SONG_URL = "https://docs.google.com/uc?export=download&id=1mHwKJir2h2MBSv0qZbRkrTkR4Ey8cNOZ"; 
+// Local files (Ensure khmer.mp3 is inside the 'public' folder of your project)
+// The browser will try these paths in order.
+const LOCAL_PATH_1 = "/khmer.mp3";
+const LOCAL_PATH_2 = "/music/khmer.mp3";
 
 const AudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,6 +41,7 @@ const AudioPlayer: React.FC = () => {
 
     const onError = (e: Event | React.SyntheticEvent) => {
         console.error("Audio Error Event:", e);
+        // Only show error if the audio element itself fails (meaning all sources failed)
         if (audio.error) {
             console.error("Media Error Code:", audio.error.code, audio.error.message);
             setHasError(true);
@@ -87,7 +90,7 @@ const AudioPlayer: React.FC = () => {
                 <div className="w-6 h-6 flex items-center justify-center rounded-full bg-red-100 text-red-600">
                     <AlertCircle className="w-3.5 h-3.5" />
                 </div>
-                <span className="text-[10px] font-bold text-red-800">Music Failed</span>
+                <span className="text-[10px] font-bold text-red-800">Music Not Found</span>
              </div>
         </div>
       );
@@ -102,7 +105,8 @@ const AudioPlayer: React.FC = () => {
         preload="auto"
         playsInline
       >
-        <source src={SONG_URL} type="audio/mpeg" />
+        <source src={LOCAL_PATH_1} type="audio/mpeg" />
+        <source src={LOCAL_PATH_2} type="audio/mpeg" />
       </audio>
       
       <button 

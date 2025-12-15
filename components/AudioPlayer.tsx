@@ -39,7 +39,9 @@ const AudioPlayer: React.FC = () => {
     const onError = (e: Event | React.SyntheticEvent) => {
         console.error("Audio load error", e);
         // Only set error if we haven't loaded successfully
-        if (audio.networkState === 3) { // NETWORK_NO_SOURCE
+        // We check if all sources failed
+        const audioEl = e.target as HTMLAudioElement;
+        if (audioEl && audioEl.error) {
              setHasError(true);
              setIsLoading(false);
         }
@@ -47,7 +49,8 @@ const AudioPlayer: React.FC = () => {
 
     // Listeners
     audio.addEventListener('canplay', onCanPlay);
-    // We attach error to the audio element, but source errors bubble up
+    // We attach error to the audio element, but source errors bubble up. 
+    // Ideally we want to handle the error on the last source, but the audio element error event fires when resource selection fails.
     audio.addEventListener('error', onError); 
     
     // Check immediate state
@@ -103,8 +106,9 @@ const AudioPlayer: React.FC = () => {
         preload="auto"
         playsInline
       >
-        {/* Try the music folder first as requested, then fallback to root */}
-        <source src="/public/khmer.mp3" type="audio/mpeg" />
+        {/* Priority 1: Check in a music subfolder */}
+        <source src="/music/khmer.mp3" type="audio/mpeg" />
+        {/* Priority 2: Check in the root public folder */}
         <source src="/khmer.mp3" type="audio/mpeg" />
       </audio>
       

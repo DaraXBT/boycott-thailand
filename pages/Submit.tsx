@@ -187,7 +187,6 @@ const SubmitPage: React.FC = () => {
              <div className="space-y-2 pt-2 border-t border-dashed border-border">
                 <div className="flex items-center justify-between">
                     <Label htmlFor="logoUrl" className="text-xs text-muted-foreground uppercase tracking-wider">{t('logoUrl')} (Optional)</Label>
-                    <span className="text-[10px] text-muted-foreground">Admin can also add this later</span>
                 </div>
                 <div className="relative">
                     <Input name="logoUrl" id="logoUrl" type="url" placeholder="https://..." className="rounded-xl pl-10 h-10 text-sm bg-slate-50 dark:bg-slate-900/50" />

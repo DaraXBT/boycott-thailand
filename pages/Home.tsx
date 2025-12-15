@@ -134,9 +134,9 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Search & Filter Section */}
-      <section className="mb-16 space-y-10 px-4 md:px-0">
-        <div className="relative max-w-2xl mx-auto group z-10">
-          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+      <section className="mb-16 space-y-6 md:space-y-10">
+        <div className="relative max-w-2xl mx-auto group z-10 px-4 md:px-0">
+          <div className="absolute inset-y-0 left-0 pl-9 md:pl-5 flex items-center pointer-events-none">
             <Search className="h-6 w-6 text-slate-400 group-focus-within:text-red-500 transition-colors" />
           </div>
           <Input 
@@ -148,10 +148,10 @@ const HomePage: React.FC = () => {
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-5xl mx-auto">
+        <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-2.5 max-w-5xl mx-auto overflow-x-auto md:overflow-visible pb-4 md:pb-0 px-4 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <button
             onClick={() => handleCategoryClick('All')}
-            className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
+            className={`shrink-0 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
               selectedCategory === 'All' 
                 ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20 scale-105' 
                 : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
@@ -163,7 +163,7 @@ const HomePage: React.FC = () => {
             <button
               key={cat}
               onClick={() => handleCategoryClick(cat)}
-              className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
+              className={`shrink-0 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
                 selectedCategory === cat 
                   ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105' 
                   : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'

@@ -311,7 +311,7 @@ const AdminPage: React.FC = () => {
                 <Flag className="w-4 h-4" />
                 {t('issueReports')}
                 {pendingReportCount > 0 && (
-                    <span className="bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-xs px-1.5 py-0.5 rounded-full">{pendingReportCount}</span>
+                    <span className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-xs px-1.5 py-0.5 rounded-full">{pendingReportCount}</span>
                 )}
             </button>
         </div>
@@ -470,7 +470,7 @@ const AdminPage: React.FC = () => {
                     <Card key={report.id} className={`p-0 overflow-hidden group transition-all hover:shadow-md ${
                         report.status === 'resolved' ? 'border-emerald-200 dark:border-emerald-900 bg-emerald-50/20 dark:bg-emerald-900/10' : 
                         report.status === 'dismissed' ? 'border-border opacity-75 bg-slate-50 dark:bg-slate-900' : 
-                        'border-orange-200 dark:border-orange-900/50 bg-card shadow-sm'
+                        'border-amber-200 dark:border-amber-900/50 bg-card shadow-sm'
                     }`}>
                         <div className="flex flex-col md:flex-row">
                             {/* Brand Context Side */}
@@ -490,7 +490,7 @@ const AdminPage: React.FC = () => {
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                                            <AlertTriangle className={`w-3.5 h-3.5 ${report.status === 'pending' ? 'text-orange-500' : 'text-slate-400'}`} />
+                                            <AlertTriangle className={`w-3.5 h-3.5 ${report.status === 'pending' ? 'text-amber-500' : 'text-slate-400'}`} />
                                             {t('issueReported')}
                                         </div>
                                         <h3 className="text-lg font-bold text-foreground">
@@ -501,10 +501,10 @@ const AdminPage: React.FC = () => {
                                         </h3>
                                     </div>
                                     
-                                    <Badge className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border shadow-sm flex items-center gap-1.5 ${
-                                        report.status === 'pending' ? 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-200 dark:border-orange-800' :
-                                        report.status === 'resolved' ? 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-800' :
-                                        'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:border-slate-700'
+                                    <Badge variant="outline" className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-0 shadow-sm flex items-center gap-1.5 ${
+                                        report.status === 'pending' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800' :
+                                        report.status === 'resolved' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-800' :
+                                        'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 ring-1 ring-slate-200 dark:ring-slate-700'
                                     }`}>
                                         {report.status === 'pending' && <Clock className="w-3.5 h-3.5" />}
                                         {report.status === 'resolved' && <Check className="w-3.5 h-3.5" />}
@@ -582,7 +582,7 @@ const AdminPage: React.FC = () => {
                                         <Button 
                                             onClick={() => deleteReport(report.id)}
                                             variant="ghost" 
-                                            className="h-11 w-11 p-0 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
+                                            className="h-12 w-12 p-0 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
                                             title="Delete This Report"
                                         >
                                             <Trash2 className="w-6 h-6" />

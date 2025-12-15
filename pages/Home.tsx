@@ -206,7 +206,8 @@ const HomePage: React.FC = () => {
                         {/* Thunder Icon - White Fill, Black Stroke */}
                         <Zap className="w-4 h-4 fill-white text-black rotate-12" strokeWidth={2} />
                         <span>{t('localBrandsTitle')}</span>
-                        <span className="w-1.5 h-1.5 bg-black rotate-45" />
+                        {/* Thunder Icon - White Fill, Black Stroke */}
+                        <Zap className="w-4 h-4 fill-white text-black rotate-12" strokeWidth={2} />
                         <span className="font-bold text-black/80">{t('localBrandsDesc')}</span>
                         {/* Star Icon - White Fill, Black Stroke */}
                         <Sparkles className="w-4 h-4 text-black fill-white -rotate-12" strokeWidth={2} />

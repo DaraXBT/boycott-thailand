@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Music2, Loader2, AlertCircle, Play, Pause } from 'lucide-react';
+import { Loader2, Play } from 'lucide-react';
 
 // --- CONFIGURATION ---
 // Priority 1: Local File (Must be in 'public/khmer.mp3')

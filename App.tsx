@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -10,8 +10,6 @@ import SubmitPage from './pages/Submit';
 import ReportPage from './pages/Report';
 import LoginPage from './pages/Login';
 import AdminPage from './pages/Admin';
-import { AnimatePresence } from 'framer-motion';
-import PageTransition from './components/PageTransition';
 
 // Protected Route Component
 const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -27,29 +25,25 @@ const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 const AppContent: React.FC = () => {
-  const location = useLocation();
-
   return (
       <MainLayout>
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-                <Route path="/submit" element={<PageTransition><SubmitPage /></PageTransition>} />
-                <Route path="/report/:id" element={<PageTransition><ReportPage /></PageTransition>} />
-                <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-                <Route path="/signup" element={<PageTransition><LoginPage /></PageTransition>} />
-                <Route 
-                  path="/admin" 
-                  element={
-                      <ProtectedAdminRoute>
-                          <PageTransition><AdminPage /></PageTransition>
-                      </ProtectedAdminRoute>
-                  } 
-                />
-                {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </AnimatePresence>
+          <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/submit" element={<SubmitPage />} />
+              <Route path="/report/:id" element={<ReportPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<LoginPage />} />
+              <Route 
+                path="/admin" 
+                element={
+                    <ProtectedAdminRoute>
+                        <AdminPage />
+                    </ProtectedAdminRoute>
+                } 
+              />
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
       </MainLayout>
   );
 };

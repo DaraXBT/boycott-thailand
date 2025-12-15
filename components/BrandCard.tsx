@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { ExternalLink, MapPin, Tag, Flag, Ban, Image as ImageIcon, FileText } from 'lucide-react';
 import { Brand } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { motion } from 'framer-motion';
 
 interface BrandCardProps {
   brand: Brand;
@@ -28,26 +27,8 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
     return `https://${url}`;
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-        opacity: 1, 
-        y: 0,
-        transition: { type: 'spring', stiffness: 100, damping: 15 }
-    },
-    exit: { opacity: 0, scale: 0.9 }
-  };
-
   return (
-    <motion.div 
-        layout
-        variants={itemVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        whileHover={{ y: -5, transition: { duration: 0.2 } }}
-        className="group h-full flex flex-row md:flex-col bg-card dark:bg-slate-900 rounded-xl md:rounded-xl overflow-hidden border border-border dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-red-100 dark:hover:border-red-900/50 transition-colors duration-300"
-    >
+    <div className="group h-full flex flex-row md:flex-col bg-card dark:bg-slate-900 rounded-xl md:rounded-xl overflow-hidden border border-border dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-red-100 dark:hover:border-red-900/50 hover:-translate-y-1 transition-all duration-300">
       
       {/* Logo Section - Keep light background for logo visibility */}
       <div className="relative w-32 sm:w-40 md:w-full md:h-40 bg-white p-3 md:p-4 flex items-center justify-center border-r md:border-r-0 md:border-b border-border dark:border-slate-800 overflow-hidden shrink-0">
@@ -59,13 +40,12 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
                 <span className="text-[10px] md:text-[10px] font-medium uppercase tracking-wider hidden md:block">No Image</span>
             </div>
          ) : (
-             <motion.img 
+             <img 
                 src={brand.imageUrl} 
                 alt={brand.name} 
-                className="w-full h-full object-contain relative z-10 drop-shadow-sm"
+                className="w-full h-full object-contain relative z-10 transition-transform duration-500 group-hover:scale-110 drop-shadow-sm"
                 loading="lazy"
                 onError={() => setImgError(true)}
-                whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
              />
          )}
          
@@ -114,45 +94,39 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
 
               <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
                  {brand.website && (
-                    <motion.a 
+                    <a 
                       href={getSafeUrl(brand.website)}
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800 hover:shadow-sm transition-colors duration-200"
+                      className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800 hover:shadow-sm transition-all duration-200 group/btn"
                       aria-label={t('website')}
-                      whileHover={{ scale: 1.2, rotate: 5 }}
-                      whileTap={{ scale: 0.9 }}
                     >
-                        <ExternalLink className="w-3 h-3" />
-                    </motion.a>
+                        <ExternalLink className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
+                    </a>
                  )}
                  {brand.evidenceUrl && (
-                     <motion.a
+                     <a
                        href={getSafeUrl(brand.evidenceUrl)}
                        target="_blank"
                        rel="noopener noreferrer"
-                       className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-sm transition-colors duration-200"
+                       className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-sm transition-all duration-200 group/btn"
                        aria-label={t('viewEvidence')}
                        title={t('viewEvidence')}
-                       whileHover={{ scale: 1.2, rotate: -5 }}
-                       whileTap={{ scale: 0.9 }}
                      >
-                         <FileText className="w-3 h-3" />
-                     </motion.a>
+                         <FileText className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
+                     </a>
                  )}
-                 <motion.button
+                 <button
                     onClick={() => onReport(brand)}
-                    className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800 hover:shadow-sm transition-colors duration-200"
+                    className="p-1.5 md:p-1.5 rounded-full bg-background border border-border text-muted-foreground hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800 hover:shadow-sm transition-all duration-200 group/btn"
                     aria-label={t('reportIssue')}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
                  >
-                    <Flag className="w-3 h-3" />
-                 </motion.button>
+                    <Flag className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
+                 </button>
               </div>
           </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

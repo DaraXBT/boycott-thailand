@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
 
 // Shadcn-like Badge
 export const Badge = ({ children, className = "", variant = "default" }: { children?: React.ReactNode, className?: string, variant?: "default" | "outline" | "secondary" | "destructive" }) => {
@@ -26,7 +25,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         type={type}
-        className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground transition-all duration-200 focus:shadow-md ${className}`}
+        className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground ${className}`}
         ref={ref}
         {...props}
       />
@@ -40,7 +39,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
   ({ className, ...props }, ref) => {
     return (
       <textarea
-        className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground transition-all duration-200 focus:shadow-md ${className}`}
+        className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground ${className}`}
         ref={ref}
         {...props}
       />
@@ -61,26 +60,20 @@ export const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttribute
 )
 Label.displayName = "Label"
 
-// Button (Enhanced with Motion)
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'default' | 'outline' | 'ghost' | 'destructive';
-}
-
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+// Button
+export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'default' | 'outline' | 'ghost' | 'destructive' }>(
   ({ className, variant = 'default', ...props }, ref) => {
     const variants = {
-      default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md",
-      destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm hover:shadow-md",
+      default: "bg-primary text-primary-foreground hover:bg-primary/90",
+      destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
       outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
       ghost: "hover:bg-accent hover:text-accent-foreground"
     };
-    
     return (
-      <motion.button
+      <button
         ref={ref}
-        whileTap={{ scale: 0.96 }}
         className={`inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 ${variants[variant]} ${className}`}
-        {...props as any} 
+        {...props}
       />
     )
   }
@@ -93,7 +86,7 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
     return (
       <div className="relative">
         <select
-          className={`flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none text-foreground transition-all duration-200 focus:shadow-md ${className}`}
+          className={`flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none text-foreground ${className}`}
           ref={ref}
           {...props}
         />
@@ -106,17 +99,14 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
 )
 Select.displayName = "Select"
 
-// Simple Card Container (Enhanced with Motion)
+// Simple Card Container
 export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+      <div
         ref={ref}
         className={`rounded-xl border border-border bg-card text-card-foreground shadow-sm ${className || ''}`}
-        {...props as any}
+        {...props}
       />
     )
   }

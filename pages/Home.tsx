@@ -194,19 +194,21 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Compact Comic Style Marquee */}
-      <div className="mb-8 w-screen relative left-1/2 -translate-x-1/2">
-        <div className="bg-yellow-400 border-y-2 border-black py-1.5 overflow-hidden relative shadow-sm z-20">
+      <div className="mb-6 w-screen relative left-1/2 -translate-x-1/2">
+        <div className="bg-yellow-400 border-y-2 border-black py-1 overflow-hidden relative shadow-sm z-20">
             {/* Stripe Pattern Overlay */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent)', backgroundSize: '10px 10px' }} />
+            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent)', backgroundSize: '8px 8px' }} />
             
             <div className="flex select-none relative z-10">
                 {[...Array(12)].map((_, i) => (
                   <div key={i} className="animate-marquee whitespace-nowrap shrink-0 flex items-center">
                       <span className="mx-4 text-sm font-black text-black uppercase tracking-widest flex items-center gap-3">
-                        <Zap className="w-4 h-4 fill-black text-black rotate-12" strokeWidth={0} />
+                        {/* Thunder Icon - White Fill, Black Stroke */}
+                        <Zap className="w-4 h-4 fill-white text-black rotate-12" strokeWidth={2} />
                         <span>{t('localBrandsTitle')}</span>
                         <span className="w-1.5 h-1.5 bg-black rotate-45" />
                         <span className="font-bold text-black/80">{t('localBrandsDesc')}</span>
+                        {/* Star Icon - White Fill, Black Stroke */}
                         <Sparkles className="w-4 h-4 text-black fill-white -rotate-12" strokeWidth={2} />
                       </span>
                   </div>

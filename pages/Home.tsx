@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { Search, AlertCircle, Loader2, Sparkles, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category, Brand } from '../types';
 import { Input } from '../components/ui';
@@ -117,28 +117,11 @@ const HomePage: React.FC = () => {
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
             {t('heroDesc')}
             </p>
-
-            {/* Coming Soon Alert */}
-            <div className="pt-2 animate-in slide-in-from-bottom-2 duration-700 delay-200">
-                <div className="mx-auto max-w-2xl bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800 rounded-2xl p-4 flex items-start md:items-center gap-4 shadow-sm">
-                    <div className="bg-white dark:bg-slate-800 p-2.5 rounded-xl shadow-sm text-indigo-600 dark:text-indigo-400 shrink-0">
-                        <Sparkles className="w-5 h-5" />
-                    </div>
-                    <div className="text-left">
-                        <h3 className="font-bold text-indigo-950 dark:text-indigo-200 text-sm md:text-base mb-0.5">
-                            {t('localBrandsTitle')}
-                        </h3>
-                        <p className="text-indigo-800/80 dark:text-indigo-300/80 text-xs md:text-sm leading-snug">
-                            {t('localBrandsDesc')}
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
 
-        {/* Full Width Campaign Banner Image */}
+        {/* Full Width Campaign Banner Image with Marquee */}
         <div className="mt-12 w-screen relative left-1/2 -translate-x-1/2">
-            <div className="relative w-full overflow-hidden shadow-2xl group">
+            <div className="relative w-full overflow-hidden shadow-2xl group border-y border-slate-200 dark:border-slate-800">
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
                 <img 
                     src="https://scontent.fpnh9-1.fna.fbcdn.net/v/t39.30808-6/597807787_2932214270308514_6893733743699882729_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_ohc=VsMk11hyAl0Q7kNvwExCAzy&_nc_oc=AdliFpo8q4PROQU3yZqywM4TzkZT5QrPw2UZwV9imM3cMut3ao_B9tKslu9i9mQPiik&_nc_zt=23&_nc_ht=scontent.fpnh9-1.fna&_nc_gid=Mjhbkt7qXp69V5uB25WSdg&oh=00_Afmvwp3guT3R7MxMZzHtNIbzRspg92Jgfz8LMPHqFey4ZQ&oe=6944C101" 
@@ -146,6 +129,26 @@ const HomePage: React.FC = () => {
                     className="w-full h-auto object-cover max-h-[600px] bg-slate-100 dark:bg-slate-900"
                     loading="eager"
                 />
+            </div>
+
+            {/* Comic Style Marquee */}
+            <div className="bg-yellow-400 border-y-4 border-black py-4 overflow-hidden relative shadow-xl z-20">
+                {/* Stripe Pattern Overlay */}
+                <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent)', backgroundSize: '20px 20px' }} />
+                
+                <div className="flex select-none relative z-10">
+                   {[...Array(6)].map((_, i) => (
+                      <div key={i} className="animate-marquee whitespace-nowrap shrink-0 flex items-center">
+                         <span className="mx-8 text-xl md:text-2xl font-black text-black uppercase tracking-widest flex items-center gap-5">
+                            <Zap className="w-8 h-8 fill-black text-black rotate-12" strokeWidth={0} />
+                            <span>{t('localBrandsTitle')}</span>
+                            <span className="w-4 h-4 bg-black rotate-45" />
+                            <span className="font-extrabold text-black/80">{t('localBrandsDesc')}</span>
+                            <Sparkles className="w-8 h-8 text-black fill-white -rotate-12" strokeWidth={2} />
+                         </span>
+                      </div>
+                   ))}
+                </div>
             </div>
         </div>
       </section>

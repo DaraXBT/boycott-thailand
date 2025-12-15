@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Tag, Building2, Info, Lock, Languages, FileText } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Building2, Lock, FileText, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category } from '../types';
 import { Card, Input, Label, Textarea, Button, Select } from '../components/ui';
@@ -24,20 +24,26 @@ const SubmitPage: React.FC = () => {
     // Extract form data
     const formData = new FormData(e.currentTarget);
     
+    // Get values that will be used for both English and Khmer columns
+    const purpose = formData.get('purpose') as string;
+    const location = formData.get('location') as string;
+    const description = formData.get('description') as string;
+
     const submissionData = {
       name: formData.get('brandName') as string,
       category: formData.get('category') as Category,
-      purpose: formData.get('purpose') as string,
-      location: formData.get('location') as string,
+      purpose: purpose,
+      location: location,
       website: formData.get('website') as string,
-      description: formData.get('description') as string,
+      description: description,
       image_url: (formData.get('logoUrl') as string) || '',
       evidence_url: (formData.get('evidenceUrl') as string) || '',
       status: 'pending',
       submitted_by: user?.email || 'Anonymous',
-      purpose_km: (formData.get('purposeKm') as string) || (formData.get('purpose') as string),
-      location_km: (formData.get('locationKm') as string) || (formData.get('location') as string),
-      description_km: (formData.get('descriptionKm') as string) || (formData.get('description') as string),
+      // Auto-fill Khmer columns with English data to satisfy database schema
+      purpose_km: purpose,
+      location_km: location,
+      description_km: description,
     };
 
     try {
@@ -113,11 +119,8 @@ const SubmitPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-8">
           
           <div className="space-y-6">
-             <div className="flex items-center gap-2 pb-2 border-b border-border">
-                <Tag className="w-4 h-4 text-slate-400" />
-                <h3 className="text-xs font-bold text-foreground uppercase tracking-widest">Brand Identity</h3>
-             </div>
              
+             {/* Core Info */}
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="brandName">{t('brandName')} <span className="text-red-500">*</span></Label>
@@ -136,38 +139,7 @@ const SubmitPage: React.FC = () => {
                 </div>
              </div>
              
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <div className="space-y-2">
-                    <Label htmlFor="website">{t('officialWebsite')}</Label>
-                    <div className="relative">
-                        <Input name="website" id="website" type="text" placeholder="e.g. example.com" className="rounded-xl pl-10 h-11" />
-                        <Globe className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
-                    </div>
-                 </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="logoUrl">{t('logoUrl')} <span className="text-muted-foreground text-xs font-normal">(Optional)</span></Label>
-                    <div className="relative">
-                        <Input name="logoUrl" id="logoUrl" type="url" placeholder="https://..." className="rounded-xl pl-10 h-11" />
-                        <ImageIcon className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
-                    </div>
-                 </div>
-             </div>
-             
-             <div className="space-y-2">
-                <Label htmlFor="evidenceUrl">{t('evidenceUrl')} <span className="text-muted-foreground text-xs font-normal">({t('optional')})</span></Label>
-                <div className="relative">
-                    <Input name="evidenceUrl" id="evidenceUrl" type="url" placeholder="https://..." className="rounded-xl pl-10 h-11" />
-                    <FileText className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
-                </div>
-             </div>
-          </div>
-
-          <div className="space-y-6">
-             <div className="flex items-center gap-2 pb-2 border-b border-border">
-                <Info className="w-4 h-4 text-slate-400" />
-                <h3 className="text-xs font-bold text-foreground uppercase tracking-widest">{t('englishDetails')}</h3>
-             </div>
-
+             {/* Context Info */}
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <Label htmlFor="purpose">{t('purpose')} <span className="text-red-500">*</span></Label>
@@ -182,45 +154,45 @@ const SubmitPage: React.FC = () => {
                 </div>
              </div>
 
+             {/* Proof Links */}
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <Label htmlFor="website">{t('officialWebsite')}</Label>
+                    <div className="relative">
+                        <Input name="website" id="website" type="text" placeholder="e.g. example.com" className="rounded-xl pl-10 h-11" />
+                        <Globe className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+                    </div>
+                 </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="evidenceUrl">{t('evidenceUrl')} <span className="text-muted-foreground text-xs font-normal">({t('optional')})</span></Label>
+                    <div className="relative">
+                        <Input name="evidenceUrl" id="evidenceUrl" type="url" placeholder="https://..." className="rounded-xl pl-10 h-11" />
+                        <FileText className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+                    </div>
+                 </div>
+             </div>
+             
+             {/* Description */}
              <div className="space-y-2">
-                <Label htmlFor="description">{t('additionalDetails')} <span className="text-muted-foreground text-xs font-normal">(Optional)</span></Label>
+                <Label htmlFor="description">{t('additionalDetails')} <span className="text-muted-foreground text-xs font-normal">({t('optional')})</span></Label>
                 <Textarea 
                   name="description"
                   id="description" 
-                  placeholder="Provide any additional context or proof of Thai ownership..." 
-                  className="min-h-[120px] rounded-xl p-4 leading-relaxed"
+                  placeholder="Provide any additional context..." 
+                  className="min-h-[100px] rounded-xl p-4 leading-relaxed"
                 />
              </div>
-          </div>
 
-          <div className="space-y-6 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-border">
-             <div className="flex items-center gap-2 pb-2 border-b border-border">
-                <Languages className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <h3 className="text-xs font-bold text-blue-800 dark:text-blue-300 uppercase tracking-widest">{t('khmerDetails')}</h3>
-             </div>
-
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <Label htmlFor="purposeKm">{t('purpose')} <span className="text-muted-foreground text-xs font-normal">({t('optional')})</span></Label>
-                    <Input name="purposeKm" id="purposeKm" placeholder="ឧ. ហាងកាហ្វេ" className="rounded-xl h-11" />
+             {/* Logo (Less prominent) */}
+             <div className="space-y-2 pt-2 border-t border-dashed border-border">
+                <div className="flex items-center justify-between">
+                    <Label htmlFor="logoUrl" className="text-xs text-muted-foreground uppercase tracking-wider">{t('logoUrl')} (Optional)</Label>
+                    <span className="text-[10px] text-muted-foreground">Admin can also add this later</span>
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="locationKm">{t('presence')} <span className="text-muted-foreground text-xs font-normal">({t('optional')})</span></Label>
-                    <div className="relative">
-                        <Input name="locationKm" id="locationKm" placeholder="ឧ. ទូទាំងប្រទេស" className="rounded-xl pl-10 h-11" />
-                        <MapPin className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
-                    </div>
+                <div className="relative">
+                    <Input name="logoUrl" id="logoUrl" type="url" placeholder="https://..." className="rounded-xl pl-10 h-10 text-sm bg-slate-50 dark:bg-slate-900/50" />
+                    <ImageIcon className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
                 </div>
-             </div>
-
-             <div className="space-y-2">
-                <Label htmlFor="descriptionKm">{t('additionalDetails')} <span className="text-muted-foreground text-xs font-normal">({t('optional')})</span></Label>
-                <Textarea 
-                  name="descriptionKm"
-                  id="descriptionKm" 
-                  placeholder="ផ្តល់ព័ត៌មានបន្ថែមជាភាសាខ្មែរ..." 
-                  className="min-h-[120px] rounded-xl p-4 leading-relaxed"
-                />
              </div>
           </div>
 

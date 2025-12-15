@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Loader2, Play, AlertCircle } from 'lucide-react';
 
@@ -43,7 +42,7 @@ const AudioPlayer: React.FC = () => {
                     setHasError(false);
                     widget.setVolume(50);
                     
-                    // Attempt autoplay (might be blocked by browser policies)
+                    // Attempt autoplay immediately
                     widget.play(); 
                 });
 
@@ -61,6 +60,26 @@ const AudioPlayer: React.FC = () => {
                     console.warn("SoundCloud Widget Error");
                     setHasError(true);
                 });
+
+                // 3. Fallback: If browser blocks autoplay, play on first interaction
+                const handleInteraction = () => {
+                    if (widget) {
+                        widget.isPaused((paused: boolean) => {
+                            if (paused) {
+                                widget.play();
+                            }
+                        });
+                    }
+                    // Clean up listeners after first attempt
+                    ['click', 'scroll', 'touchstart', 'keydown'].forEach(evt => 
+                        document.removeEventListener(evt, handleInteraction)
+                    );
+                };
+
+                ['click', 'scroll', 'touchstart', 'keydown'].forEach(evt => 
+                    document.addEventListener(evt, handleInteraction, { once: true })
+                );
+
             } catch (err) {
                 console.error("Widget init error:", err);
             }
@@ -105,8 +124,8 @@ const AudioPlayer: React.FC = () => {
         scrolling="no"
         frameBorder="no"
         allow="autoplay"
-        // Clean URL to ensure permalink works
-        src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(SC_TRACK_URL.split('?')[0])}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`}
+        // Updated auto_play=true to request autoplay
+        src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(SC_TRACK_URL.split('?')[0])}&color=%23ff5500&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`}
         style={{ display: 'none' }} 
         title="SoundCloud Player"
       />

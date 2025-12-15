@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const { login, signInWithGoogle } = useAuth();
   
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -45,7 +45,11 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (activeTab === 'signup') return; // Should not happen as form is hidden
+    
+    if (activeTab === 'signup') {
+      setError(t('emailSignupDisabled'));
+      return;
+    }
 
     setError('');
     setLoading(true);
@@ -130,86 +134,104 @@ const LoginPage: React.FC = () => {
              {t('continueWithGoogle')}
           </Button>
 
-          {activeTab === 'signup' ? (
-            /* Signup Tab - Unavailable Message */
-            <div className="text-center py-4 animate-in fade-in slide-in-from-bottom-2">
-               <div className="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-2xl border border-dashed border-amber-200 dark:border-amber-800/50">
-                 <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3">
-                   <AlertCircle className="w-6 h-6" />
-                 </div>
-                 <p className="font-semibold text-foreground mb-1">
-                   {t('emailSignupDisabled')}
-                 </p>
-                 <p className="text-sm text-muted-foreground">
-                   {t('useGoogle')}
-                 </p>
-               </div>
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border" />
             </div>
-          ) : (
-            /* Login Tab - Standard Form */
-            <>
-              {/* Divider */}
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-3 text-muted-foreground font-semibold tracking-wider">
-                    {t('orSeparator')} email
-                  </span>
-                </div>
-              </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-3 text-muted-foreground font-semibold tracking-wider">
+                {t('orSeparator')} email
+              </span>
+            </div>
+          </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5 animate-in fade-in slide-in-from-bottom-2">
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t('emailAddress')}</Label>
-                  <div className="relative group">
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      required 
-                      placeholder="name@example.com"
-                      className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20"
-                      value={formData.email}
-                      onChange={e => setFormData({...formData, email: e.target.value})}
-                    />
-                    <Mail className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
-                  </div>
+          {/* Signup Unavailable Alert */}
+          {activeTab === 'signup' && (
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-1">
+                <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <div className="text-sm">
+                    <p className="font-semibold text-amber-800 dark:text-amber-300 mb-0.5">
+                        {t('emailSignupDisabled')}
+                    </p>
+                    <p className="text-amber-700 dark:text-amber-400">
+                        {t('useGoogle')}
+                    </p>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password">{t('password')}</Label>
-                  <div className="relative group">
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      required 
-                      placeholder="••••••••"
-                      className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20"
-                      value={formData.password}
-                      onChange={e => setFormData({...formData, password: e.target.value})}
-                    />
-                    <Lock className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
-                  </div>
-                </div>
-
-                {error && (
-                  <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/30 p-4 rounded-xl border border-red-100 dark:border-red-900/50">
-                    <AlertCircle className="w-5 h-5 shrink-0" />
-                    <span className="font-medium">{error}</span>
-                  </div>
-                )}
-
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-[0.98]"
-                  disabled={loading || googleLoading}
-                >
-                  {loading ? t('pleaseWait') : t('signInBtn')}
-                </Button>
-              </form>
-            </>
+            </div>
           )}
+
+          <form onSubmit={handleSubmit} className="space-y-5 animate-in fade-in slide-in-from-bottom-2">
+            
+            {/* Name Field (Signup Only) */}
+            {activeTab === 'signup' && (
+                <div className="space-y-2">
+                  <Label htmlFor="name">{t('fullName')}</Label>
+                  <div className="relative group">
+                    <Input 
+                      id="name" 
+                      type="text" 
+                      required 
+                      placeholder="John Doe"
+                      className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                      value={formData.name}
+                      onChange={e => setFormData({...formData, name: e.target.value})}
+                      disabled={true} // Disabled as per requirement to force Google Auth
+                    />
+                    <User className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                  </div>
+                </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="email">{t('emailAddress')}</Label>
+              <div className="relative group">
+                <Input 
+                  id="email" 
+                  type="email" 
+                  required 
+                  placeholder="name@example.com"
+                  className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                  value={formData.email}
+                  onChange={e => setFormData({...formData, email: e.target.value})}
+                  disabled={activeTab === 'signup'}
+                />
+                <Mail className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">{t('password')}</Label>
+              <div className="relative group">
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  placeholder="••••••••"
+                  className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                  value={formData.password}
+                  onChange={e => setFormData({...formData, password: e.target.value})}
+                  disabled={activeTab === 'signup'}
+                />
+                <Lock className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+              </div>
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/30 p-4 rounded-xl border border-red-100 dark:border-red-900/50">
+                <AlertCircle className="w-5 h-5 shrink-0" />
+                <span className="font-medium">{error}</span>
+              </div>
+            )}
+
+            <Button 
+              type="submit" 
+              className="w-full h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-[0.98]"
+              disabled={loading || googleLoading || activeTab === 'signup'}
+            >
+              {loading ? t('pleaseWait') : (activeTab === 'login' ? t('signInBtn') : t('createAccountBtn'))}
+            </Button>
+          </form>
 
           <div className="pt-2 text-center">
             <p className="text-sm text-muted-foreground">

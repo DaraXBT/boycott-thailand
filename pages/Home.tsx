@@ -180,17 +180,22 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Scrollable Category Container */}
-        <div className="relative max-w-7xl mx-auto px-4 md:px-0">
-            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="relative w-full md:max-w-7xl md:mx-auto">
+            {/* 
+              Mobile: Full width scrolling (no parent padding constraint). 
+              Padding applied to the scroll container (px-4) so items aren't flush to screen edge initially.
+            */}
+            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 md:px-0">
             <button
                 onClick={() => handleCategoryClick('All')}
-                className={`group shrink-0 pl-4 pr-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-2 ${
+                className={`group shrink-0 px-4 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ${
                 selectedCategory === 'All' 
                     ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20 scale-105 ring-2 ring-slate-900 dark:ring-slate-100' 
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
                 }`}
             >
                 <LayoutGrid className="w-4 h-4" />
+                <div className={`w-px h-3.5 ${selectedCategory === 'All' ? 'bg-white/30 dark:bg-black/30' : 'bg-slate-200 dark:bg-slate-700'}`} />
                 {t('allListings')}
             </button>
             
@@ -202,13 +207,15 @@ const HomePage: React.FC = () => {
                     <button
                     key={cat}
                     onClick={() => handleCategoryClick(cat)}
-                    className={`group shrink-0 pl-4 pr-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-2 ${
+                    className={`group shrink-0 px-4 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ${
                         isSelected 
                         ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105 ring-2 ring-red-600 ring-offset-2 ring-offset-background' 
                         : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
                     }`}
                     >
                     <Icon className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`} />
+                    {/* Vertical Separator Line */}
+                    <div className={`w-px h-3.5 ${isSelected ? 'bg-white/30' : 'bg-slate-200 dark:bg-slate-700'}`} />
                     {getCategoryLabel(cat)}
                     </button>
                 );

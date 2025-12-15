@@ -1,12 +1,13 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Music2, Loader2, AlertCircle } from 'lucide-react';
+import { Music2, Loader2, AlertCircle, Play, Pause } from 'lucide-react';
 
 // --- CONFIGURATION ---
-// Local files (Ensure khmer.mp3 is inside the 'public' folder of your project)
-// The browser will try these paths in order.
-const LOCAL_PATH_1 = "/khmer.mp3";
-const LOCAL_PATH_2 = "/music/khmer.mp3";
+// Priority 1: Local File (Must be in 'public/khmer.mp3')
+const LOCAL_URL = "/khmer.mp3";
+// Priority 2: Cloud Backup (The specific Google Drive song you provided)
+// If the local file fails, the browser will automatically try this link.
+const CLOUD_URL = "https://docs.google.com/uc?export=download&id=1mHwKJir2h2MBSv0qZbRkrTkR4Ey8cNOZ";
 
 const AudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -18,46 +19,49 @@ const AudioPlayer: React.FC = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Set volume
+    // Set volume (0.0 to 1.0)
     audio.volume = 0.5;
 
-    const onCanPlay = () => {
+    const handleCanPlay = () => {
         setIsLoading(false);
         setHasError(false);
         
-        // Attempt autoplay
-        if (audio.paused) {
-             const playPromise = audio.play();
-             if (playPromise !== undefined) {
-                playPromise
-                    .then(() => setIsPlaying(true))
-                    .catch((error) => {
-                        console.log("Autoplay prevented:", error);
-                        setIsPlaying(false);
-                    });
-             }
+        // Browsers block autoplay without user interaction.
+        // We try to play, but catch the error silently if it's blocked.
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => setIsPlaying(true))
+                .catch(() => {
+                    // Autoplay was prevented. 
+                    // We simply set state to paused and wait for user to click play.
+                    setIsPlaying(false);
+                });
         }
     };
 
-    const onError = (e: Event | React.SyntheticEvent) => {
-        console.error("Audio Error Event:", e);
-        // Only show error if the audio element itself fails (meaning all sources failed)
+    const handleError = (e: any) => {
+        // If the audio element errors, it means ALL sources failed.
+        console.error("Audio Load Error:", e);
         if (audio.error) {
-            console.error("Media Error Code:", audio.error.code, audio.error.message);
+            console.error("Error Code:", audio.error.code);
             setHasError(true);
             setIsLoading(false);
         }
     };
 
-    audio.addEventListener('canplay', onCanPlay);
-    audio.addEventListener('error', onError); 
+    // Attach listeners
+    audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('error', handleError); 
     
-    // Check state immediately in case it loaded before listeners attached
-    if (audio.readyState >= 3) onCanPlay();
+    // Check if already ready (for cached files)
+    if (audio.readyState >= 3) {
+        handleCanPlay();
+    }
 
     return () => {
-        audio.removeEventListener('canplay', onCanPlay);
-        audio.removeEventListener('error', onError);
+        audio.removeEventListener('canplay', handleCanPlay);
+        audio.removeEventListener('error', handleError);
     };
   }, []);
 
@@ -76,7 +80,7 @@ const AudioPlayer: React.FC = () => {
                 setHasError(false);
             })
             .catch((err) => {
-                console.error("Play failed:", err);
+                console.error("Playback failed:", err);
                 setIsPlaying(false);
             });
       }
@@ -84,16 +88,7 @@ const AudioPlayer: React.FC = () => {
   };
 
   if (hasError) {
-      return (
-        <div className="fixed bottom-4 right-4 z-[9999] animate-in fade-in slide-in-from-bottom-4 duration-700">
-             <div className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-red-50/90 border border-red-200 shadow-sm backdrop-blur-md">
-                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-red-100 text-red-600">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-[10px] font-bold text-red-800">Music Not Found</span>
-             </div>
-        </div>
-      );
+      return null; // Hide player if completely failed to load
   }
 
   return (
@@ -105,8 +100,9 @@ const AudioPlayer: React.FC = () => {
         preload="auto"
         playsInline
       >
-        <source src={LOCAL_PATH_1} type="audio/mpeg" />
-        <source src={LOCAL_PATH_2} type="audio/mpeg" />
+        {/* Browser tries sources in order */}
+        <source src={LOCAL_URL} type="audio/mpeg" />
+        <source src={CLOUD_URL} type="audio/mpeg" />
       </audio>
       
       <button 
@@ -117,21 +113,24 @@ const AudioPlayer: React.FC = () => {
             : 'bg-white/80 border-slate-200 text-slate-500 dark:bg-slate-900/80 dark:border-slate-700 dark:text-slate-400'
         }`}
       >
-        <div className={`w-7 h-7 flex items-center justify-center rounded-full ${
+        <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
             isPlaying 
                 ? 'bg-red-600 text-white' 
                 : 'bg-slate-100 dark:bg-slate-800'
-        } transition-colors duration-500`}>
+        } transition-colors duration-500 relative overflow-hidden`}>
              {isLoading ? (
-                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                 <Loader2 className="w-4 h-4 animate-spin" />
              ) : isPlaying ? (
-                 <div className="flex gap-0.5 items-end justify-center h-2.5 pb-0.5">
-                    <span className="w-0.5 bg-white animate-[bounce_0.8s_infinite] rounded-full h-1.5"></span>
-                    <span className="w-0.5 bg-white animate-[bounce_1s_infinite] rounded-full h-2.5"></span>
-                    <span className="w-0.5 bg-white animate-[bounce_0.6s_infinite] rounded-full h-1"></span>
-                 </div>
+                 <>
+                    {/* Visualizer Animation */}
+                    <div className="flex gap-0.5 items-end justify-center h-3 pb-0.5">
+                        <span className="w-0.5 bg-white animate-[bounce_0.8s_infinite] rounded-full h-1.5"></span>
+                        <span className="w-0.5 bg-white animate-[bounce_1s_infinite] rounded-full h-2.5"></span>
+                        <span className="w-0.5 bg-white animate-[bounce_0.6s_infinite] rounded-full h-1"></span>
+                    </div>
+                 </>
              ) : (
-                <Music2 className="w-3.5 h-3.5" />
+                <Play className="w-3.5 h-3.5 ml-0.5" fill="currentColor" />
              )}
         </div>
 

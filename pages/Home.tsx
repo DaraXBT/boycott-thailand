@@ -182,10 +182,10 @@ const HomePage: React.FC = () => {
         {/* Scrollable Category Container */}
         <div className="relative w-full md:max-w-7xl md:mx-auto">
             {/* 
-              Mobile: Full width scrolling (no parent padding constraint). 
-              Padding applied to the scroll container (px-4) so items aren't flush to screen edge initially.
+              Mobile: Full width scrolling with sufficient padding to prevent clipping of scaled items.
+              Added vertical padding (py-4) to accommodate scale-105 transforms.
             */}
-            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 md:px-0">
+            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible py-4 px-4 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <button
                 onClick={() => handleCategoryClick('All')}
                 className={`group shrink-0 px-4 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ${

@@ -7,6 +7,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { KhmerFlag, EnglishFlag } from '../components/Icons';
 import { ThemeToggle } from '../components/ThemeToggle';
+import AudioPlayer from '../components/AudioPlayer';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -238,6 +239,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </div>
             </div>
           </footer>
+
+          {/* Audio Player */}
+          <AudioPlayer />
       </div>
     </div>
   );

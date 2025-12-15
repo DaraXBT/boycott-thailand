@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Building2, Lock, FileText, Info } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle, Globe, Image as ImageIcon, MapPin, Building2, Lock, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category } from '../types';
 import { Card, Input, Label, Textarea, Button, Select } from '../components/ui';

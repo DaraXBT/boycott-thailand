@@ -3,16 +3,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Music2, Loader2, AlertCircle } from 'lucide-react';
 
 // --- CONFIGURATION ---
-// Option 1: Paste a direct URL to your hosted mp3 file here.
-// NOTE: Google Drive "view" links need to be converted to "download" links to stream directly.
-const EXTERNAL_AUDIO_URL = "https://docs.google.com/uc?export=download&id=1mHwKJir2h2MBSv0qZbRkrTkR4Ey8cNOZ"; 
-
-// Option 2: Local files (Ensure khmer.mp3 is inside the 'public' folder of your project)
-const LOCAL_PATH_1 = "/music/khmer.mp3";
-const LOCAL_PATH_2 = "/khmer.mp3";
-
-// Option 3: Fallback (A reliable test stream to prove the player works if others fail)
-const FALLBACK_TEST_URL = "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112762.mp3"; 
+// Exclusive Song URL (Google Drive Direct Link)
+const SONG_URL = "https://docs.google.com/uc?export=download&id=1mHwKJir2h2MBSv0qZbRkrTkR4Ey8cNOZ"; 
 
 const AudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -47,7 +39,6 @@ const AudioPlayer: React.FC = () => {
 
     const onError = (e: Event | React.SyntheticEvent) => {
         console.error("Audio Error Event:", e);
-        // If the audio element itself errors out (not just a source), we show the error state
         if (audio.error) {
             console.error("Media Error Code:", audio.error.code, audio.error.message);
             setHasError(true);
@@ -105,27 +96,13 @@ const AudioPlayer: React.FC = () => {
   return (
     <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
-      {/* 
-          The audio element with multiple sources. 
-          The browser tries them in order from top to bottom.
-      */}
       <audio 
         ref={audioRef} 
         loop 
         preload="auto"
         playsInline
       >
-        {/* 1. Priority: External URL (Google Drive Direct Link) */}
-        {EXTERNAL_AUDIO_URL && <source src={EXTERNAL_AUDIO_URL} type="audio/mpeg" />}
-        
-        {/* 2. Priority: Local Music Folder */}
-        <source src={LOCAL_PATH_1} type="audio/mpeg" />
-        
-        {/* 3. Priority: Local Root Folder */}
-        <source src={LOCAL_PATH_2} type="audio/mpeg" />
-
-        {/* 4. Fallback: Known working internet URL */}
-        <source src={FALLBACK_TEST_URL} type="audio/mpeg" />
+        <source src={SONG_URL} type="audio/mpeg" />
       </audio>
       
       <button 

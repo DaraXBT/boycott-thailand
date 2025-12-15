@@ -182,13 +182,13 @@ const HomePage: React.FC = () => {
         {/* Scrollable Category Container */}
         <div className="relative w-full md:max-w-7xl md:mx-auto">
             {/* 
-              Mobile: Full width scrolling with sufficient padding to prevent clipping of scaled items.
-              Added vertical padding (py-4) to accommodate scale-105 transforms.
+              Mobile: Full width scrolling, no padding-x on container.
+              Margins added to first/last children for spacing.
             */}
-            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible py-4 px-4 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible py-4 px-0 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <button
                 onClick={() => handleCategoryClick('All')}
-                className={`group shrink-0 px-4 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ${
+                className={`group shrink-0 pl-4 pr-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ml-4 md:ml-0 ${
                 selectedCategory === 'All' 
                     ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg shadow-slate-900/20 scale-105 ring-2 ring-slate-900 dark:ring-slate-100' 
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
@@ -199,22 +199,22 @@ const HomePage: React.FC = () => {
                 {t('allListings')}
             </button>
             
-            {categories.filter(cat => cat !== Category.ALL).map((cat) => {
+            {categories.filter(cat => cat !== Category.ALL).map((cat, index, array) => {
                 const Icon = categoryIcons[cat] || AlertCircle;
                 const isSelected = selectedCategory === cat;
+                const isLast = index === array.length - 1;
                 
                 return (
                     <button
                     key={cat}
                     onClick={() => handleCategoryClick(cat)}
-                    className={`group shrink-0 px-4 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ${
+                    className={`group shrink-0 pl-4 pr-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-3 ${isLast ? 'mr-4 md:mr-0' : ''} ${
                         isSelected 
                         ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-105 ring-2 ring-red-600 ring-offset-2 ring-offset-background' 
                         : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 hover:scale-105'
                     }`}
                     >
                     <Icon className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`} />
-                    {/* Vertical Separator Line */}
                     <div className={`w-px h-3.5 ${isSelected ? 'bg-white/30' : 'bg-slate-200 dark:bg-slate-700'}`} />
                     {getCategoryLabel(cat)}
                     </button>

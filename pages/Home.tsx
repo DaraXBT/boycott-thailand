@@ -1,6 +1,5 @@
-
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, AlertCircle, Loader2 } from 'lucide-react';
+import { Search, AlertCircle, Loader2, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category, Brand } from '../types';
 import { Input } from '../components/ui';
@@ -118,6 +117,23 @@ const HomePage: React.FC = () => {
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
             {t('heroDesc')}
             </p>
+
+            {/* Coming Soon Alert */}
+            <div className="pt-2 animate-in slide-in-from-bottom-2 duration-700 delay-200">
+                <div className="mx-auto max-w-2xl bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800 rounded-2xl p-4 flex items-start md:items-center gap-4 shadow-sm">
+                    <div className="bg-white dark:bg-slate-800 p-2.5 rounded-xl shadow-sm text-indigo-600 dark:text-indigo-400 shrink-0">
+                        <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div className="text-left">
+                        <h3 className="font-bold text-indigo-950 dark:text-indigo-200 text-sm md:text-base mb-0.5">
+                            {t('localBrandsTitle')}
+                        </h3>
+                        <p className="text-indigo-800/80 dark:text-indigo-300/80 text-xs md:text-sm leading-snug">
+                            {t('localBrandsDesc')}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {/* Full Width Campaign Banner Image */}

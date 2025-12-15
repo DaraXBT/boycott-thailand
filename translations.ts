@@ -148,7 +148,9 @@ export const translations = {
     continueWithGoogle: "Continue with Google",
     orSeparator: "Or continue with",
     emailSignupDisabled: "Email registration is currently unavailable. Please use Google.",
-    useGoogle: "Please use Google to create an account."
+    useGoogle: "Please use Google to create an account.",
+    localBrandsTitle: "Coming Soon: Khmer Local Brands 🇰🇭",
+    localBrandsDesc: "We are preparing a special section to highlight proud Khmer-owned businesses and products. Stay tuned!"
   },
   km: {
     heroTag: "យុទ្ធនាការដាស់តឿនអ្នកប្រើប្រាស់",
@@ -297,7 +299,9 @@ export const translations = {
     continueWithGoogle: "បន្តជាមួយ Google",
     orSeparator: "ឬបន្តជាមួយ",
     emailSignupDisabled: "ការចុះឈ្មោះតាមអ៊ីមែលមិនដំណើរការទេ។ សូមប្រើប្រាស់ Google ។",
-    useGoogle: "សូមប្រើប្រាស់ Google ដើម្បីបង្កើតគណនី។"
+    useGoogle: "សូមប្រើប្រាស់ Google ដើម្បីបង្កើតគណនី។",
+    localBrandsTitle: "ឆាប់ៗនេះ៖ ម៉ាកយីហោ និងផលិតផលខ្មែរ 🇰🇭",
+    localBrandsDesc: "យើងកំពុងរៀបចំផ្នែកពិសេសដើម្បីបង្ហាញ និងផ្សព្វផ្សាយអាជីវកម្មព្រមទាំងផលិតផលរបស់កូនខ្មែរ។ សូមរង់ចាំ!"
   }
 };
 

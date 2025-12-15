@@ -119,7 +119,7 @@ const HomePage: React.FC = () => {
             </p>
         </div>
 
-        {/* Full Width Campaign Banner Image with Marquee */}
+        {/* Full Width Campaign Banner Image */}
         <div className="mt-12 w-screen relative left-1/2 -translate-x-1/2">
             <div className="relative w-full overflow-hidden shadow-2xl group border-y border-slate-200 dark:border-slate-800">
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
@@ -129,26 +129,6 @@ const HomePage: React.FC = () => {
                     className="w-full h-auto object-cover max-h-[600px] bg-slate-100 dark:bg-slate-900"
                     loading="eager"
                 />
-            </div>
-
-            {/* Comic Style Marquee */}
-            <div className="bg-yellow-400 border-y-4 border-black py-4 overflow-hidden relative shadow-xl z-20">
-                {/* Stripe Pattern Overlay */}
-                <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent)', backgroundSize: '20px 20px' }} />
-                
-                <div className="flex select-none relative z-10">
-                   {[...Array(6)].map((_, i) => (
-                      <div key={i} className="animate-marquee whitespace-nowrap shrink-0 flex items-center">
-                         <span className="mx-8 text-xl md:text-2xl font-black text-black uppercase tracking-widest flex items-center gap-5">
-                            <Zap className="w-8 h-8 fill-black text-black rotate-12" strokeWidth={0} />
-                            <span>{t('localBrandsTitle')}</span>
-                            <span className="w-4 h-4 bg-black rotate-45" />
-                            <span className="font-extrabold text-black/80">{t('localBrandsDesc')}</span>
-                            <Sparkles className="w-8 h-8 text-black fill-white -rotate-12" strokeWidth={2} />
-                         </span>
-                      </div>
-                   ))}
-                </div>
             </div>
         </div>
       </section>
@@ -211,6 +191,28 @@ const HomePage: React.FC = () => {
                 {t('showingResults', { count: filteredBrands.length })}
             </span>
           </div>
+      </div>
+
+      {/* Compact Comic Style Marquee */}
+      <div className="mb-8 w-screen relative left-1/2 -translate-x-1/2">
+        <div className="bg-yellow-400 border-y-2 border-black py-1.5 overflow-hidden relative shadow-sm z-20">
+            {/* Stripe Pattern Overlay */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent)', backgroundSize: '10px 10px' }} />
+            
+            <div className="flex select-none relative z-10">
+                {[...Array(12)].map((_, i) => (
+                  <div key={i} className="animate-marquee whitespace-nowrap shrink-0 flex items-center">
+                      <span className="mx-4 text-sm font-black text-black uppercase tracking-widest flex items-center gap-3">
+                        <Zap className="w-4 h-4 fill-black text-black rotate-12" strokeWidth={0} />
+                        <span>{t('localBrandsTitle')}</span>
+                        <span className="w-1.5 h-1.5 bg-black rotate-45" />
+                        <span className="font-bold text-black/80">{t('localBrandsDesc')}</span>
+                        <Sparkles className="w-4 h-4 text-black fill-white -rotate-12" strokeWidth={2} />
+                      </span>
+                  </div>
+                ))}
+            </div>
+        </div>
       </div>
 
       {/* Grid Layout */}

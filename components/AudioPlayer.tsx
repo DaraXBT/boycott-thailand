@@ -94,9 +94,7 @@ const AudioPlayer: React.FC = () => {
   return (
     <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
-      <audio ref={audioRef} loop preload="auto" playsInline>
-          <source src={AUDIO_URL} type="audio/mpeg" />
-      </audio>
+      <audio ref={audioRef} src={AUDIO_URL} loop preload="auto" playsInline />
       
       <button 
         onClick={togglePlay}

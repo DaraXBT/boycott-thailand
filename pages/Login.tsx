@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { Mail, Lock, User, AlertCircle, Loader2, KeyRound } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Mail, Lock, User, AlertCircle, Loader2, KeyRound, ArrowLeft } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -16,6 +16,8 @@ const GoogleIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const OTP_LENGTH = 8;
+
 const LoginPage: React.FC = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -28,12 +30,23 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
+  
+  const otpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     if (location.pathname === '/signup') {
         setActiveTab('signup');
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (showOtpInput) {
+        // Focus first OTP input when view appears
+        setTimeout(() => {
+            otpInputRefs.current[0]?.focus();
+        }, 100);
+    }
+  }, [showOtpInput]);
 
   const toggleTab = (tab: 'login' | 'signup') => {
       setActiveTab(tab);
@@ -86,6 +99,59 @@ const LoginPage: React.FC = () => {
       console.error(err);
       setError(err.message || t('authFailed'));
       setGoogleLoading(false);
+    }
+  };
+
+  // OTP Handlers
+  const handleOtpChange = (index: number, value: string) => {
+    // Allow only numeric input
+    if (!/^\d*$/.test(value)) return;
+    
+    // Take the last character if multiple are entered (though maxLength is 1)
+    const char = value.slice(-1);
+
+    const newOtp = formData.otp.split('');
+    // Ensure array is properly sized
+    while (newOtp.length < OTP_LENGTH) newOtp.push('');
+    
+    newOtp[index] = char;
+    const otpString = newOtp.join('').slice(0, OTP_LENGTH);
+    setFormData({ ...formData, otp: otpString });
+
+    // Auto-advance focus
+    if (char && index < OTP_LENGTH - 1) {
+        otpInputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+        if (!formData.otp[index] && index > 0) {
+            // If current is empty, move back and delete previous
+            const newOtp = formData.otp.split('');
+            newOtp[index - 1] = '';
+            setFormData({ ...formData, otp: newOtp.join('') });
+            otpInputRefs.current[index - 1]?.focus();
+        } else if (formData.otp[index]) {
+            // Just clear current
+            const newOtp = formData.otp.split('');
+            newOtp[index] = '';
+            setFormData({ ...formData, otp: newOtp.join('') });
+        }
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+        otpInputRefs.current[index - 1]?.focus();
+    } else if (e.key === 'ArrowRight' && index < OTP_LENGTH - 1) {
+        otpInputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, OTP_LENGTH).replace(/\D/g, '');
+    if (pastedData) {
+        setFormData({ ...formData, otp: pastedData });
+        const nextIndex = Math.min(pastedData.length, OTP_LENGTH - 1);
+        otpInputRefs.current[nextIndex]?.focus();
     }
   };
 
@@ -222,7 +288,7 @@ const LoginPage: React.FC = () => {
 
             {/* OTP Input - Only visible after signup submission */}
             {showOtpInput && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
+                <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
                      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-xl p-4 flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                         <div className="text-sm">
@@ -236,19 +302,22 @@ const LoginPage: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="otp">{t('otpLabel')}</Label>
-                        <div className="relative group">
-                            <Input 
-                            id="otp" 
-                            type="text" 
-                            required 
-                            placeholder="123456"
-                            className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 tracking-widest font-mono text-lg"
-                            value={formData.otp}
-                            onChange={e => setFormData({...formData, otp: e.target.value})}
-                            autoFocus
-                            />
-                            <KeyRound className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                        <Label className="text-center block mb-2">{t('otpLabel')}</Label>
+                        <div className="flex gap-2 justify-center" onPaste={handleOtpPaste}>
+                             {[...Array(OTP_LENGTH)].map((_, idx) => (
+                                <Input
+                                    key={idx}
+                                    ref={(el) => (otpInputRefs.current[idx] = el)}
+                                    type="text"
+                                    inputMode="numeric"
+                                    maxLength={1}
+                                    value={formData.otp[idx] || ''}
+                                    onChange={(e) => handleOtpChange(idx, e.target.value)}
+                                    onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                                    className="w-8 h-10 sm:w-10 sm:h-12 md:w-12 md:h-14 text-center text-lg md:text-2xl font-bold p-0 rounded-lg md:rounded-xl border-2 focus:border-primary focus:ring-0 transition-all caret-primary"
+                                    autoComplete="off"
+                                />
+                             ))}
                         </div>
                     </div>
                 </div>
@@ -277,9 +346,9 @@ const LoginPage: React.FC = () => {
                  <button
                     type="button"
                     onClick={() => { setShowOtpInput(false); setError(''); }}
-                    className="w-full text-center text-sm text-muted-foreground hover:text-primary transition-colors mt-2"
+                    className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mt-2 p-2"
                  >
-                     {t('cancel')} / {t('backToListings').replace('listings', 'Signup')}
+                     <ArrowLeft className="w-4 h-4" /> {t('backToListings').replace('listings', 'Signup')}
                  </button>
             )}
           </form>

@@ -154,7 +154,7 @@ export const translations = {
     localBrandsDesc: "We are preparing a special section to highlight proud Khmer-owned businesses and products. Stay tuned!",
     otpLabel: "Verification Code (OTP)",
     verifyBtn: "Verify Code",
-    otpSentDesc: "We've sent a 6-digit code to your email.",
+    otpSentDesc: "We've sent a 8-digit code to your email.",
     spamAlert: "Note: If you don't see the email, please check your spam/junk folder."
   },
   km: {
@@ -309,7 +309,7 @@ export const translations = {
     localBrandsDesc: "យើងកំពុងរៀបចំផ្នែកពិសេសដើម្បីបង្ហាញ និងជួយផ្សព្វផ្សាយអាជីវកម្មព្រមទាំងផលិតផលរបស់កូនខ្មែរ។ សូមបន្តរង់ចាំ!",
     otpLabel: "លេខកូដផ្ទៀងផ្ទាត់ (OTP)",
     verifyBtn: "ផ្ទៀងផ្ទាត់កូដ",
-    otpSentDesc: "យើងបានផ្ញើលេខកូដ 6 ខ្ទង់ទៅកាន់អ៊ីមែលរបស់អ្នក។",
+    otpSentDesc: "យើងបានផ្ញើលេខកូដ 8 ខ្ទង់ទៅកាន់អ៊ីមែលរបស់អ្នក។",
     spamAlert: "ចំណាំ៖ ប្រសិនបើអ្នកមិនឃើញអ៊ីមែលទេ សូមពិនិត្យមើលប្រអប់ Spam/Junk របស់អ្នក។"
   }
 };

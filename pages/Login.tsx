@@ -25,7 +25,6 @@ const LoginPage: React.FC = () => {
   
   const [formData, setFormData] = useState({ email: '', password: '', name: '', otp: '' });
   const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
@@ -39,7 +38,6 @@ const LoginPage: React.FC = () => {
   const toggleTab = (tab: 'login' | 'signup') => {
       setActiveTab(tab);
       setError('');
-      setInfo('');
       setShowOtpInput(false);
       setFormData({ email: '', password: '', name: '', otp: '' });
       if (tab === 'signup') {
@@ -52,7 +50,6 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setInfo('');
     setLoading(true);
 
     try {
@@ -65,7 +62,6 @@ const LoginPage: React.FC = () => {
             // Step 1: Request Signup (Send OTP)
             await signup(formData.email, formData.password, formData.name);
             setShowOtpInput(true);
-            setInfo(t('otpSentDesc'));
         } else {
             // Step 2: Verify OTP
             await verifyOtp(formData.email, formData.otp);

@@ -196,7 +196,8 @@ const LoginPage: React.FC = () => {
            </button>
         </div>
 
-        <div className="p-8 space-y-6">
+        {/* Padding reduced on mobile (p-5) to accommodate wide OTP input, p-8 on larger screens */}
+        <div className="p-5 sm:p-8 space-y-6">
           
           {/* Social Login (Available on both tabs, hidden during OTP verification) */}
           {!showOtpInput && (
@@ -303,18 +304,26 @@ const LoginPage: React.FC = () => {
 
                     <div className="space-y-2">
                         <Label className="text-center block mb-2">{t('otpLabel')}</Label>
-                        <div className="flex gap-2 justify-center" onPaste={handleOtpPaste}>
+                        {/* 
+                           Updated OTP Container:
+                           - flex with tight gap (1) on mobile, looser gap (2) on larger screens.
+                           - justify-between on small screens to fill space, center on larger.
+                        */}
+                        <div className="flex gap-1 sm:gap-2 justify-between sm:justify-center" onPaste={handleOtpPaste}>
                              {[...Array(OTP_LENGTH)].map((_, idx) => (
                                 <Input
                                     key={idx}
-                                    ref={(el) => (otpInputRefs.current[idx] = el)}
+                                    ref={(el) => { otpInputRefs.current[idx] = el; }}
                                     type="text"
                                     inputMode="numeric"
                                     maxLength={1}
                                     value={formData.otp[idx] || ''}
                                     onChange={(e) => handleOtpChange(idx, e.target.value)}
                                     onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                                    className="w-8 h-10 sm:w-10 sm:h-12 md:w-12 md:h-14 text-center text-lg md:text-2xl font-bold p-0 rounded-lg md:rounded-xl border-2 focus:border-primary focus:ring-0 transition-all caret-primary"
+                                    // Updated Input Classes:
+                                    // - w-full with max-w constraint ensures shrinking on very small screens if needed but fixed size on normal screens.
+                                    // - smaller h/w on mobile base.
+                                    className="w-full max-w-[36px] sm:max-w-[48px] md:max-w-[56px] h-10 sm:h-12 md:h-14 text-center text-lg sm:text-xl md:text-2xl font-bold p-0 rounded-md sm:rounded-lg md:rounded-xl border-2 focus:border-primary focus:ring-0 transition-all caret-primary"
                                     autoComplete="off"
                                 />
                              ))}

@@ -289,7 +289,7 @@ const LoginPage: React.FC = () => {
 
             {/* OTP Input - Only visible after signup submission */}
             {showOtpInput && (
-                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 py-4">
+                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 py-6">
                      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-xl p-4 flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                         <div className="text-sm">
@@ -302,17 +302,20 @@ const LoginPage: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         <Label className="text-center block text-muted-foreground font-medium">{t('otpLabel')}</Label>
+                        
                         {/* 
-                           Updated OTP Container with Grouping Logic:
-                           - Splits 8 inputs into 4 + 4
-                           - Adds separator (dash) in middle
+                           Updated OTP Container with 4-4 Grouping
+                           Using flexbox to handle distribution and responsive sizes
                         */}
-                        <div className="flex items-center justify-center gap-1 sm:gap-1.5" onPaste={handleOtpPaste}>
-                             {[...Array(OTP_LENGTH)].map((_, idx) => (
-                                <React.Fragment key={idx}>
+                        <div className="flex items-center justify-center gap-2 sm:gap-4 max-w-sm mx-auto" onPaste={handleOtpPaste}>
+                             
+                             {/* Group 1 (Inputs 0-3) */}
+                             <div className="flex-1 flex gap-1 sm:gap-2">
+                                {[0, 1, 2, 3].map((idx) => (
                                     <Input
+                                        key={idx}
                                         ref={(el) => { otpInputRefs.current[idx] = el; }}
                                         type="text"
                                         inputMode="numeric"
@@ -320,21 +323,35 @@ const LoginPage: React.FC = () => {
                                         value={formData.otp[idx] || ''}
                                         onChange={(e) => handleOtpChange(idx, e.target.value)}
                                         onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                                        // Updated Input Classes:
-                                        // - aspect-square ensures it stays a square box
-                                        // - w-full with max-w allows responsive resizing
-                                        // - h-auto overrides default h-10 to respect aspect-ratio
-                                        className="w-full max-w-[36px] sm:max-w-[44px] h-auto aspect-square text-center text-lg sm:text-xl font-bold p-0 rounded-md sm:rounded-lg border-2 focus:border-primary focus:ring-0 transition-all caret-primary"
+                                        className="w-full max-w-[48px] h-auto aspect-square text-center text-lg sm:text-xl font-bold p-0 rounded-md sm:rounded-lg border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm"
                                         autoComplete="off"
                                     />
-                                    {/* Separator after index 3 (4th item) */}
-                                    {idx === 3 && (
-                                        <div className="flex items-center justify-center w-2 sm:w-4 mx-0.5 sm:mx-1">
-                                            <div className="w-full h-0.5 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
-                                        </div>
-                                    )}
-                                </React.Fragment>
-                             ))}
+                                ))}
+                             </div>
+
+                             {/* Middle Separator (Minus sign) */}
+                             <div className="flex items-center justify-center text-slate-300 dark:text-slate-600 font-bold">
+                                <div className="w-3 h-1 bg-current rounded-full" />
+                             </div>
+
+                             {/* Group 2 (Inputs 4-7) */}
+                             <div className="flex-1 flex gap-1 sm:gap-2">
+                                {[4, 5, 6, 7].map((idx) => (
+                                    <Input
+                                        key={idx}
+                                        ref={(el) => { otpInputRefs.current[idx] = el; }}
+                                        type="text"
+                                        inputMode="numeric"
+                                        maxLength={1}
+                                        value={formData.otp[idx] || ''}
+                                        onChange={(e) => handleOtpChange(idx, e.target.value)}
+                                        onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                                        className="w-full max-w-[48px] h-auto aspect-square text-center text-lg sm:text-xl font-bold p-0 rounded-md sm:rounded-lg border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm"
+                                        autoComplete="off"
+                                    />
+                                ))}
+                             </div>
+
                         </div>
                     </div>
                 </div>

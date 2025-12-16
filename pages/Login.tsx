@@ -308,7 +308,7 @@ const LoginPage: React.FC = () => {
                         {/* 
                            Updated OTP Container:
                            - 3-3 Layout
-                           - Spacer after index 2
+                           - Visual dash spacer after index 2
                            - 'p-0' and 'text-center' to fix text clipping
                         */}
                         <div className="flex items-center justify-center gap-2 sm:gap-3 w-full max-w-[340px] mx-auto" onPaste={handleOtpPaste}>
@@ -325,8 +325,12 @@ const LoginPage: React.FC = () => {
                                         className="flex-1 min-w-0 aspect-square h-auto text-center text-xl sm:text-2xl font-bold p-0 rounded-lg sm:rounded-xl border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm bg-background flex items-center justify-center"
                                         autoComplete="off"
                                     />
-                                    {/* Spacer between 3rd and 4th input (3-3 split) */}
-                                    {idx === 2 && <div className="w-3 sm:w-6 shrink-0" />}
+                                    {/* Small Dash between 3rd and 4th input (3-3 split) */}
+                                    {idx === 2 && (
+                                        <div className="flex items-center justify-center px-0.5 sm:px-1 text-slate-300 dark:text-slate-600">
+                                            <div className="w-2 h-0.5 sm:h-1 bg-current rounded-full" />
+                                        </div>
+                                    )}
                                 </React.Fragment>
                              ))}
                         </div>

@@ -306,16 +306,15 @@ const LoginPage: React.FC = () => {
                         <Label className="text-center block text-muted-foreground font-medium">{t('otpLabel')}</Label>
                         
                         {/* 
-                           Updated OTP Container with 4-4 Grouping
-                           Using flexbox to handle distribution and responsive sizes
+                           Updated OTP Container for Mobile:
+                           - Single Flex Row
+                           - No Dash Separator (replaced with gap/spacer)
+                           - Square aspect ratio maximized
                         */}
-                        <div className="flex items-center justify-center gap-2 sm:gap-4 max-w-sm mx-auto" onPaste={handleOtpPaste}>
-                             
-                             {/* Group 1 (Inputs 0-3) */}
-                             <div className="flex-1 flex gap-1 sm:gap-2">
-                                {[0, 1, 2, 3].map((idx) => (
+                        <div className="flex items-center justify-center gap-1 sm:gap-2 w-full max-w-[400px] mx-auto" onPaste={handleOtpPaste}>
+                             {[...Array(OTP_LENGTH)].map((_, idx) => (
+                                <React.Fragment key={idx}>
                                     <Input
-                                        key={idx}
                                         ref={(el) => { otpInputRefs.current[idx] = el; }}
                                         type="text"
                                         inputMode="numeric"
@@ -323,35 +322,13 @@ const LoginPage: React.FC = () => {
                                         value={formData.otp[idx] || ''}
                                         onChange={(e) => handleOtpChange(idx, e.target.value)}
                                         onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                                        className="w-full max-w-[48px] h-auto aspect-square text-center text-lg sm:text-xl font-bold p-0 rounded-md sm:rounded-lg border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm"
+                                        className="flex-1 w-0 min-w-0 aspect-square h-auto text-center text-lg sm:text-2xl font-bold p-0 rounded-md sm:rounded-xl border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm bg-background"
                                         autoComplete="off"
                                     />
-                                ))}
-                             </div>
-
-                             {/* Middle Separator (Minus sign) */}
-                             <div className="flex items-center justify-center text-slate-300 dark:text-slate-600 font-bold">
-                                <div className="w-3 h-1 bg-current rounded-full" />
-                             </div>
-
-                             {/* Group 2 (Inputs 4-7) */}
-                             <div className="flex-1 flex gap-1 sm:gap-2">
-                                {[4, 5, 6, 7].map((idx) => (
-                                    <Input
-                                        key={idx}
-                                        ref={(el) => { otpInputRefs.current[idx] = el; }}
-                                        type="text"
-                                        inputMode="numeric"
-                                        maxLength={1}
-                                        value={formData.otp[idx] || ''}
-                                        onChange={(e) => handleOtpChange(idx, e.target.value)}
-                                        onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                                        className="w-full max-w-[48px] h-auto aspect-square text-center text-lg sm:text-xl font-bold p-0 rounded-md sm:rounded-lg border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm"
-                                        autoComplete="off"
-                                    />
-                                ))}
-                             </div>
-
+                                    {/* Invisible Spacer between 4th and 5th input to visually group 4-4 without taking up too much space or looking like a character */}
+                                    {idx === 3 && <div className="w-2 sm:w-4 shrink-0" />}
+                                </React.Fragment>
+                             ))}
                         </div>
                     </div>
                 </div>

@@ -16,7 +16,7 @@ const GoogleIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const OTP_LENGTH = 8;
+const OTP_LENGTH = 6;
 
 const LoginPage: React.FC = () => {
   const { t } = useLanguage();
@@ -306,12 +306,12 @@ const LoginPage: React.FC = () => {
                         <Label className="text-center block text-muted-foreground font-medium">{t('otpLabel')}</Label>
                         
                         {/* 
-                           Updated OTP Container for Mobile:
-                           - Single Flex Row
-                           - No Dash Separator (replaced with gap/spacer)
-                           - Square aspect ratio maximized
+                           Updated OTP Container:
+                           - 3-3 Layout
+                           - Spacer after index 2
+                           - 'p-0' and 'text-center' to fix text clipping
                         */}
-                        <div className="flex items-center justify-center gap-1 sm:gap-2 w-full max-w-[400px] mx-auto" onPaste={handleOtpPaste}>
+                        <div className="flex items-center justify-center gap-2 sm:gap-3 w-full max-w-[340px] mx-auto" onPaste={handleOtpPaste}>
                              {[...Array(OTP_LENGTH)].map((_, idx) => (
                                 <React.Fragment key={idx}>
                                     <Input
@@ -322,11 +322,11 @@ const LoginPage: React.FC = () => {
                                         value={formData.otp[idx] || ''}
                                         onChange={(e) => handleOtpChange(idx, e.target.value)}
                                         onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                                        className="flex-1 w-0 min-w-0 aspect-square h-auto text-center text-lg sm:text-2xl font-bold p-0 rounded-md sm:rounded-xl border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm bg-background"
+                                        className="flex-1 min-w-0 aspect-square h-auto text-center text-xl sm:text-2xl font-bold p-0 rounded-lg sm:rounded-xl border-2 focus:border-primary focus:ring-0 transition-all caret-primary shadow-sm bg-background flex items-center justify-center"
                                         autoComplete="off"
                                     />
-                                    {/* Invisible Spacer between 4th and 5th input to visually group 4-4 without taking up too much space or looking like a character */}
-                                    {idx === 3 && <div className="w-2 sm:w-4 shrink-0" />}
+                                    {/* Spacer between 3rd and 4th input (3-3 split) */}
+                                    {idx === 2 && <div className="w-3 sm:w-6 shrink-0" />}
                                 </React.Fragment>
                              ))}
                         </div>

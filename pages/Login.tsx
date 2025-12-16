@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Lock, User, AlertCircle, Loader2, KeyRound, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';

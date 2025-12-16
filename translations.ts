@@ -1,3 +1,4 @@
+
 export type Language = 'en' | 'km';
 
 export const translations = {
@@ -150,7 +151,11 @@ export const translations = {
     emailSignupDisabled: "Email registration is currently unavailable. Please use Google.",
     useGoogle: "Please use Google to create an account.",
     localBrandsTitle: "Coming Soon: Khmer Local Brands 🇰🇭",
-    localBrandsDesc: "We are preparing a special section to highlight proud Khmer-owned businesses and products. Stay tuned!"
+    localBrandsDesc: "We are preparing a special section to highlight proud Khmer-owned businesses and products. Stay tuned!",
+    otpLabel: "Verification Code (OTP)",
+    verifyBtn: "Verify Code",
+    otpSentDesc: "We've sent a 6-digit code to your email.",
+    spamAlert: "Note: If you don't see the email, please check your spam/junk folder."
   },
   km: {
     heroTag: "យុទ្ធនាការដាស់តឿនអ្នកប្រើប្រាស់",
@@ -301,7 +306,11 @@ export const translations = {
     emailSignupDisabled: "ការចុះឈ្មោះតាមអ៊ីមែលមិនដំណើរការទេ។ សូមប្រើប្រាស់ Google ។",
     useGoogle: "សូមប្រើប្រាស់ Google ដើម្បីបង្កើតគណនី។",
     localBrandsTitle: "ក្នុងពេលឆាប់ៗនេះ ៖ ម៉ាកយីហោ និងផលិតផលខ្មែរ 🇰🇭",
-    localBrandsDesc: "យើងកំពុងរៀបចំផ្នែកពិសេសដើម្បីបង្ហាញ និងជួយផ្សព្វផ្សាយអាជីវកម្មព្រមទាំងផលិតផលរបស់កូនខ្មែរ។ សូមបន្តរង់ចាំ!"
+    localBrandsDesc: "យើងកំពុងរៀបចំផ្នែកពិសេសដើម្បីបង្ហាញ និងជួយផ្សព្វផ្សាយអាជីវកម្មព្រមទាំងផលិតផលរបស់កូនខ្មែរ។ សូមបន្តរង់ចាំ!",
+    otpLabel: "លេខកូដផ្ទៀងផ្ទាត់ (OTP)",
+    verifyBtn: "ផ្ទៀងផ្ទាត់កូដ",
+    otpSentDesc: "យើងបានផ្ញើលេខកូដ 6 ខ្ទង់ទៅកាន់អ៊ីមែលរបស់អ្នក។",
+    spamAlert: "ចំណាំ៖ ប្រសិនបើអ្នកមិនឃើញអ៊ីមែលទេ សូមពិនិត្យមើលប្រអប់ Spam/Junk របស់អ្នក។"
   }
 };
 

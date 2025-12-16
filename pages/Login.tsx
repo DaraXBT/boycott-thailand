@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, User, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, Loader2, KeyRound } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -20,12 +21,14 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
-  const { login, signInWithGoogle } = useAuth();
+  const { login, signup, verifyOtp, signInWithGoogle } = useAuth();
   
-  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
+  const [formData, setFormData] = useState({ email: '', password: '', name: '', otp: '' });
   const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [showOtpInput, setShowOtpInput] = useState(false);
 
   useEffect(() => {
     if (location.pathname === '/signup') {
@@ -36,6 +39,9 @@ const LoginPage: React.FC = () => {
   const toggleTab = (tab: 'login' | 'signup') => {
       setActiveTab(tab);
       setError('');
+      setInfo('');
+      setShowOtpInput(false);
+      setFormData({ email: '', password: '', name: '', otp: '' });
       if (tab === 'signup') {
           navigate('/signup', { replace: true });
       } else {
@@ -45,18 +51,27 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (activeTab === 'signup') {
-      setError(t('emailSignupDisabled'));
-      return;
-    }
-
     setError('');
+    setInfo('');
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password);
-      navigate('/');
+      if (activeTab === 'login') {
+        await login(formData.email, formData.password);
+        navigate('/');
+      } else {
+        // SIGNUP FLOW
+        if (!showOtpInput) {
+            // Step 1: Request Signup (Send OTP)
+            await signup(formData.email, formData.password, formData.name);
+            setShowOtpInput(true);
+            setInfo(t('otpSentDesc'));
+        } else {
+            // Step 2: Verify OTP
+            await verifyOtp(formData.email, formData.otp);
+            navigate('/');
+        }
+      }
     } catch (err: any) {
       console.error(err);
       setError(err.message || t('authFailed'));
@@ -97,20 +112,22 @@ const LoginPage: React.FC = () => {
         <div className="flex border-b border-border bg-slate-50/50 dark:bg-slate-900/50">
            <button
              onClick={() => toggleTab('login')}
+             disabled={showOtpInput}
              className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all ${
                activeTab === 'login' 
                  ? 'text-primary border-b-2 border-primary bg-background' 
-                 : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                 : 'text-muted-foreground hover:text-foreground hover:bg-background/50 disabled:opacity-50 disabled:cursor-not-allowed'
              }`}
            >
              {t('navLogin')}
            </button>
            <button
              onClick={() => toggleTab('signup')}
+             disabled={showOtpInput}
              className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all ${
                activeTab === 'signup' 
                  ? 'text-primary border-b-2 border-primary bg-background' 
-                 : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                 : 'text-muted-foreground hover:text-foreground hover:bg-background/50 disabled:opacity-50 disabled:cursor-not-allowed'
              }`}
            >
              {t('createAccountBtn')}
@@ -119,106 +136,130 @@ const LoginPage: React.FC = () => {
 
         <div className="p-8 space-y-6">
           
-          {/* Social Login (Available on both tabs) */}
-          <Button 
-            variant="outline" 
-            className="w-full h-12 rounded-xl border-border bg-background hover:bg-slate-50 dark:hover:bg-slate-800 text-foreground font-medium flex items-center justify-center gap-3 transition-all hover:shadow-md"
-            onClick={handleGoogleLogin}
-            disabled={loading || googleLoading}
-          >
-             {googleLoading ? (
-                 <Loader2 className="w-5 h-5 animate-spin" />
-             ) : (
-                 <GoogleIcon className="w-5 h-5" />
-             )}
-             {t('continueWithGoogle')}
-          </Button>
+          {/* Social Login (Available on both tabs, hidden during OTP verification) */}
+          {!showOtpInput && (
+              <Button 
+                variant="outline" 
+                className="w-full h-12 rounded-xl border-border bg-background hover:bg-slate-50 dark:hover:bg-slate-800 text-foreground font-medium flex items-center justify-center gap-3 transition-all hover:shadow-md"
+                onClick={handleGoogleLogin}
+                disabled={loading || googleLoading}
+              >
+                {googleLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                    <GoogleIcon className="w-5 h-5" />
+                )}
+                {t('continueWithGoogle')}
+              </Button>
+          )}
 
           {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-3 text-muted-foreground font-semibold tracking-wider">
-                {t('orSeparator')} email
-              </span>
-            </div>
-          </div>
-
-          {/* Signup Unavailable Alert */}
-          {activeTab === 'signup' && (
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-1">
-                <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                <div className="text-sm">
-                    <p className="font-semibold text-amber-800 dark:text-amber-300 mb-0.5">
-                        {t('emailSignupDisabled')}
-                    </p>
-                    <p className="text-amber-700 dark:text-amber-400">
-                        {t('useGoogle')}
-                    </p>
+          {!showOtpInput && (
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
                 </div>
-            </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-3 text-muted-foreground font-semibold tracking-wider">
+                    {t('orSeparator')} email
+                </span>
+                </div>
+              </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5 animate-in fade-in slide-in-from-bottom-2">
             
-            {/* Name Field (Signup Only) */}
-            {activeTab === 'signup' && (
-                <div className="space-y-2">
-                  <Label htmlFor="name">{t('fullName')}</Label>
-                  <div className="relative group">
-                    <Input 
-                      id="name" 
-                      type="text" 
-                      required 
-                      placeholder="John Doe"
-                      className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-                      value={formData.name}
-                      onChange={e => setFormData({...formData, name: e.target.value})}
-                      disabled={true} // Disabled as per requirement to force Google Auth
-                    />
-                    <User className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
-                  </div>
+            {/* Standard Signup Fields - Hidden when showing OTP input */}
+            {!showOtpInput && (
+                <>
+                    {activeTab === 'signup' && (
+                        <div className="space-y-2">
+                        <Label htmlFor="name">{t('fullName')}</Label>
+                        <div className="relative group">
+                            <Input 
+                            id="name" 
+                            type="text" 
+                            required 
+                            placeholder="John Doe"
+                            className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20"
+                            value={formData.name}
+                            onChange={e => setFormData({...formData, name: e.target.value})}
+                            />
+                            <User className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                        </div>
+                        </div>
+                    )}
+
+                    <div className="space-y-2">
+                    <Label htmlFor="email">{t('emailAddress')}</Label>
+                    <div className="relative group">
+                        <Input 
+                        id="email" 
+                        type="email" 
+                        required 
+                        placeholder="name@example.com"
+                        className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20"
+                        value={formData.email}
+                        onChange={e => setFormData({...formData, email: e.target.value})}
+                        />
+                        <Mail className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                    </div>
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="password">{t('password')}</Label>
+                    <div className="relative group">
+                        <Input 
+                        id="password" 
+                        type="password" 
+                        required 
+                        placeholder="••••••••"
+                        className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20"
+                        value={formData.password}
+                        onChange={e => setFormData({...formData, password: e.target.value})}
+                        />
+                        <Lock className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                    </div>
+                    </div>
+                </>
+            )}
+
+            {/* OTP Input - Only visible after signup submission */}
+            {showOtpInput && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
+                     <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-xl p-4 flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                        <div className="text-sm">
+                            <p className="font-semibold text-blue-800 dark:text-blue-300 mb-0.5">
+                                {t('otpSentDesc')}
+                            </p>
+                            <p className="text-blue-700 dark:text-blue-400">
+                                {t('spamAlert')}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="otp">{t('otpLabel')}</Label>
+                        <div className="relative group">
+                            <Input 
+                            id="otp" 
+                            type="text" 
+                            required 
+                            placeholder="123456"
+                            className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 tracking-widest font-mono text-lg"
+                            value={formData.otp}
+                            onChange={e => setFormData({...formData, otp: e.target.value})}
+                            autoFocus
+                            />
+                            <KeyRound className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                        </div>
+                    </div>
                 </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="email">{t('emailAddress')}</Label>
-              <div className="relative group">
-                <Input 
-                  id="email" 
-                  type="email" 
-                  required 
-                  placeholder="name@example.com"
-                  className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-                  value={formData.email}
-                  onChange={e => setFormData({...formData, email: e.target.value})}
-                  disabled={activeTab === 'signup'}
-                />
-                <Mail className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">{t('password')}</Label>
-              <div className="relative group">
-                <Input 
-                  id="password" 
-                  type="password" 
-                  required 
-                  placeholder="••••••••"
-                  className="pl-10 h-12 rounded-xl transition-all focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-                  value={formData.password}
-                  onChange={e => setFormData({...formData, password: e.target.value})}
-                  disabled={activeTab === 'signup'}
-                />
-                <Lock className="w-5 h-5 absolute left-3 top-3.5 text-slate-400 group-focus-within:text-primary transition-colors" />
-              </div>
-            </div>
-
             {error && (
-              <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/30 p-4 rounded-xl border border-red-100 dark:border-red-900/50">
+              <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/30 p-4 rounded-xl border border-red-100 dark:border-red-900/50 animate-in fade-in">
                 <AlertCircle className="w-5 h-5 shrink-0" />
                 <span className="font-medium">{error}</span>
               </div>
@@ -227,37 +268,53 @@ const LoginPage: React.FC = () => {
             <Button 
               type="submit" 
               className="w-full h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-[0.98]"
-              disabled={loading || googleLoading || activeTab === 'signup'}
+              disabled={loading || googleLoading}
             >
-              {loading ? t('pleaseWait') : (activeTab === 'login' ? t('signInBtn') : t('createAccountBtn'))}
+              {loading ? (
+                  <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin"/> {t('pleaseWait')}</span>
+              ) : (
+                  showOtpInput ? t('verifyBtn') : (activeTab === 'login' ? t('signInBtn') : t('createAccountBtn'))
+              )}
             </Button>
+            
+            {showOtpInput && (
+                 <button
+                    type="button"
+                    onClick={() => { setShowOtpInput(false); setError(''); }}
+                    className="w-full text-center text-sm text-muted-foreground hover:text-primary transition-colors mt-2"
+                 >
+                     {t('cancel')} / {t('backToListings').replace('listings', 'Signup')}
+                 </button>
+            )}
           </form>
 
-          <div className="pt-2 text-center">
-            <p className="text-sm text-muted-foreground">
-              {activeTab === 'login' ? (
-                <>
-                  {t('noAccount')} 
-                  <button 
-                    onClick={() => toggleTab('signup')}
-                    className="ml-1 font-bold text-primary hover:text-primary/80 hover:underline transition-all"
-                  >
-                    {t('signUpLink')}
-                  </button>
-                </>
-              ) : (
-                <>
-                  {t('hasAccount')}
-                  <button 
-                    onClick={() => toggleTab('login')}
-                    className="ml-1 font-bold text-primary hover:text-primary/80 hover:underline transition-all"
-                  >
-                    {t('signInLink')}
-                  </button>
-                </>
-              )}
-            </p>
-          </div>
+          {!showOtpInput && (
+            <div className="pt-2 text-center">
+                <p className="text-sm text-muted-foreground">
+                {activeTab === 'login' ? (
+                    <>
+                    {t('noAccount')} 
+                    <button 
+                        onClick={() => toggleTab('signup')}
+                        className="ml-1 font-bold text-primary hover:text-primary/80 hover:underline transition-all"
+                    >
+                        {t('signUpLink')}
+                    </button>
+                    </>
+                ) : (
+                    <>
+                    {t('hasAccount')}
+                    <button 
+                        onClick={() => toggleTab('login')}
+                        className="ml-1 font-bold text-primary hover:text-primary/80 hover:underline transition-all"
+                    >
+                        {t('signInLink')}
+                    </button>
+                    </>
+                )}
+                </p>
+            </div>
+          )}
         </div>
       </Card>
     </div>

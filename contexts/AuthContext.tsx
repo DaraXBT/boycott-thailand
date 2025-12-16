@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Session } from '@supabase/supabase-js';
+import { Session, EmailOtpType } from '@supabase/supabase-js';
 
 export interface User {
   id: string;
@@ -14,6 +14,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
   signup: (email: string, password: string, name: string) => Promise<any>;
+  verifyOtp: (email: string, token: string, type?: EmailOtpType) => Promise<any>;
   signInWithGoogle: () => Promise<void>;
   logout: () => void;
   isLoading: boolean;
@@ -111,6 +112,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return data;
   };
 
+  const verifyOtp = async (email: string, token: string, type: EmailOtpType = 'signup') => {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type,
+    });
+    if (error) throw error;
+    return data;
+  };
+
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -127,7 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, signInWithGoogle, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, signup, verifyOtp, signInWithGoogle, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

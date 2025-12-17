@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { KhmerFlag, EnglishFlag } from '../components/Icons';
 import { ThemeToggle } from '../components/ThemeToggle';
 import AudioPlayer from '../components/AudioPlayer';
+import SEO from '../components/SEO';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen w-full bg-background relative font-sans text-foreground selection:bg-red-100 selection:text-red-900 overflow-x-hidden transition-colors duration-300">
+      <SEO />
       {/* Noise Texture (Darker Dots) Background */}
       <div
         className="fixed inset-0 z-0 pointer-events-none opacity-100"

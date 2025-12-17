@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -42,10 +41,14 @@ const SEO = () => {
         }
     };
 
+    const imageUrl = 'https://obpdgwpgftxbxokltzth.supabase.co/storage/v1/object/public/image/thief.png';
+
     updateMeta('og:title', title);
     updateMeta('og:description', descContent);
+    updateMeta('og:image', imageUrl);
     updateMeta('twitter:title', title);
     updateMeta('twitter:description', descContent);
+    updateMeta('twitter:image', imageUrl);
 
   }, [lang]);
 

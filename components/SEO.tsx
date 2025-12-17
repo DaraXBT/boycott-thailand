@@ -46,7 +46,12 @@ const SEO = () => {
 
     updateMeta('og:title', title);
     updateMeta('og:description', descContent);
+    
     updateMeta('og:image', imageUrl);
+    updateMeta('og:image:secure_url', imageUrl);
+    updateMeta('og:image:type', 'image/png');
+    updateMeta('og:image:alt', 'Boycott Thailand Thief Logo');
+    
     updateMeta('og:locale', locale);
     updateMeta('og:site_name', 'Boycott List Cambodia');
     

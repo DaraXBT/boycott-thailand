@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Boycott List Cambodia - Thai Brands & Franchises</title>
     
+    <!-- Canonical URL to prevent duplicate content issues -->
+    <link rel="canonical" href="https://boycott-thailand.com/" />
+    
     <!-- Primary Meta Tags -->
     <meta name="title" content="Boycott List Cambodia - Thai Brands & Franchises" />
     <meta name="description" content="A comprehensive directory of Thai brands and franchises operating in Cambodia. Support local Khmer businesses and strengthen our economy." />
-    <meta name="keywords" content="boycott thailand, cambodia, thai brands, franchises, khmer products, local business, economy, list, directory, phnom penh" />
+    <!-- Bilingual Keywords for maximum reach -->
+    <meta name="keywords" content="boycott thailand, cambodia, thai brands, franchises, khmer products, local business, economy, list, directory, phnom penh, ពហិការ, ទំនិញថៃ, ផលិតផលខ្មែរ, ក្រុមហ៊ុនថៃ, PTT, 7-Eleven, Makro, Big C, CP, Cafe Amazon" />
     <meta name="robots" content="index, follow" />
     <meta name="language" content="English" />
     <meta name="author" content="One Khmer Spirit" />
+    <meta name="geo.region" content="KH" />
+    <meta name="geo.placename" content="Phnom Penh" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -19,6 +25,8 @@
     <meta property="og:title" content="Boycott List Cambodia - Thai Brands & Franchises" />
     <meta property="og:description" content="A comprehensive directory of Thai brands and franchises operating in Cambodia. Support local Khmer businesses and strengthen our economy." />
     <meta property="og:image" content="https://obpdgwpgftxbxokltzth.supabase.co/storage/v1/object/public/image/thief.png" />
+    <meta property="og:site_name" content="Boycott List Cambodia" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -27,20 +35,58 @@
     <meta property="twitter:description" content="A comprehensive directory of Thai brands and franchises operating in Cambodia. Support local Khmer businesses and strengthen our economy." />
     <meta property="twitter:image" content="https://obpdgwpgftxbxokltzth.supabase.co/storage/v1/object/public/image/thief.png" />
 
-    <!-- JSON-LD Structured Data -->
+    <!-- JSON-LD Structured Data: WebSite & ItemList -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Boycott List Cambodia",
-      "url": "https://boycott-thailand.com/",
-      "description": "Listing of Thai brands and franchises operating in Cambodia.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://boycott-thailand.com/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Boycott List Cambodia",
+        "url": "https://boycott-thailand.com/",
+        "description": "Listing of Thai brands and franchises operating in Cambodia.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://boycott-thailand.com/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "PTT Gas Station",
+            "description": "State-owned Thai oil and gas company operating widespread gas stations across Cambodia."
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "7-Eleven",
+            "description": "Operated by CP All. Aggressively expanding throughout Cambodia."
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Makro",
+            "description": "Wholesale cash and carry store owned by CP Group."
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Cafe Amazon",
+            "description": "The largest coffee chain in Thailand, a subsidiary of PTT Group."
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "name": "Big C",
+            "description": "Major grocery retailer acquired by Berli Jucker (BJC)."
+          }
+        ]
       }
-    }
+    ]
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>

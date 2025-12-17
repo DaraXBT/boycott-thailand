@@ -42,10 +42,14 @@ const SEO = () => {
     };
 
     const imageUrl = 'https://obpdgwpgftxbxokltzth.supabase.co/storage/v1/object/public/image/thief.png';
+    const locale = lang === 'km' ? 'km_KH' : 'en_US';
 
     updateMeta('og:title', title);
     updateMeta('og:description', descContent);
     updateMeta('og:image', imageUrl);
+    updateMeta('og:locale', locale);
+    updateMeta('og:site_name', 'Boycott List Cambodia');
+    
     updateMeta('twitter:title', title);
     updateMeta('twitter:description', descContent);
     updateMeta('twitter:image', imageUrl);

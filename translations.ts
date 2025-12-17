@@ -197,7 +197,7 @@ export const translations = {
     category_Media: "ប្រព័ន្ធផ្សព្វផ្សាយ និងទូរគមនាគមន៍",
     category_Education: "អប់រំ និងបណ្តុះបណ្តាល",
     category_Healthcare: "សុខាភិបាល និងឱសថ",
-    category_Cosmetics: "គ្រឿងសម្អាង និងថែរក្សាខ្លួន",
+    category_Cosmetics: "គ្រឿងសម្អាង និងថែរក្សាស្បែក",
     category_Fashion: "ម៉ូដ និងសម្លៀកបំពាក់",
     category_Hospitality: "សណ្ឋាគារ និងទេសចរណ៍",
     category_Entertainment: "ការកម្សាន្ត និងលំហែ",

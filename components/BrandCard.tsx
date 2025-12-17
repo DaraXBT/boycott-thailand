@@ -81,8 +81,8 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onReport }) => {
                  </p>
               </div>
 
-              {/* Increased description line clamp for mobile from 2 to 4 lines */}
-              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed line-clamp-4 md:line-clamp-3 font-sans mt-0.5 md:mt-1">
+              {/* Increased description line clamp for mobile from 2 to 7 lines */}
+              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed line-clamp-[7] md:line-clamp-3 font-sans mt-0.5 md:mt-1">
                  {description}
               </p>
           </div>

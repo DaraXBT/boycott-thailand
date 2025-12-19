@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, X, Loader2, AlertTriangle, CheckCircle, Sparkles, Bot } from 'lucide-react';
+import { Camera, Upload, X, Loader2, AlertTriangle, CheckCircle, Sparkles, Bot, Key, RotateCcw, ExternalLink } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { Button, Card } from './ui';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -13,16 +12,68 @@ interface AIResult {
   reasonKm: string;
 }
 
+// Global declaration for AI Studio environment
+// Define AIStudio interface separately to match expected types and avoid modifier conflicts
+interface AIStudio {
+  hasSelectedApiKey: () => Promise<boolean>;
+  openSelectKey: () => Promise<void>;
+}
+
+declare global {
+  interface Window {
+    aistudio?: AIStudio;
+  }
+}
+
 const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { t, lang } = useLanguage();
   const [image, setImage] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [result, setResult] = useState<AIResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [needsKey, setNeedsKey] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
+
+  // Check for API Key on mount and when trying to scan
+  const checkApiKey = async () => {
+    // 1. Check if process.env.API_KEY is available (injected by platform)
+    const envKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
+    
+    if (envKey) {
+      setNeedsKey(false);
+      return envKey;
+    }
+
+    // 2. Fallback to AI Studio key selector if available
+    if (window.aistudio) {
+      const hasKey = await window.aistudio.hasSelectedApiKey();
+      if (!hasKey) {
+        setNeedsKey(true);
+        return null;
+      }
+      // If they have selected it, it should now be in process.env.API_KEY (race condition handled by platform)
+      setNeedsKey(false);
+      return process.env.API_KEY;
+    }
+
+    setNeedsKey(true);
+    return null;
+  };
+
+  const handleOpenKeySelector = async () => {
+    if (window.aistudio) {
+      await window.aistudio.openSelectKey();
+      // Proceed as if successful per instructions
+      setNeedsKey(false);
+      setError(null);
+    } else {
+      setError("API Key Selection is not available in this environment.");
+    }
+  };
 
   const startCamera = async () => {
     setIsCameraActive(true);
@@ -54,12 +105,13 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      // Use reasonable resolution for Gemini
+      canvas.width = 1024;
+      canvas.height = (video.videoHeight / video.videoWidth) * 1024;
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg');
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
         setImage(dataUrl);
         stopCamera();
       }
@@ -80,16 +132,20 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const runAnalysis = async () => {
     if (!image) return;
+    
     setIsScanning(true);
     setError(null);
     setResult(null);
 
     try {
-      if (!process.env.API_KEY) {
-        throw new Error("API_KEY not found in environment.");
+      const apiKey = await checkApiKey();
+      if (!apiKey) {
+        setIsScanning(false);
+        return;
       }
 
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      // Create instance right before call as per instructions
+      const ai = new GoogleGenAI({ apiKey });
       const base64Data = image.split(',')[1];
       
       const response = await ai.models.generateContent({
@@ -104,15 +160,16 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 },
               },
               {
-                text: `Identify the brand, shop, or product in this image. 
-                Task: Determine if this brand has Thai origins, is a Thai franchise, or is owned by Thai conglomerates (like CP Group, PTT, ThaiBev, etc.).
-                Return ONLY a JSON object:
+                text: `You are an expert on consumer brands in Cambodia. 
+                Identify the brand, shop, or product in this image.
+                Check if it is Thai-owned, a Thai franchise, or owned by Thai conglomerates (CP, PTT, ThaiBev, etc.).
+                Return ONLY a valid JSON object:
                 {
-                  "brandName": "Common Brand Name",
-                  "isThai": boolean,
-                  "recommendation": "Boycott" (if Thai) or "Support Local" (if definitely not Thai) or "Check further" (if unclear),
-                  "reasonEn": "Explain the origin in 10 words.",
-                  "reasonKm": "Explain the origin in Khmer in 10 words."
+                  "brandName": "Brand Name",
+                  "isThai": true/false,
+                  "recommendation": "Boycott" | "Support Local" | "Check further",
+                  "reasonEn": "Explain origin in 10-15 words.",
+                  "reasonKm": "Explain origin in Khmer in 10-15 words."
                 }`,
               },
             ],
@@ -135,13 +192,18 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       });
 
       const textOutput = response.text;
-      if (!textOutput) throw new Error("Empty AI response.");
+      if (!textOutput) throw new Error("AI returned an empty response.");
       
       const data = JSON.parse(textOutput);
       setResult(data as AIResult);
     } catch (err: any) {
       console.error("AI Analysis Error:", err);
-      setError(err.message || "Failed to analyze. Check your API key and connection.");
+      if (err.message?.includes("entity was not found")) {
+        setNeedsKey(true);
+        setError("Your API key session expired or is invalid. Please select a key again.");
+      } else {
+        setError(err.message || "Failed to analyze image. Please try again with a clearer photo.");
+      }
     } finally {
       setIsScanning(false);
     }
@@ -155,6 +217,7 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   };
 
   useEffect(() => {
+    checkApiKey();
     return () => stopCamera();
   }, []);
 
@@ -183,130 +246,157 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         {/* Content Area */}
         <div className="flex-grow overflow-y-auto p-6 space-y-6">
           
-          {!image && !isCameraActive && (
-            <div className="grid grid-cols-2 gap-4">
-              <button 
-                onClick={startCamera}
-                className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-indigo-500 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20 transition-all group"
-              >
-                <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
-                  <Camera className="w-7 h-7 text-slate-500 group-hover:text-indigo-600" />
-                </div>
-                <span className="font-bold text-sm text-slate-600 dark:text-slate-300">{t('aiCapture')}</span>
-              </button>
-              
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:bg-emerald-50/30 dark:hover:bg-emerald-900/20 transition-all group"
-              >
-                <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
-                  <Upload className="w-7 h-7 text-slate-500 group-hover:text-emerald-600" />
-                </div>
-                <span className="font-bold text-sm text-slate-600 dark:text-slate-300">{t('aiUpload')}</span>
-              </button>
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileUpload} 
-                accept="image/*" 
-                className="hidden" 
-              />
-            </div>
-          )}
-
-          {isCameraActive && (
-            <div className="relative rounded-2xl overflow-hidden bg-black aspect-[4/3] shadow-inner">
-              <video 
-                ref={videoRef} 
-                autoPlay 
-                playsInline 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-4 px-6">
-                <Button 
-                  onClick={stopCamera} 
-                  variant="outline" 
-                  className="rounded-full bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20"
-                >
-                  {t('cancel')}
-                </Button>
-                <Button 
-                  onClick={capturePhoto} 
-                  className="rounded-full bg-indigo-600 hover:bg-indigo-700 w-16 h-16 p-0 shadow-xl"
-                >
-                  <Camera className="w-8 h-8" />
-                </Button>
+          {needsKey ? (
+            <div className="py-8 text-center space-y-6 animate-in zoom-in duration-300">
+              <div className="mx-auto w-20 h-20 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-full flex items-center justify-center shadow-inner">
+                <Key className="w-10 h-10" />
               </div>
-            </div>
-          )}
-
-          {image && !result && (
-            <div className="space-y-6">
-              <div className="relative rounded-2xl overflow-hidden border border-border shadow-md aspect-[4/3]">
-                <img src={image} alt="Preview" className="w-full h-full object-cover" />
-                <button 
-                  onClick={resetScanner}
-                  className="absolute top-3 right-3 p-1.5 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors backdrop-blur-sm"
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-foreground">API Key Required</h3>
+                <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                  To use AI brand scanning, you need to select a valid Google Gemini API key from a paid GCP project.
+                </p>
+                <a 
+                  href="https://ai.google.dev/gemini-api/docs/billing" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:underline mt-1"
                 >
-                  <X className="w-4 h-4" />
-                </button>
+                  Learn about billing <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
-              
-              <Button 
-                onClick={runAnalysis} 
-                disabled={isScanning}
-                className="w-full h-14 rounded-2xl text-base font-bold flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-600/20"
-              >
-                {isScanning ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    {t('aiScanning')}
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5" />
-                    {t('aiIdentifyBtn')}
-                  </>
-                )}
+              <Button onClick={handleOpenKeySelector} className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20">
+                Select API Key
               </Button>
             </div>
-          )}
+          ) : (
+            <>
+              {!image && !isCameraActive && (
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={startCamera}
+                    className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-indigo-500 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20 transition-all group"
+                  >
+                    <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
+                      <Camera className="w-7 h-7 text-slate-500 group-hover:text-indigo-600" />
+                    </div>
+                    <span className="font-bold text-sm text-slate-600 dark:text-slate-300">{t('aiCapture')}</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:bg-emerald-50/30 dark:hover:bg-emerald-900/20 transition-all group"
+                  >
+                    <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
+                      <Upload className="w-7 h-7 text-slate-500 group-hover:text-emerald-600" />
+                    </div>
+                    <span className="font-bold text-sm text-slate-600 dark:text-slate-300">{t('aiUpload')}</span>
+                  </button>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileUpload} 
+                    accept="image/*" 
+                    className="hidden" 
+                  />
+                </div>
+              )}
 
-          {result && (
-            <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-               <div className={`p-6 rounded-2xl border-2 flex flex-col items-center text-center gap-4 ${
-                 result.recommendation === 'Boycott' 
-                 ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900' 
-                 : 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900'
-               }`}>
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                    result.recommendation === 'Boycott' 
-                    ? 'bg-red-100 dark:bg-red-900 text-red-600' 
-                    : 'bg-emerald-100 dark:bg-emerald-900 text-emerald-600'
-                  }`}>
-                    {result.recommendation === 'Boycott' ? <AlertTriangle className="w-8 h-8" /> : <CheckCircle className="w-8 h-8" />}
+              {isCameraActive && (
+                <div className="relative rounded-2xl overflow-hidden bg-black aspect-[4/3] shadow-inner">
+                  <video 
+                    ref={videoRef} 
+                    autoPlay 
+                    playsInline 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-4 px-6">
+                    <Button 
+                      onClick={stopCamera} 
+                      variant="outline" 
+                      className="rounded-full bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20"
+                    >
+                      {t('cancel')}
+                    </Button>
+                    <Button 
+                      onClick={capturePhoto} 
+                      className="rounded-full bg-indigo-600 hover:bg-indigo-700 w-16 h-16 p-0 shadow-xl"
+                    >
+                      <Camera className="w-8 h-8" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {image && !result && (
+                <div className="space-y-6">
+                  <div className="relative rounded-2xl overflow-hidden border border-border shadow-md aspect-[4/3]">
+                    <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                    <button 
+                      onClick={resetScanner}
+                      className="absolute top-3 right-3 p-1.5 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors backdrop-blur-sm"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                   
-                  <div className="space-y-1">
-                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">{result.brandName}</p>
-                    <h3 className="text-2xl font-black">{result.recommendation === 'Boycott' ? t('aiRecommendationBoycott') : t('aiRecommendationSupport')}</h3>
+                  <Button 
+                    onClick={runAnalysis} 
+                    disabled={isScanning}
+                    className="w-full h-14 rounded-2xl text-base font-bold flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-600/20"
+                  >
+                    {isScanning ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        {t('aiScanning')}
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5" />
+                        {t('aiIdentifyBtn')}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+
+              {result && (
+                <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+                  <div className={`p-6 rounded-2xl border-2 flex flex-col items-center text-center gap-4 ${
+                    result.recommendation === 'Boycott' 
+                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900' 
+                    : 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900'
+                  }`}>
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                        result.recommendation === 'Boycott' 
+                        ? 'bg-red-100 dark:bg-red-900 text-red-600' 
+                        : 'bg-emerald-100 dark:bg-emerald-900 text-emerald-600'
+                      }`}>
+                        {result.recommendation === 'Boycott' ? <AlertTriangle className="w-8 h-8" /> : <CheckCircle className="w-8 h-8" />}
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">{result.brandName}</p>
+                        <h3 className="text-2xl font-black">{result.recommendation === 'Boycott' ? t('aiRecommendationBoycott') : t('aiRecommendationSupport')}</h3>
+                      </div>
+
+                      <div className="bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm w-full">
+                        <p className="text-sm font-medium leading-relaxed">
+                          {lang === 'km' ? result.reasonKm : result.reasonEn}
+                        </p>
+                      </div>
                   </div>
 
-                  <div className="bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm w-full">
-                     <p className="text-sm font-medium leading-relaxed">
-                       {lang === 'km' ? result.reasonKm : result.reasonEn}
-                     </p>
-                  </div>
-               </div>
-
-               <Button 
-                onClick={resetScanner} 
-                variant="outline"
-                className="w-full h-12 rounded-xl text-sm font-bold border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-               >
-                 <RotateCcwIcon className="w-4 h-4 mr-2" /> {t('aiReset')}
-               </Button>
-            </div>
+                  <Button 
+                    onClick={resetScanner} 
+                    variant="outline"
+                    className="w-full h-12 rounded-xl text-sm font-bold border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+                  >
+                    <RotateCcw className="w-4 h-4 mr-2" /> {t('aiReset')}
+                  </Button>
+                </div>
+              )}
+            </>
           )}
 
           {error && (
@@ -323,9 +413,5 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     </div>
   );
 };
-
-const RotateCcwIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-);
 
 export default AIScanner;

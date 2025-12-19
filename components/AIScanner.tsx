@@ -85,11 +85,16 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     setResult(null);
 
     try {
+      // Check if API key exists in the environment
+      if (!process.env.API_KEY) {
+        throw new Error("API_KEY is not configured in the environment variables.");
+      }
+
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const base64Data = image.split(',')[1];
       
       const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-2.5-flash-image',
         contents: [
           {
             parts: [
@@ -100,17 +105,15 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 },
               },
               {
-                text: `You are a shopping assistant for a "Boycott Thailand" campaign in Cambodia. 
-                Identify the brand or product in the image. 
-                Determine if it is Thai-owned, based in Thailand, has a Thai CEO, or is a Thai franchise.
-                Be very concise.
+                text: `Identify the brand or product in the image. 
+                Determine if it is Thai-owned or a Thai franchise.
                 Return ONLY a JSON object:
                 {
-                  "brandName": "...",
-                  "isThai": boolean,
+                  "brandName": "Name",
+                  "isThai": true/false,
                   "recommendation": "Boycott" | "Support Local" | "Check further",
-                  "reasonEn": "Short explanation in English (max 15 words). Mention Thai CEO or Origin if relevant.",
-                  "reasonKm": "Short explanation in Khmer (max 15 words). Mention Thai CEO or Origin if relevant."
+                  "reasonEn": "Short explanation in English.",
+                  "reasonKm": "Short explanation in Khmer."
                 }`,
               },
             ],
@@ -132,11 +135,15 @@ const AIScanner: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         },
       });
 
-      const data = JSON.parse(response.text || '{}');
+      const textOutput = response.text;
+      if (!textOutput) throw new Error("AI returned an empty response.");
+      
+      const data = JSON.parse(textOutput);
       setResult(data as AIResult);
     } catch (err: any) {
       console.error("AI Analysis Error:", err);
-      setError("Failed to analyze image. Please try again with a clearer photo.");
+      // Display the actual error message to help the user debug environment config issues
+      setError(err.message || "Failed to analyze image. Please check your connection and API key.");
     } finally {
       setIsScanning(false);
     }

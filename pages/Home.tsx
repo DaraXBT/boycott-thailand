@@ -155,7 +155,7 @@ const HomePage: React.FC = () => {
             <div className="relative w-full overflow-hidden shadow-2xl group border-y border-slate-200 dark:border-slate-800">
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
                 <img 
-                    src="https://scontent.fpnh9-1.fna.fbcdn.net/v/t39.30808-6/597807787_2932214270308514_6893733743699882729_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_ohc=VsMk11hyAl0Q7kNvwExCAzy&_nc_oc=AdliFpo8q4PROQU3yZqywM4TzkZT5QrPw2UZwV9imM3cMut3ao_B9tKslu9i9mQPiik&_nc_zt=23&_nc_ht=scontent.fpnh9-1.fna&_nc_gid=Mjhbkt7qXp69V5uB25WSdg&oh=00_Afmvwp3guT3R7MxMZzHtNIbzRspg92Jgfz8LMPHqFey4ZQ&oe=6944C101" 
+                    src="https://obpdgwpgftxbxokltzth.supabase.co/storage/v1/object/public/image/khmer.jpg" 
                     alt="Boycott Campaign Banner" 
                     className="w-full h-auto object-cover max-h-[600px] bg-slate-100 dark:bg-slate-900"
                     loading="eager"

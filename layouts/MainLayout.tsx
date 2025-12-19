@@ -62,7 +62,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                  <div className="flex flex-col justify-center h-11">
                     {lang === 'km' ? (
                         <span className="font-bold text-xl tracking-tight leading-none text-foreground" style={{ fontFamily: '"Kantumruy Pro", sans-serif' }}>
-                            ពហិការ<span className="text-red-600">ចោរសៀម</span>
+                            ពហិការ<span className="text-red-600">អាចោរសៀម</span>
                         </span>
                     ) : (
                         <span className="font-extrabold text-2xl tracking-tighter leading-none text-foreground">

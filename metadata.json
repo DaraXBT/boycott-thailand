@@ -1,5 +1,7 @@
 {
   "name": "Boycott Thailand",
   "description": "A comprehensive directory of Thai brands and franchises operating in Cambodia to promote consumer awareness and support local businesses.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "camera"
+  ]
 }

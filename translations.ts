@@ -25,6 +25,23 @@ export const translations = {
     reportIssue: "Report incorrect information",
     location: "Location",
     
+    // AI Bot translations
+    aiScannerTitle: "AI Brand Scanner",
+    aiScannerDesc: "Upload or take a photo of a product or shop to check if it's Thai-related.",
+    aiScanning: "Analyzing with AI...",
+    aiReady: "Ready to scan",
+    aiUpload: "Upload Image",
+    aiCapture: "Take Photo",
+    aiResultThai: "Thai Origin Detected",
+    aiResultLocal: "Likely Local/Other",
+    aiRecommendationBoycott: "❌ BOYCOTT",
+    aiRecommendationSupport: "✅ SUPPORT LOCAL",
+    aiRecommendationCheck: "🔍 CHECK FURTHER",
+    aiBotButton: "Ask AI Bot",
+    aiInstruction: "Point your camera at a product label or shop sign.",
+    aiIdentifyBtn: "Identify Brand",
+    aiReset: "Scan Another",
+
     // Categories
     category_Agriculture: "Agriculture & Farming",
     category_Manufacturing: "Manufacturing & Industrial",
@@ -179,6 +196,23 @@ export const translations = {
     website: "គេហទំព័រ",
     reportIssue: "រាយការណ៍ព័ត៌មានមិនត្រឹមត្រូវ",
     location: "ទីតាំង",
+
+    // AI Bot translations
+    aiScannerTitle: "AI ស្កេនម៉ាកទំនិញ",
+    aiScannerDesc: "បញ្ចូលរូបភាព ឬថតរូបផលិតផល/ហាង ដើម្បីឆែកមើលថាតើវាមានជាប់ពាក់ព័ន្ធជាមួយថៃឬអត់។",
+    aiScanning: "AI កំពុងវិភាគ...",
+    aiReady: "រួចរាល់សម្រាប់ការស្កេន",
+    aiUpload: "បញ្ចូលរូបភាព",
+    aiCapture: "ថតរូប",
+    aiResultThai: "រកឃើញប្រភពមកពីថៃ",
+    aiResultLocal: "ទំនងជាផលិតផលក្នុងស្រុក/ផ្សេងៗ",
+    aiRecommendationBoycott: "❌ ពហិការ",
+    aiRecommendationSupport: "✅ គាំទ្រផលិតផលខ្មែរ",
+    aiRecommendationCheck: "🔍 ឆែកមើលបន្ថែម",
+    aiBotButton: "សួរ AI Bot",
+    aiInstruction: "តម្រង់កាមេរ៉ារបស់អ្នកទៅកាន់ស្លាកផលិតផល ឬផ្លាកយីហោហាង។",
+    aiIdentifyBtn: "កំណត់អត្តសញ្ញាណ",
+    aiReset: "ស្កេនម្តងទៀត",
 
     // Categories
     category_Agriculture: "កសិកម្ម",

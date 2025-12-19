@@ -1,10 +1,11 @@
+
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   Search, AlertCircle, Loader2, Sparkles, Zap, 
   LayoutGrid, Wheat, Factory, Building, Hammer, Truck, 
   ShoppingBag, Utensils, Coffee, Car, Landmark, Briefcase, 
   Smartphone, Tv, GraduationCap, Stethoscope, Shirt, 
-  Bed, Ticket, Armchair 
+  Bed, Ticket, Armchair, Bot 
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Category, Brand } from '../types';
@@ -13,6 +14,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { BRANDS } from '../constants';
 import BrandCard from '../components/BrandCard';
+import AIScanner from '../components/AIScanner';
 
 const HomePage: React.FC = () => {
   const { t, getCategoryLabel } = useLanguage();
@@ -22,6 +24,7 @@ const HomePage: React.FC = () => {
   const [allBrands, setAllBrands] = useState<Brand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [usingFallback, setUsingFallback] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Icon Mapping
@@ -80,7 +83,6 @@ const HomePage: React.FC = () => {
           }));
           setAllBrands(mappedBrands);
         } else {
-            // DB is connected but empty
             setAllBrands([]);
         }
         setUsingFallback(false);
@@ -113,7 +115,6 @@ const HomePage: React.FC = () => {
 
   const handleCategoryClick = (category: Category | 'All') => {
     setSelectedCategory(category);
-    // Smooth scroll to results if searching
     if (filteredBrands.length > 0 && window.scrollY > 400) {
         setTimeout(() => {
             if (resultsRef.current) {
@@ -132,7 +133,6 @@ const HomePage: React.FC = () => {
       
       {/* Hero Section */}
       <section className="text-center mx-auto mb-12 pt-4 relative">
-        {/* Decorative elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] md:w-[500px] md:h-[500px] bg-red-500/5 dark:bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="relative max-w-4xl mx-auto space-y-6 px-4 md:px-0">
@@ -150,7 +150,6 @@ const HomePage: React.FC = () => {
             </p>
         </div>
 
-        {/* Full Width Campaign Banner Image */}
         <div className="mt-12 w-screen relative left-1/2 -translate-x-1/2">
             <div className="relative w-full overflow-hidden shadow-2xl group border-y border-slate-200 dark:border-slate-800">
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
@@ -163,6 +162,24 @@ const HomePage: React.FC = () => {
             </div>
         </div>
       </section>
+
+      {/* AI Bot Entry Point */}
+      <div className="flex justify-center mb-10 px-4">
+        <button 
+          onClick={() => setIsScannerOpen(true)}
+          className="group relative flex items-center gap-4 px-8 py-5 rounded-3xl bg-indigo-600 text-white shadow-2xl shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+            <Bot className="w-7 h-7" />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-bold uppercase tracking-widest opacity-80">{t('aiBotButton')}</p>
+            <p className="text-lg font-black leading-tight">{t('aiIdentifyBtn')}</p>
+          </div>
+          <Zap className="w-5 h-5 text-yellow-300 animate-pulse ml-2" />
+        </button>
+      </div>
 
       {/* Search & Filter Section */}
       <section className="mb-16 space-y-6 md:space-y-10">
@@ -179,14 +196,7 @@ const HomePage: React.FC = () => {
           />
         </div>
 
-        {/* Scrollable Category Container */}
         <div className="relative w-[calc(100%+2rem)] -mx-4 md:w-full md:mx-auto md:max-w-7xl">
-            {/* 
-              Mobile: Negative margins (-mx-4) allow the container to break out of the parent padding (px-4),
-              making it truly full-width edge-to-edge.
-              
-              Padding (py-6) increased to prevent clipping of 'scale' animations on hover/selection.
-            */}
             <div className="flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-3 overflow-x-auto md:overflow-visible py-6 px-0 md:px-0 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <button
                 onClick={() => handleCategoryClick('All')}
@@ -224,7 +234,6 @@ const HomePage: React.FC = () => {
             })}
             </div>
             
-            {/* Visual gradient hints for scrolling on mobile */}
             <div className="absolute top-0 bottom-4 left-0 w-8 bg-gradient-to-r from-background to-transparent md:hidden pointer-events-none" />
             <div className="absolute top-0 bottom-4 right-0 w-8 bg-gradient-to-l from-background to-transparent md:hidden pointer-events-none" />
         </div>
@@ -248,23 +257,18 @@ const HomePage: React.FC = () => {
           </div>
       </div>
 
-      {/* Compact Comic Style Marquee */}
       <div className="mb-6 w-screen relative left-1/2 -translate-x-1/2">
         <div className="bg-yellow-400 border-y-2 border-black py-1 overflow-hidden relative shadow-sm z-20">
-            {/* Stripe Pattern Overlay */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent)', backgroundSize: '8px 8px' }} />
             
             <div className="flex select-none relative z-10">
                 {[...Array(12)].map((_, i) => (
                   <div key={i} className="animate-marquee whitespace-nowrap shrink-0 flex items-center">
                       <span className="mx-4 text-sm font-black text-black uppercase tracking-widest flex items-center gap-3">
-                        {/* Thunder Icon - White Fill, Black Stroke */}
                         <Zap className="w-4 h-4 fill-white text-black rotate-12" strokeWidth={2} />
                         <span>{t('localBrandsTitle')}</span>
-                        {/* Thunder Icon - White Fill, Black Stroke */}
                         <Zap className="w-4 h-4 fill-white text-black rotate-12" strokeWidth={2} />
                         <span className="font-bold text-black/80">{t('localBrandsDesc')}</span>
-                        {/* Star Icon - White Fill, Black Stroke */}
                         <Sparkles className="w-4 h-4 text-black fill-white -rotate-12" strokeWidth={2} />
                       </span>
                   </div>
@@ -294,6 +298,20 @@ const HomePage: React.FC = () => {
               {t('clearFilters')}
           </button>
         </div>
+      )}
+
+      {/* AI Scanner Modal */}
+      {isScannerOpen && <AIScanner onClose={() => setIsScannerOpen(false)} />}
+      
+      {/* Small Floating Action Button for AI (Mobile) */}
+      {!isScannerOpen && (
+        <button 
+          onClick={() => setIsScannerOpen(true)}
+          className="fixed bottom-24 right-4 z-40 md:hidden w-16 h-16 rounded-full bg-indigo-600 text-white shadow-2xl shadow-indigo-600/50 flex items-center justify-center animate-bounce hover:animate-none"
+          title={t('aiBotButton')}
+        >
+          <Bot className="w-8 h-8" />
+        </button>
       )}
     </div>
   );

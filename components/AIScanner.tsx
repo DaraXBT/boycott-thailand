@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, X, Loader2, AlertTriangle, CheckCircle, Info, Sparkles, Bot, ArrowRight } from 'lucide-react';
+import { Camera, Upload, X, Loader2, AlertTriangle, CheckCircle, Sparkles, Bot } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { Button, Card } from './ui';
 import { useLanguage } from '../contexts/LanguageContext';
